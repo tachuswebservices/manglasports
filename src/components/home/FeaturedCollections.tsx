@@ -13,18 +13,23 @@ interface CollectionItemProps {
   link: string;
 }
 
-const collections: CollectionItemProps[] = [
-  { title: "Air Rifle", link: "/collections/air-rifle" },
-  { title: "Air Pistols", link: "/collections/air-pistols" },
-  { title: "CO2 Pistols", link: "/collections/co2-pistols" },
-  { title: "Air Pellets", link: "/collections/air-pellets" },
-  { title: "Air Rifle Accessories", link: "/collections/air-rifle-accessories" },
-  { title: "Air Pistol Accessories", link: "/collections/air-pistol-accessories" },
-  { title: "Electronic Target Systems", link: "/collections/electronic-target-systems" },
-  { title: "Scatt Training Systems", link: "/collections/scatt-training-systems" },
-  { title: "Essentials", link: "/collections/essentials" },
-  { title: "Consumables", link: "/collections/consumables" }
+// Full list of all collections
+const allCollections: CollectionItemProps[] = [
+  { title: "Air Rifle", link: "/products/air-rifle" },
+  { title: "Air Pistols", link: "/products/air-pistols" },
+  { title: "CO2 Pistols", link: "/products/co2-pistols" },
+  { title: "Air Pellets", link: "/products/air-pellets" },
+  { title: "Spares", link: "/products/spares" },
+  { title: "Air Rifle Accessories", link: "/products/air-rifle-accessories" },
+  { title: "Air Pistol Accessories", link: "/products/air-pistol-accessories" },
+  { title: "Manual Target Systems", link: "/products/manual-target-systems" },
+  { title: "Electronic Target Systems", link: "/products/electronic-target-systems" },
+  { title: "Scatt Training Systems", link: "/products/scatt-training-systems" },
+  { title: "Consumables", link: "/products/consumables" }
 ];
+
+// Show only the first 10 collections on the homepage
+const featuredCollections = allCollections.slice(0, 10);
 
 const container = {
   hidden: { opacity: 0 },
@@ -133,7 +138,7 @@ const FeaturedCollections: React.FC = () => {
               )}
               asChild
             >
-              <Link to="/collections">
+              <Link to="/products">
                 View All Collections 
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
@@ -148,7 +153,7 @@ const FeaturedCollections: React.FC = () => {
           whileInView="show"
           viewport={{ once: true, amount: 0.1 }}
         >
-          {collections.map((collection, index) => (
+          {featuredCollections.map((collection, index) => (
             <CollectionItem 
               key={index} 
               title={collection.title}
