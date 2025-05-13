@@ -48,8 +48,8 @@ const HeroSection = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            Mangla Sports: <br />
-            <span className={`${isDark ? 'text-mangla-gold' : 'text-amber-500'}`}>Precision. Performance. Passion</span>
+            Mangla Sports <br />
+            <span className={`${isDark ? 'text-mangla-gold' : 'text-amber-500'}`}>Precision Performance Passion</span>
           </motion.h1>
           
           <motion.p 

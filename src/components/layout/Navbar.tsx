@@ -124,9 +124,9 @@ const Navbar = () => {
               <AnimatePresence>
                 {isSearchOpen && (
                   <motion.div 
-                    className="absolute right-0 top-full mt-2 w-64 bg-white shadow-lg rounded-md overflow-hidden z-50"
+                    className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-mangla-dark-gray shadow-xl rounded-lg overflow-hidden z-50"
                     initial={{ opacity: 0, y: -10, width: 0 }}
-                    animate={{ opacity: 1, y: 0, width: "16rem" }}
+                    animate={{ opacity: 1, y: 0, width: "20rem" }}
                     exit={{ opacity: 0, y: -10, width: 0 }}
                     transition={{ duration: 0.2 }}
                   >
@@ -136,15 +136,15 @@ const Navbar = () => {
                         placeholder="Search Products..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full border-0 focus:ring-0"
+                        className="w-full border-0 focus:ring-0 rounded-none py-3 px-4 dark:bg-mangla-dark-gray dark:text-white"
                         autoFocus
                       />
                       <button 
                         type="submit"
-                        className="bg-mangla-gold text-white p-2 hover:bg-yellow-500 transition-colors"
+                        className="bg-mangla-gold text-white p-3 hover:bg-yellow-500 transition-colors"
                         aria-label="Search"
                       >
-                        <Search className="w-4 h-4" />
+                        <Search className="w-5 h-5" />
                       </button>
                     </form>
                   </motion.div>
@@ -197,22 +197,22 @@ const Navbar = () => {
             transition={{ duration: 0.3 }}
           >
             <div className="container-custom py-4">
-              <form onSubmit={handleSearch} className="flex items-center gap-2">
+              <form onSubmit={handleSearch} className="flex items-center gap-0">
                 <Input
                   type="text"
                   placeholder="Search for products..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="flex-grow bg-white/10 border-0 focus:border-0 text-white placeholder:text-white/70"
+                  className="flex-grow bg-white/10 border-0 focus:border-0 text-white placeholder:text-white/70 rounded-l-md rounded-r-none"
                   autoFocus
                 />
                 <motion.button 
                   type="submit"
-                  className="bg-mangla-gold text-white p-2 rounded-md hover:bg-yellow-500 transition-colors"
+                  className="bg-mangla-gold text-white p-3 rounded-r-md hover:bg-yellow-500 transition-colors"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Search className="w-4 h-4" />
+                  <Search className="w-5 h-5" />
                 </motion.button>
               </form>
             </div>
