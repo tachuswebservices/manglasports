@@ -34,24 +34,28 @@ const HeroSection = () => {
           />
         </div>
         
-        {/* Content container positioned at far right to maximize image visibility */}
+        {/* Content container repositioned to match the green box area */}
         <div className="relative h-full flex items-center">
           <div className="container mx-auto px-4 flex justify-end">
-            {/* Improved responsive behavior to prevent overlap on small screens */}
-            <div className={`${isMobile ? 'absolute bottom-12 right-4 left-4' : 'max-w-[40%] xl:max-w-[35%]'} py-8 md:py-12`}>
+            {/* Modified for better positioning on mobile - positioned in the green box area */}
+            <div className={`${
+              isMobile 
+                ? 'absolute bottom-24 right-4 max-w-[280px]' 
+                : 'max-w-[40%] xl:max-w-[35%]'
+              } py-6 md:py-8`}>
               <motion.div
                 className={cn(
-                  "p-5 md:p-6 backdrop-blur-md rounded-lg border",
+                  "p-4 md:p-5 backdrop-blur-xl rounded-lg border",
                   isDark 
-                    ? "bg-mangla-dark-gray/40 border-mangla-gold/30" 
-                    : "bg-mangla-light-bg/40 border-amber-500/30"
+                    ? "bg-mangla-dark-gray/30 border-mangla-gold/20" 
+                    : "bg-mangla-light-bg/30 border-amber-500/20"
                 )}
                 initial={{ x: 50, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.8 }}
               >
                 <motion.h1 
-                  className={`text-2xl md:text-3xl lg:text-4xl font-bold mb-3 leading-tight ${isDark ? 'text-white' : 'text-slate-800'}`}
+                  className={`text-xl md:text-2xl lg:text-3xl font-bold mb-2 leading-tight ${isDark ? 'text-white' : 'text-slate-800'}`}
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.8, delay: 0.2 }}
@@ -61,7 +65,7 @@ const HeroSection = () => {
                 </motion.h1>
                 
                 <motion.p 
-                  className={`text-sm md:text-base mb-4 ${isDark ? 'text-gray-200' : 'text-slate-700'}`}
+                  className={`text-xs md:text-sm mb-3 ${isDark ? 'text-gray-200' : 'text-slate-700'}`}
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.8, delay: 0.5 }}
@@ -77,7 +81,7 @@ const HeroSection = () => {
                 >
                   <Button
                     variant={isDark ? "default" : "default"}
-                    className={`${isDark ? 'bg-mangla-gold hover:bg-mangla-gold/90 text-mangla' : 'bg-amber-500 hover:bg-amber-600 text-white'} px-5 py-4 h-auto font-medium text-sm`}
+                    className={`${isDark ? 'bg-mangla-gold hover:bg-mangla-gold/90 text-mangla' : 'bg-amber-500 hover:bg-amber-600 text-white'} px-4 py-2 h-auto text-xs md:text-sm font-medium`}
                     asChild
                   >
                     <motion.button
@@ -91,7 +95,7 @@ const HeroSection = () => {
                 </motion.div>
                 
                 <motion.p 
-                  className={`mt-4 ${isDark ? 'text-mangla-gold' : 'text-amber-500'} italic text-xs md:text-sm`}
+                  className={`mt-2 ${isDark ? 'text-mangla-gold' : 'text-amber-500'} italic text-xs`}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.8, delay: 1 }}
