@@ -34,23 +34,23 @@ const HeroSection = () => {
           />
         </div>
         
-        {/* Content container positioned further right to show more of the shooter */}
-        <div className="relative h-full flex items-center justify-end">
+        {/* Content container positioned at far right to maximize image visibility */}
+        <div className="relative h-full flex items-center">
           <div className="container mx-auto px-4 flex justify-end">
-            <div className={`${isMobile ? 'max-w-full' : 'max-w-[50%] lg:max-w-[45%] xl:max-w-[40%]'} py-12 md:py-16 ml-auto`}>
+            <div className={`${isMobile ? 'max-w-full pr-0' : 'max-w-[45%] lg:max-w-[40%] xl:max-w-[35%] pr-0'} py-12 md:py-16`}>
               <motion.div
                 className={cn(
-                  "p-8 md:p-12",
+                  "p-6 md:p-8 backdrop-blur-sm rounded-lg border",
                   isDark 
-                    ? "bg-mangla-dark-gray bg-opacity-90" 
-                    : "bg-mangla-light-bg bg-opacity-95"
+                    ? "bg-mangla-dark-gray/60 border-mangla-gold/30" 
+                    : "bg-mangla-light-bg/60 border-amber-500/30"
                 )}
                 initial={{ x: 50, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.8 }}
               >
                 <motion.h1 
-                  className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight ${isDark ? 'text-white' : 'text-slate-800'}`}
+                  className={`text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight ${isDark ? 'text-white' : 'text-slate-800'}`}
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.8, delay: 0.2 }}
@@ -60,7 +60,7 @@ const HeroSection = () => {
                 </motion.h1>
                 
                 <motion.p 
-                  className={`text-lg md:text-xl mb-8 ${isDark ? 'text-gray-300' : 'text-slate-700'}`}
+                  className={`text-base md:text-lg mb-6 ${isDark ? 'text-gray-200' : 'text-slate-700'}`}
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.8, delay: 0.5 }}
@@ -69,23 +69,28 @@ const HeroSection = () => {
                 </motion.p>
                 
                 <motion.div 
-                  className="flex flex-col sm:flex-row gap-4 sm:items-center"
+                  className="flex items-center"
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.8, delay: 0.8 }}
                 >
-                  <motion.button 
-                    className={`btn-primary text-base md:text-lg ${!isDark && 'bg-blue-600 hover:bg-blue-700 text-white'}`}
-                    whileHover={{ scale: 1.05, backgroundColor: isDark ? "#1C3882" : "#2563eb" }}
-                    whileTap={{ scale: 0.98 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  <Button
+                    variant={isDark ? "default" : "default"}
+                    className={`${isDark ? 'bg-mangla-gold hover:bg-mangla-gold/90 text-mangla' : 'bg-amber-500 hover:bg-amber-600 text-white'} px-6 py-5 h-auto font-medium text-sm md:text-base`}
+                    asChild
                   >
-                    Explore Our Collection
-                  </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.98 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                    >
+                      Explore Our Collection
+                    </motion.button>
+                  </Button>
                 </motion.div>
                 
                 <motion.p 
-                  className={`mt-8 ${isDark ? 'text-mangla-gold' : 'text-amber-500'} italic`}
+                  className={`mt-6 ${isDark ? 'text-mangla-gold' : 'text-amber-500'} italic text-sm`}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.8, delay: 1 }}
