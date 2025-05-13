@@ -1,45 +1,29 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { useTheme } from '../theme/ThemeProvider';
 import { cn } from '@/lib/utils';
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from 'react-router-dom';
+import { Card, CardContent } from "@/components/ui/card";
 
 interface CollectionItemProps {
   title: string;
-  image: string;
-  description: string;
   link: string;
 }
 
 const collections: CollectionItemProps[] = [
-  {
-    title: "Professional Equipment",
-    image: "/lovable-uploads/94816e34-750a-420e-b8fc-bde67a9fe267.png",
-    description: "Competition-grade shooting equipment",
-    link: "/collections/professional-equipment"
-  },
-  {
-    title: "Precision Accessories",
-    image: "/lovable-uploads/81cbd973-5303-4c06-bfdf-36f0555888f8.png",
-    description: "Fine-tuned accessories for peak performance",
-    link: "/collections/precision-accessories"
-  },
-  {
-    title: "Training Solutions",
-    image: "/lovable-uploads/bfe6bd77-ba77-4a00-83ae-78679b1bc65b.png",
-    description: "Advanced training systems and targets",
-    link: "/collections/training-solutions"
-  },
-  {
-    title: "Performance Gear",
-    image: "/lovable-uploads/9d861ad0-08bd-4f35-9567-bf07dbe5551b.png",
-    description: "Competition-ready shooting gear",
-    link: "/collections/performance-gear"
-  }
+  { title: "Air Rifle", link: "/collections/air-rifle" },
+  { title: "Air Pistols", link: "/collections/air-pistols" },
+  { title: "CO2 Pistols", link: "/collections/co2-pistols" },
+  { title: "Air Pellets", link: "/collections/air-pellets" },
+  { title: "Air Rifle Accessories", link: "/collections/air-rifle-accessories" },
+  { title: "Air Pistol Accessories", link: "/collections/air-pistol-accessories" },
+  { title: "Electronic Target Systems", link: "/collections/electronic-target-systems" },
+  { title: "Scatt Training Systems", link: "/collections/scatt-training-systems" },
+  { title: "Essentials", link: "/collections/essentials" },
+  { title: "Consumables", link: "/collections/consumables" }
 ];
 
 const container = {
@@ -58,41 +42,35 @@ const item = {
   show: { y: 0, opacity: 1, transition: { duration: 0.5 } }
 };
 
-const CollectionItem: React.FC<CollectionItemProps> = ({ title, image, description, link }) => {
+const CollectionItem: React.FC<CollectionItemProps> = ({ title, link }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   
   return (
     <motion.div 
       variants={item}
-      className="group cursor-pointer"
+      className="group"
       whileHover={{ y: -5 }}
       transition={{ type: "spring", stiffness: 400, damping: 17 }}
     >
       <Link to={link}>
-        <div className={cn(
-          "rounded-xl overflow-hidden shadow-lg h-full relative",
-          isDark ? "shadow-black/40" : "shadow-gray-200/80"
+        <Card className={cn(
+          "h-full overflow-hidden",
+          isDark ? "bg-mangla-dark-gray border-gray-800" : "bg-white border-gray-300"
         )}>
-          <div className="relative overflow-hidden">
-            <AspectRatio ratio={4/3}>
-              <img 
-                src={image} 
-                alt={title} 
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-90 group-hover:opacity-100 transition-opacity"></div>
-            </AspectRatio>
-            <div className="absolute bottom-0 left-0 p-5 w-full">
-              <h3 className="text-white font-semibold text-xl md:text-2xl mb-2">{title}</h3>
-              <p className="text-gray-200 text-sm md:text-base opacity-90">{description}</p>
-              <div className={cn(
-                "mt-3 w-10 h-0.5 transition-all duration-300 group-hover:w-24",
-                isDark ? "bg-mangla-gold" : "bg-amber-400"
-              )}></div>
-            </div>
-          </div>
-        </div>
+          <CardContent className="p-6">
+            <h3 className={cn(
+              "text-xl font-semibold mb-2 group-hover:text-mangla-gold transition-colors",
+              isDark ? "text-white" : "text-slate-900"
+            )}>
+              {title}
+            </h3>
+            <div className={cn(
+              "mt-3 w-10 h-0.5 transition-all duration-300 group-hover:w-24",
+              isDark ? "bg-mangla-gold" : "bg-amber-400"
+            )}></div>
+          </CardContent>
+        </Card>
       </Link>
     </motion.div>
   );
@@ -164,7 +142,7 @@ const FeaturedCollections: React.FC = () => {
         </div>
         
         <motion.div 
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8"
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"
           variants={container}
           initial="hidden"
           whileInView="show"
@@ -174,8 +152,6 @@ const FeaturedCollections: React.FC = () => {
             <CollectionItem 
               key={index} 
               title={collection.title}
-              description={collection.description}
-              image={collection.image}
               link={collection.link}
             />
           ))}
