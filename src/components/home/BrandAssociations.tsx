@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { AnimatedHeading } from '../animation/TextAnimations';
 
 // Real sporting brands logos
 const logos = [
@@ -33,9 +32,15 @@ const BrandAssociations = () => {
   return (
     <section className="py-10 bg-mangla-dark-gray">
       <div className="container-custom">
-        <AnimatedHeading className="text-2xl md:text-3xl font-bold mb-6 text-center">
+        <motion.h2 
+          className="text-2xl md:text-3xl font-bold mb-6 text-center"
+          initial={{ y: 30, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6 }}
+        >
           Our Trusted Brands
-        </AnimatedHeading>
+        </motion.h2>
         
         <motion.div 
           className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6"

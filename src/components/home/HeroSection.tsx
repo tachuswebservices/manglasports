@@ -2,7 +2,6 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../theme/ThemeProvider';
-import { WordByWordReveal } from '../animation/RevealText';
 
 const HeroSection = () => {
   const { theme } = useTheme();
@@ -50,20 +49,7 @@ const HeroSection = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             Mangla Sports <br />
-            <motion.span 
-              className={`${isDark ? 'text-mangla-gold' : 'text-amber-500'}`}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ 
-                opacity: 1, 
-                y: 0,
-                transition: { delay: 0.5, duration: 0.8 }
-              }}
-            >
-              <WordByWordReveal 
-                text="Precision Performance Passion" 
-                staggerDelay={0.1}
-              />
-            </motion.span>
+            <span className={`${isDark ? 'text-mangla-gold' : 'text-amber-500'}`}>Precision Performance Passion</span>
           </motion.h1>
           
           <motion.p 

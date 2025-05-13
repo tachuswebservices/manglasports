@@ -9,8 +9,6 @@ import BestSellers from '../components/home/BestSellers';
 import Testimonials from '../components/home/Testimonials';
 import BrandAssociations from '../components/home/BrandAssociations';
 import Footer from '../components/layout/Footer';
-import AboutSnippet from '../components/home/AboutSnippet';
-import BlogTeaser from '../components/home/BlogTeaser';
 
 const Index = () => {
   // Set page title
@@ -29,12 +27,10 @@ const Index = () => {
       
       <main>
         <HeroSection />
-        <AboutSnippet />
         <ProductCategories />
         <NewArrivals />
         <BestSellers />
         <Testimonials />
-        <BlogTeaser />
         <BrandAssociations />
       </main>
       
