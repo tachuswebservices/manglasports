@@ -1,10 +1,15 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Search } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Input } from '@/components/ui/input';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,6 +23,14 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Searching for:', searchQuery);
+    // Future implementation will handle actual search logic
+    setSearchQuery('');
+    setIsSearchOpen(false);
+  };
 
   return (
     <header 
@@ -36,9 +49,29 @@ const Navbar = () => {
           <Link to="#" className="text-mangla-foreground hover:text-mangla-gold transition-colors">About Us</Link>
           <Link to="#" className="text-mangla-foreground hover:text-mangla-gold transition-colors">News</Link>
           <Link to="#" className="text-mangla-foreground hover:text-mangla-gold transition-colors">Contact</Link>
+          
+          <motion.button
+            aria-label="Search"
+            onClick={() => setIsSearchOpen(!isSearchOpen)}
+            className="text-mangla-foreground hover:text-mangla-gold transition-colors focus:outline-none"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Search className="w-5 h-5" />
+          </motion.button>
         </nav>
 
-        <div className="md:hidden">
+        <div className="md:hidden flex items-center space-x-4">
+          <motion.button
+            aria-label="Search"
+            onClick={() => setIsSearchOpen(!isSearchOpen)}
+            className="text-mangla-foreground hover:text-mangla-gold transition-colors focus:outline-none"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Search className="w-5 h-5" />
+          </motion.button>
+          
           <button 
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
             className="text-mangla-foreground"
@@ -54,6 +87,49 @@ const Navbar = () => {
           </button>
         </div>
       </div>
+
+      {/* Search Overlay */}
+      <AnimatePresence>
+        {isSearchOpen && (
+          <motion.div 
+            className="absolute top-full left-0 right-0 bg-mangla bg-opacity-95 backdrop-blur-sm border-t border-gray-800 shadow-lg"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="container-custom py-4">
+              <form onSubmit={handleSearch} className="flex items-center gap-2">
+                <Input
+                  type="text"
+                  placeholder="Search for products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="flex-grow bg-mangla-dark-gray border-gray-700 focus:border-mangla-gold"
+                  autoFocus
+                />
+                <motion.button 
+                  type="submit"
+                  className="btn-primary text-sm px-4 py-2"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Search
+                </motion.button>
+                <motion.button 
+                  type="button"
+                  onClick={() => setIsSearchOpen(false)}
+                  className="btn-secondary text-sm px-4 py-2"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Cancel
+                </motion.button>
+              </form>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
