@@ -41,7 +41,7 @@ const HeroSection = () => {
             <div className={`${
               isMobile 
                 ? 'absolute bottom-24 right-4 max-w-[280px]' 
-                : 'max-w-[40%] xl:max-w-[35%] mt-32'
+                : 'max-w-[40%] xl:max-w-[35%] mt-64'
               } py-6 md:py-8`}>
               <motion.div
                 className={cn(
