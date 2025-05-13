@@ -5,8 +5,11 @@ import { Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import ThemeToggle from '../theme/ThemeToggle';
+import { useTheme } from '../theme/ThemeProvider';
 
 const Navbar = () => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -36,7 +39,7 @@ const Navbar = () => {
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${isScrolled ? 'shadow-md' : ''}`}>
       {/* Top navigation bar with contact and info links */}
-      <div className="bg-mangla py-2 hidden md:block">
+      <div className={`${isDark ? 'bg-mangla' : 'bg-slate-800'} py-2 hidden md:block`}>
         <div className="container-custom flex justify-between items-center">
           <div className="flex items-center space-x-6">
             <Link to="/about" className="text-mangla-foreground hover:text-mangla-gold transition-colors text-sm">ABOUT</Link>
@@ -54,7 +57,7 @@ const Navbar = () => {
       </div>
 
       {/* Main navigation with unique design */}
-      <div className={`bg-gradient-to-r from-mangla-blue via-blue-700 to-blue-600 transition-all duration-300 ${isScrolled ? 'py-2' : 'py-4'}`}>
+      <div className={`${isDark ? 'bg-gradient-to-r from-mangla-blue via-blue-700 to-blue-600' : 'bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400'} transition-all duration-300 ${isScrolled ? 'py-2' : 'py-4'}`}>
         <div className="container-custom flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center">
@@ -252,4 +255,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
