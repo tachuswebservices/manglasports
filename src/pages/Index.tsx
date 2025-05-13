@@ -6,7 +6,6 @@ import AboutSnippet from '../components/home/AboutSnippet';
 import ProductCategories from '../components/home/ProductCategories';
 import WhyChooseUs from '../components/home/WhyChooseUs';
 import Testimonials from '../components/home/Testimonials';
-import BlogTeaser from '../components/home/BlogTeaser';
 import BrandAssociations from '../components/home/BrandAssociations';
 import Footer from '../components/layout/Footer';
 
@@ -26,7 +25,6 @@ const Index = () => {
         <ProductCategories />
         <WhyChooseUs />
         <Testimonials />
-        <BlogTeaser />
         <BrandAssociations />
       </main>
       
