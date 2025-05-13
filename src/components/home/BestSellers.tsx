@@ -15,36 +15,36 @@ interface BestSellerProps {
 
 const products: BestSellerProps[] = [
   {
-    name: "Pardini K12",
-    price: "₹189,999",
-    image: "https://images.unsplash.com/photo-1584178668396-37ae4e4bbb2b?q=80&w=1000&auto=format&fit=crop",
+    name: "Walther LG500",
+    price: "₹249,999",
+    image: "/lovable-uploads/94816e34-750a-420e-b8fc-bde67a9fe267.png",
+    category: "Competition Air Rifles",
+    rating: 5.0,
+    soldCount: 89
+  },
+  {
+    name: "Pietro Beretta Px4 Storm",
+    price: "₹89,999",
+    image: "/lovable-uploads/81cbd973-5303-4c06-bfdf-36f0555888f8.png",
     category: "Air Pistols",
-    rating: 4.9,
-    soldCount: 156
-  },
-  {
-    name: "RWS Diabolo Basic 4.5MM, .177 Cal",
-    price: "₹899",
-    image: "https://images.unsplash.com/photo-1584178045080-cffef477173a?q=80&w=1000&auto=format&fit=crop",
-    category: "Air Pellets",
     rating: 4.8,
-    soldCount: 432
+    soldCount: 132
   },
   {
-    name: "Sauer Perfect X Rifle Shooting Shoe",
-    price: "₹12,999",
-    image: "https://images.unsplash.com/photo-1617124074721-767bc360aafc?q=80&w=1000&auto=format&fit=crop",
-    category: "Essentials",
-    rating: 4.9,
-    soldCount: 218
-  },
-  {
-    name: "Tachus 10 Electronic Target System",
+    name: "Tachus Electronic Target System",
     price: "₹45,999",
-    image: "https://images.unsplash.com/photo-1585589266883-32e9457ec269?q=80&w=1000&auto=format&fit=crop",
+    image: "/lovable-uploads/bfe6bd77-ba77-4a00-83ae-78679b1bc65b.png",
     category: "Electronic Target Systems",
     rating: 4.7,
-    soldCount: 89
+    soldCount: 76
+  },
+  {
+    name: "Pardini K12 Absorber Pistol",
+    price: "₹189,999",
+    image: "/lovable-uploads/9d861ad0-08bd-4f35-9567-bf07dbe5551b.png",
+    category: "Competition Air Pistols",
+    rating: 4.9,
+    soldCount: 105
   }
 ];
 
@@ -77,15 +77,17 @@ const BestSellerCard: React.FC<BestSellerProps> = ({ name, price, image, categor
     >
       <div className={`${isDark ? 'bg-mangla-dark-gray' : 'bg-white'} rounded-lg overflow-hidden border ${isDark ? 'border-gray-800' : 'border-gray-300'} h-full relative`}>
         <div className="absolute top-4 right-4 z-10">
-          <span className="bg-mangla-gold text-mangla-dark-gray text-xs font-bold px-2 py-1 rounded">BEST SELLER</span>
+          <span className="bg-mangla-gold text-mangla-dark-gray text-xs font-bold px-2 py-1 rounded">FEATURED</span>
         </div>
         <div className="relative overflow-hidden">
-          <AspectRatio ratio={1 / 1}>
-            <img 
-              src={image} 
-              alt={name} 
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-            />
+          <AspectRatio ratio={4 / 3}>
+            <div className="w-full h-full flex items-center justify-center bg-white p-6">
+              <img 
+                src={image} 
+                alt={name} 
+                className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+              />
+            </div>
           </AspectRatio>
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
             <div className="p-4 w-full">
@@ -101,7 +103,7 @@ const BestSellerCard: React.FC<BestSellerProps> = ({ name, price, image, categor
         </div>
         <div className="p-4">
           <p className="text-mangla-gold text-sm mb-2">{category}</p>
-          <h3 className={`${isDark ? 'text-white' : 'text-slate-900'} font-medium mb-1 group-hover:text-mangla-gold transition-colors`}>{name}</h3>
+          <h3 className={`${isDark ? 'text-white' : 'text-slate-900'} font-medium mb-1 group-hover:text-mangla-gold transition-colors truncate`}>{name}</h3>
           <p className={`${isDark ? 'text-gray-300' : 'text-slate-700'} font-bold`}>{price}</p>
           
           <div className={`flex justify-between items-center mt-3 pt-3 border-t ${isDark ? 'border-gray-700' : 'border-gray-300'}`}>
@@ -142,7 +144,7 @@ const BestSellers = () => {
           transition={{ duration: 0.6 }}
         >
           <div>
-            <h2 className={`section-title ${isDark ? 'text-white' : 'text-slate-900'}`}>Best Sellers</h2>
+            <h2 className={`section-title ${isDark ? 'text-white' : 'text-slate-900'}`}>Featured Collections</h2>
             <motion.div 
               className="w-20 h-1 bg-mangla-gold mt-2 mb-4"
               initial={{ width: 0, opacity: 0 }}
@@ -150,7 +152,7 @@ const BestSellers = () => {
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             ></motion.div>
-            <p className={`${isDark ? 'text-gray-400' : 'text-slate-600'}`}>Our most popular products loved by champions</p>
+            <p className={`${isDark ? 'text-gray-400' : 'text-slate-600'}`}>Premium shooting equipment for professional athletes</p>
           </div>
           <motion.button 
             className={`hidden md:block ${isDark ? 'text-mangla-gold hover:text-white border border-mangla-gold hover:border-white' : 'text-blue-600 hover:text-white border border-blue-600 hover:border-white hover:bg-blue-600'} px-6 py-2 rounded-md transition-colors`}
