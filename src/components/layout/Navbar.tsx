@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Input } from '@/components/ui/input';
+import ThemeToggle from '../theme/ThemeToggle';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -59,9 +60,13 @@ const Navbar = () => {
           >
             <Search className="w-5 h-5" />
           </motion.button>
+          
+          <ThemeToggle />
         </nav>
 
         <div className="md:hidden flex items-center space-x-4">
+          <ThemeToggle />
+          
           <motion.button
             aria-label="Search"
             onClick={() => setIsSearchOpen(!isSearchOpen)}
