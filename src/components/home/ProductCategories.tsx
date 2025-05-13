@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useTheme } from '../theme/ThemeProvider';
 
 interface CategoryProps {
   title: string;
@@ -48,14 +49,19 @@ const item = {
 };
 
 const CategoryCard: React.FC<CategoryProps> = ({ title, icon, description }) => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  
   return (
     <motion.div 
       variants={item}
-      className="bg-mangla-dark-gray rounded-lg overflow-hidden border border-gray-800 group"
+      className={`bg-white dark:bg-mangla-dark-gray rounded-lg overflow-hidden border ${isDark ? 'border-gray-800' : 'border-gray-200'} group`}
       whileHover={{ 
         scale: 1.03, 
-        boxShadow: "0 10px 30px -15px rgba(212, 175, 55, 0.25)",
-        borderColor: "#D4AF37" 
+        boxShadow: isDark 
+          ? "0 10px 30px -15px rgba(212, 175, 55, 0.25)"
+          : "0 10px 30px -15px rgba(59, 130, 246, 0.25)",
+        borderColor: isDark ? "#D4AF37" : "#3B82F6"
       }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
@@ -69,11 +75,15 @@ const CategoryCard: React.FC<CategoryProps> = ({ title, icon, description }) => 
         />
       </div>
       <div className="p-6">
-        <h3 className="text-xl font-bold mb-3 text-white group-hover:text-mangla-gold transition-colors">{title}</h3>
-        <p className="text-gray-400 mb-4">{description}</p>
+        <h3 className={`text-xl font-bold mb-3 ${isDark ? 'text-white group-hover:text-mangla-gold' : 'text-slate-800 group-hover:text-blue-600'} transition-colors`}>
+          {title}
+        </h3>
+        <p className={`${isDark ? 'text-gray-400' : 'text-slate-600'} mb-4`}>
+          {description}
+        </p>
         <motion.a 
           href="#" 
-          className="text-mangla-gold flex items-center font-medium"
+          className={`${isDark ? 'text-mangla-gold' : 'text-blue-600'} flex items-center font-medium`}
           whileHover={{ x: 10 }}
           transition={{ type: "spring", stiffness: 400, damping: 10 }}
         >
@@ -99,11 +109,14 @@ const CategoryCard: React.FC<CategoryProps> = ({ title, icon, description }) => 
 };
 
 const ProductCategories = () => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  
   return (
-    <section className="section-padding bg-mangla">
+    <section className={`section-padding ${isDark ? 'bg-mangla' : 'bg-[#f8fafc]'}`}>
       <div className="container-custom">
         <motion.h2 
-          className="section-title text-center"
+          className={`section-title text-center ${isDark ? 'text-white' : 'text-slate-800'}`}
           initial={{ y: 30, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           viewport={{ once: true, amount: 0.3 }}
@@ -121,7 +134,7 @@ const ProductCategories = () => {
         ></motion.div>
         
         <motion.p 
-          className="section-subtitle text-center"
+          className={`section-subtitle text-center ${isDark ? 'text-gray-300' : 'text-slate-600'}`}
           initial={{ y: 30, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           viewport={{ once: true, amount: 0.3 }}
@@ -155,8 +168,11 @@ const ProductCategories = () => {
           transition={{ duration: 0.8, delay: 0.8 }}
         >
           <motion.button 
-            className="btn-secondary"
-            whileHover={{ scale: 1.05, backgroundColor: "rgba(212, 175, 55, 0.1)" }}
+            className={`${isDark ? 'btn-secondary' : 'border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-6 py-3 rounded-md font-medium transition-all duration-300'}`}
+            whileHover={{ 
+              scale: 1.05, 
+              backgroundColor: isDark ? "rgba(212, 175, 55, 0.1)" : "rgba(59, 130, 246, 0.1)" 
+            }}
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
           >
