@@ -32,18 +32,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     body.classList.remove('dark', 'light');
     body.classList.add(theme);
     
-    // Additional elements that need theme-specific styling
-    const heroSections = document.querySelectorAll('.bg-mangla');
-    heroSections.forEach(section => {
-      if (theme === 'light') {
-        section.classList.remove('bg-mangla');
-        section.classList.add('bg-[#f8fafc]');
-      } else {
-        section.classList.remove('bg-[#f8fafc]');
-        section.classList.add('bg-mangla');
-      }
-    });
-    
     // Save the theme to localStorage
     localStorage.setItem('theme', theme);
   }, [theme]);

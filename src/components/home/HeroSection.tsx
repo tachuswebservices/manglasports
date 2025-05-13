@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../theme/ThemeProvider';
 
@@ -16,15 +16,10 @@ const HeroSection = () => {
   };
   
   return (
-    <section className={`relative min-h-screen flex items-center justify-center ${isDark ? 'bg-mangla' : 'bg-[#f8fafc]'} bg-fixed overflow-hidden pt-16`}>
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
       {/* Background overlay & image */}
       <div className="absolute inset-0 z-0">
-        <motion.div 
-          className={`absolute inset-0 ${isDark ? 'bg-gradient-to-b from-mangla to-black' : 'bg-gradient-to-b from-blue-50 to-blue-100'} opacity-70 z-10`}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.7 }}
-          transition={{ duration: 1.5 }}
-        ></motion.div>
+        {/* Background image */}
         <motion.div 
           className="absolute inset-0 bg-center bg-cover z-0" 
           style={{
@@ -35,7 +30,19 @@ const HeroSection = () => {
           initial={{ scale: 1.1 }}
           animate={{ scale: 1 }}
           transition={{ duration: 1.5, ease: "easeOut" }}
-        ></motion.div>
+        />
+        
+        {/* Overlay to control image brightness and contrast based on theme */}
+        <motion.div 
+          className={`absolute inset-0 z-10 ${
+            isDark 
+              ? 'bg-gradient-to-b from-black/70 to-black/90' 
+              : 'bg-gradient-to-b from-white/30 to-blue-100/60'
+          }`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.5 }}
+        />
       </div>
 
       <div className="container-custom relative z-20 text-center py-10">
