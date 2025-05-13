@@ -13,9 +13,9 @@ interface CollectionItemProps {
   link: string;
 }
 
-// Full list of all collections
+// Full list of all collections - with consistent naming and URLs
 const allCollections: CollectionItemProps[] = [
-  { title: "Air Rifle", link: "/products/air-rifle" },
+  { title: "Air Rifles", link: "/products/air-rifles" },
   { title: "Air Pistols", link: "/products/air-pistols" },
   { title: "CO2 Pistols", link: "/products/co2-pistols" },
   { title: "Air Pellets", link: "/products/air-pellets" },

@@ -1,6 +1,6 @@
 
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
@@ -14,8 +14,9 @@ interface CollectionItemProps {
   link: string;
 }
 
+// Define all collections - ensure consistency between links and what's used in the URLs
 const allCollections: CollectionItemProps[] = [
-  { title: "Air Rifle", link: "/products/air-rifle" },
+  { title: "Air Rifles", link: "/products/air-rifles" },
   { title: "Air Pistols", link: "/products/air-pistols" },
   { title: "CO2 Pistols", link: "/products/co2-pistols" },
   { title: "Air Pellets", link: "/products/air-pellets" },
@@ -83,11 +84,20 @@ const Products: React.FC = () => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   
+  // Find if the category exists in our collections
+  const validCategories = allCollections.map(c => c.link.replace('/products/', ''));
+  const isValidCategory = category ? validCategories.includes(category) : true;
+  
   useEffect(() => {
     document.title = category 
       ? `Mangla Sports - ${category.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}`
       : "Mangla Sports - All Collections";
   }, [category]);
+
+  // If category is not valid, redirect to the products page
+  if (category && !isValidCategory) {
+    return <Navigate to="/products" replace />;
+  }
 
   if (category) {
     return (
