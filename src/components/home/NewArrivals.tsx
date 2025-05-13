@@ -13,28 +13,28 @@ interface ProductProps {
 
 const products: ProductProps[] = [
   {
-    name: "Match Air Rifle 800",
-    price: "₹89,999",
+    name: "Walther LG500 ITEC Triple Edition",
+    price: "₹199,999",
     image: "https://images.unsplash.com/photo-1584178668396-37ae4e4bbb2b?q=80&w=1000&auto=format&fit=crop",
     category: "Air Rifles"
   },
   {
-    name: "Competition Air Pistol Pro",
-    price: "₹65,999",
+    name: "Pardini K12 J Short",
+    price: "₹185,999",
     image: "https://images.unsplash.com/photo-1584178045080-cffef477173a?q=80&w=1000&auto=format&fit=crop",
     category: "Air Pistols"
   },
   {
-    name: "Premium Shooting Gloves",
-    price: "₹3,499",
+    name: "Umarex 12g CO2 Cartridges (Capsules)",
+    price: "₹1,499",
     image: "https://images.unsplash.com/photo-1585589266883-32e9457ec269?q=80&w=1000&auto=format&fit=crop",
-    category: "Accessories"
+    category: "Consumables"
   },
   {
-    name: "Professional Shooting Jacket",
-    price: "₹12,999",
+    name: "SCATT MX-W2 WI-FI",
+    price: "₹89,999",
     image: "https://images.unsplash.com/photo-1617124074721-767bc360aafc?q=80&w=1000&auto=format&fit=crop",
-    category: "Apparel"
+    category: "Scatt Training Systems"
   }
 ];
 

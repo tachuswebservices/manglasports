@@ -15,36 +15,36 @@ interface BestSellerProps {
 
 const products: BestSellerProps[] = [
   {
-    name: "Competition Air Rifle X100",
-    price: "₹105,999",
+    name: "Pardini K12",
+    price: "₹189,999",
     image: "https://images.unsplash.com/photo-1584178668396-37ae4e4bbb2b?q=80&w=1000&auto=format&fit=crop",
-    category: "Air Rifles",
-    rating: 4.9,
-    soldCount: 126
-  },
-  {
-    name: "Match Grade Air Pistol",
-    price: "₹72,499",
-    image: "https://images.unsplash.com/photo-1584178045080-cffef477173a?q=80&w=1000&auto=format&fit=crop",
     category: "Air Pistols",
-    rating: 4.8,
-    soldCount: 98
-  },
-  {
-    name: "Premium Target Pellets (500)",
-    price: "₹1,299",
-    image: "https://images.unsplash.com/photo-1617124074721-767bc360aafc?q=80&w=1000&auto=format&fit=crop",
-    category: "Ammunition",
     rating: 4.9,
-    soldCount: 312
+    soldCount: 156
   },
   {
-    name: "Competition Shooting Shoes",
-    price: "₹8,999",
+    name: "RWS Diabolo Basic 4.5MM, .177 Cal",
+    price: "₹899",
+    image: "https://images.unsplash.com/photo-1584178045080-cffef477173a?q=80&w=1000&auto=format&fit=crop",
+    category: "Air Pellets",
+    rating: 4.8,
+    soldCount: 432
+  },
+  {
+    name: "Sauer Perfect X Rifle Shooting Shoe",
+    price: "₹12,999",
+    image: "https://images.unsplash.com/photo-1617124074721-767bc360aafc?q=80&w=1000&auto=format&fit=crop",
+    category: "Essentials",
+    rating: 4.9,
+    soldCount: 218
+  },
+  {
+    name: "Tachus 10 Electronic Target System",
+    price: "₹45,999",
     image: "https://images.unsplash.com/photo-1585589266883-32e9457ec269?q=80&w=1000&auto=format&fit=crop",
-    category: "Footwear",
+    category: "Electronic Target Systems",
     rating: 4.7,
-    soldCount: 86
+    soldCount: 89
   }
 ];
 

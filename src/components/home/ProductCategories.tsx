@@ -11,24 +11,24 @@ interface CategoryProps {
 
 const categories: CategoryProps[] = [
   {
-    title: "Precision Rifles",
+    title: "Air Rifles",
     icon: "https://images.unsplash.com/photo-1584178668396-37ae4e4bbb2b?q=80&w=1000&auto=format&fit=crop",
-    description: "Competition-grade precision rifles for target shooting and sport."
+    description: "Competition and training grade precision air rifles for professional sports shooting."
   },
   {
-    title: "Performance Handguns",
+    title: "Air Pistols",
     icon: "https://images.unsplash.com/photo-1584178045080-cffef477173a?q=80&w=1000&auto=format&fit=crop",
-    description: "Competition-ready handguns designed for precision, reliability, and performance."
+    description: "High-precision match air pistols designed for Olympic and competitive shooting events."
   },
   {
-    title: "Advanced Optics",
+    title: "CO2 Pistols",
     icon: "https://images.unsplash.com/photo-1617124074721-767bc360aafc?q=80&w=1000&auto=format&fit=crop",
-    description: "Premium scopes and sights for unparalleled accuracy and clarity in any condition."
+    description: "Reliable CO2-powered pistols perfect for training and recreational shooting."
   },
   {
-    title: "Essential Accessories",
+    title: "Electronic Targets",
     icon: "https://images.unsplash.com/photo-1585589266883-32e9457ec269?q=80&w=1000&auto=format&fit=crop",
-    description: "Professional-grade accessories to enhance your shooting experience and performance."
+    description: "Advanced electronic target systems for precision training and competition scoring."
   }
 ];
 
