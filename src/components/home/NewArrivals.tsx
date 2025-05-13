@@ -2,6 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { useTheme } from '../theme/ThemeProvider';
 
 interface ProductProps {
   name: string;
@@ -54,6 +55,9 @@ const item = {
 };
 
 const ProductCard: React.FC<ProductProps> = ({ name, price, image, category }) => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  
   return (
     <motion.div 
       variants={item}
@@ -61,7 +65,7 @@ const ProductCard: React.FC<ProductProps> = ({ name, price, image, category }) =
       whileHover={{ y: -5 }}
       transition={{ type: "spring", stiffness: 400, damping: 17 }}
     >
-      <div className="bg-mangla-dark-gray rounded-lg overflow-hidden border border-gray-800 h-full">
+      <div className={`${isDark ? 'bg-mangla-dark-gray' : 'bg-white'} rounded-lg overflow-hidden border ${isDark ? 'border-gray-800' : 'border-gray-200'} h-full`}>
         <div className="relative overflow-hidden">
           <AspectRatio ratio={1 / 1}>
             <img 
@@ -84,8 +88,8 @@ const ProductCard: React.FC<ProductProps> = ({ name, price, image, category }) =
         </div>
         <div className="p-4">
           <p className="text-mangla-gold text-sm mb-2">{category}</p>
-          <h3 className="text-white font-medium mb-1 group-hover:text-mangla-gold transition-colors">{name}</h3>
-          <p className="text-gray-300 font-bold">{price}</p>
+          <h3 className={`${isDark ? 'text-white' : 'text-slate-900'} font-medium mb-1 group-hover:text-mangla-gold transition-colors`}>{name}</h3>
+          <p className={`${isDark ? 'text-gray-300' : 'text-slate-700'} font-bold`}>{price}</p>
         </div>
       </div>
     </motion.div>
@@ -93,8 +97,11 @@ const ProductCard: React.FC<ProductProps> = ({ name, price, image, category }) =
 };
 
 const NewArrivals = () => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  
   return (
-    <section className="section-padding bg-mangla">
+    <section className={`section-padding ${isDark ? 'bg-mangla' : 'bg-[#f8fafc]'}`}>
       <div className="container-custom">
         <motion.div 
           className="flex justify-between items-center mb-10"
@@ -104,7 +111,7 @@ const NewArrivals = () => {
           transition={{ duration: 0.6 }}
         >
           <div>
-            <h2 className="section-title">New Arrivals</h2>
+            <h2 className={`section-title ${isDark ? 'text-white' : 'text-slate-900'}`}>New Arrivals</h2>
             <motion.div 
               className="w-20 h-1 bg-mangla-gold mt-2 mb-4"
               initial={{ width: 0, opacity: 0 }}
@@ -112,11 +119,11 @@ const NewArrivals = () => {
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             ></motion.div>
-            <p className="text-gray-400">Latest additions to our premium collection</p>
+            <p className={`${isDark ? 'text-gray-400' : 'text-slate-600'}`}>Latest additions to our premium collection</p>
           </div>
           <motion.button 
-            className="hidden md:block text-mangla-gold hover:text-white border border-mangla-gold hover:border-white px-6 py-2 rounded-md transition-colors"
-            whileHover={{ scale: 1.05, backgroundColor: "rgba(212, 175, 55, 0.1)" }}
+            className={`hidden md:block ${isDark ? 'text-mangla-gold hover:text-white border border-mangla-gold hover:border-white' : 'text-blue-600 hover:text-white border border-blue-600 hover:border-white hover:bg-blue-600'} px-6 py-2 rounded-md transition-colors`}
+            whileHover={{ scale: 1.05, backgroundColor: isDark ? "rgba(212, 175, 55, 0.1)" : undefined }}
             whileTap={{ scale: 0.98 }}
           >
             View All
@@ -149,7 +156,7 @@ const NewArrivals = () => {
           transition={{ duration: 0.6, delay: 0.4 }}
         >
           <motion.button 
-            className="text-mangla-gold hover:text-white border border-mangla-gold hover:border-white px-6 py-2 rounded-md transition-colors"
+            className={`${isDark ? 'text-mangla-gold hover:text-white border border-mangla-gold hover:border-white' : 'text-blue-600 hover:text-white border border-blue-600 hover:border-white hover:bg-blue-600'} px-6 py-2 rounded-md transition-colors`}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
           >

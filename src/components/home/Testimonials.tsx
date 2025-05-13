@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useTheme } from '../theme/ThemeProvider';
 
 interface TestimonialProps {
   quote: string;
@@ -43,19 +44,24 @@ const item = {
 };
 
 const TestimonialCard: React.FC<TestimonialProps> = ({ quote, author, role }) => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  
   return (
     <motion.div 
       variants={item}
-      className="bg-mangla-dark-gray p-8 rounded-lg border border-gray-800 relative"
+      className={`${isDark ? 'bg-mangla-dark-gray border-gray-800' : 'bg-white border-gray-200'} p-8 rounded-lg border relative`}
       whileHover={{ 
         scale: 1.03, 
-        boxShadow: "0 10px 30px -15px rgba(212, 175, 55, 0.2)",
-        borderColor: "#D4AF37" 
+        boxShadow: isDark 
+          ? "0 10px 30px -15px rgba(212, 175, 55, 0.2)" 
+          : "0 10px 30px -15px rgba(59, 130, 246, 0.2)",
+        borderColor: isDark ? "#D4AF37" : "#3B82F6"
       }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
       <motion.div 
-        className="absolute -top-5 -left-2 text-mangla-gold text-6xl opacity-30"
+        className={`absolute -top-5 -left-2 ${isDark ? 'text-mangla-gold' : 'text-amber-500'} text-6xl opacity-30`}
         initial={{ rotate: -10, opacity: 0 }}
         whileInView={{ rotate: 0, opacity: 0.3 }}
         viewport={{ once: true }}
@@ -63,7 +69,7 @@ const TestimonialCard: React.FC<TestimonialProps> = ({ quote, author, role }) =>
       >
         "
       </motion.div>
-      <p className="italic text-gray-300 mb-6 relative z-10">{quote}</p>
+      <p className={`italic ${isDark ? 'text-gray-300' : 'text-slate-600'} mb-6 relative z-10`}>{quote}</p>
       <motion.div 
         className="flex items-center"
         initial={{ x: -10, opacity: 0 }}
@@ -75,7 +81,7 @@ const TestimonialCard: React.FC<TestimonialProps> = ({ quote, author, role }) =>
           {author.charAt(0)}
         </div>
         <div className="ml-4">
-          <p className="font-medium text-white">{author}</p>
+          <p className={`font-medium ${isDark ? 'text-white' : 'text-slate-900'}`}>{author}</p>
           <p className="text-mangla-gold text-sm">{role}</p>
         </div>
       </motion.div>
@@ -84,11 +90,14 @@ const TestimonialCard: React.FC<TestimonialProps> = ({ quote, author, role }) =>
 };
 
 const Testimonials = () => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  
   return (
-    <section className="section-padding bg-mangla">
+    <section className={`section-padding ${isDark ? 'bg-mangla' : 'bg-[#f8fafc]'}`}>
       <div className="container-custom">
         <motion.h2 
-          className="section-title text-center"
+          className={`section-title text-center ${isDark ? 'text-white' : 'text-slate-900'}`}
           initial={{ y: 30, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           viewport={{ once: true, amount: 0.3 }}
@@ -106,7 +115,7 @@ const Testimonials = () => {
         ></motion.div>
         
         <motion.p 
-          className="section-subtitle text-center"
+          className={`section-subtitle text-center ${isDark ? 'text-gray-300' : 'text-slate-600'}`}
           initial={{ y: 30, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           viewport={{ once: true, amount: 0.3 }}

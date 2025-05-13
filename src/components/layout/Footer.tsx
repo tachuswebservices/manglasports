@@ -1,10 +1,14 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTheme } from '../theme/ThemeProvider';
 
 const Footer = () => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
   return (
-    <footer className="bg-mangla pt-16 pb-8 border-t border-gray-800">
+    <footer className={`${isDark ? 'bg-mangla' : 'bg-slate-900'} pt-16 pb-8 ${isDark ? 'border-gray-800' : 'border-gray-700'} border-t`}>
       <div className="container-custom">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {/* Company Info */}
