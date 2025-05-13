@@ -8,34 +8,41 @@
 @layer base {
   :root,
   .light {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    --background: 210 40% 98%; /* Light blue-tinted background */
+    --foreground: 222 47% 11%; /* Dark text for contrast */
     
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card: 0 0% 100%; /* Pure white cards */
+    --card-foreground: 222 47% 11%;
     
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
+    --popover-foreground: 222 47% 11%;
     
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 221 83% 53%; /* Vibrant blue primary color */
+    --primary-foreground: 210 40% 98%;
     
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
+    --secondary: 210 40% 96%; /* Light blue secondary */
+    --secondary-foreground: 222 47% 11%;
     
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
     
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222 47% 11%;
     
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
     
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 221 83% 53%;
     --radius: 0.75rem;
+
+    /* Mangla light theme specific colors */
+    --mangla-bg: 210 40% 98%;
+    --mangla-fg: 222 47% 11%;
+    --mangla-blue: 221 83% 53%;
+    --mangla-gold: 43 74% 49%;
+    --mangla-accent: 215 100% 96%;
   }
 
   .dark {
@@ -67,6 +74,13 @@
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
     --radius: 0.75rem;
+
+    /* Mangla dark theme specific colors - keeping the original dark theme */
+    --mangla-bg: 0 0% 7%;
+    --mangla-fg: 0 0% 94%;
+    --mangla-blue: 200 100% 40%;
+    --mangla-gold: 43 74% 49%;
+    --mangla-accent: 240 3.7% 15.9%;
   }
 }
 
@@ -85,7 +99,11 @@
     overflow-x: hidden;
   }
 
-  .dark body {
+  body.light {
+    @apply bg-[#f8fafc] text-slate-900;
+  }
+
+  body.dark {
     @apply bg-mangla text-mangla-foreground;
   }
 
@@ -122,6 +140,19 @@
   .reveal-animation {
     @apply opacity-0;
   }
+
+  /* Light theme enhancements */
+  .light .card {
+    @apply bg-white shadow-sm border border-slate-100;
+  }
+
+  .light .btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white;
+  }
+
+  .light .btn-secondary {
+    @apply border border-amber-500 text-amber-600 hover:bg-amber-500 hover:text-white;
+  }
 }
 
 /* Add custom scrollbar */
@@ -129,15 +160,27 @@
   width: 10px;
 }
 
-::-webkit-scrollbar-track {
+.light ::-webkit-scrollbar-track {
+  @apply bg-slate-100;
+}
+
+.light ::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 rounded-full;
+}
+
+.light ::-webkit-scrollbar-thumb:hover {
+  @apply bg-amber-400;
+}
+
+.dark ::-webkit-scrollbar-track {
   @apply bg-mangla;
 }
 
-::-webkit-scrollbar-thumb {
+.dark ::-webkit-scrollbar-thumb {
   @apply bg-gray-700 rounded-full;
 }
 
-::-webkit-scrollbar-thumb:hover {
+.dark ::-webkit-scrollbar-thumb:hover {
   @apply bg-mangla-gold;
 }
 

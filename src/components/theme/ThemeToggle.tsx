@@ -26,7 +26,13 @@ const ThemeToggle: React.FC = () => {
       };
 
       toggle.addEventListener('mousemove', handleMouseMove);
-      return () => toggle.removeEventListener('mousemove', handleMouseMove);
+      toggle.addEventListener('mouseleave', () => {
+        toggle.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg)';
+      });
+      return () => {
+        toggle.removeEventListener('mousemove', handleMouseMove);
+        toggle.removeEventListener('mouseleave', () => {});
+      };
     }
   }, []);
 
@@ -45,18 +51,22 @@ const ThemeToggle: React.FC = () => {
     >
       <motion.div
         className={`w-14 h-7 rounded-full flex items-center p-1 relative ${
-          isDark ? 'bg-mangla-dark-gray' : 'bg-blue-100'
+          isDark 
+            ? 'bg-mangla-dark-gray' 
+            : 'bg-gradient-to-r from-blue-100 to-sky-100 border border-sky-200'
         }`}
         initial={false}
         animate={{ 
-          backgroundColor: isDark ? '#1A1A1A' : '#EBF4FF'
+          backgroundColor: isDark ? '#1A1A1A' : undefined
         }}
         transition={{ duration: 0.4 }}
       >
         {/* Toggle circle */}
         <motion.div
           className={`absolute w-5 h-5 rounded-full shadow-md z-10 flex items-center justify-center ${
-            isDark ? 'bg-mangla-gold' : 'bg-white border border-blue-200'
+            isDark 
+              ? 'bg-mangla-gold' 
+              : 'bg-gradient-to-br from-amber-400 to-amber-500 border border-amber-200'
           }`}
           initial={false}
           animate={{
@@ -72,7 +82,7 @@ const ThemeToggle: React.FC = () => {
           {isDark ? (
             <Moon className="w-3 h-3 text-mangla" />
           ) : (
-            <Sun className="w-3 h-3 text-yellow-500" />
+            <Sun className="w-3 h-3 text-white" />
           )}
         </motion.div>
 
@@ -82,7 +92,7 @@ const ThemeToggle: React.FC = () => {
           style={{ pointerEvents: 'none' }}
         >
           <Moon className={`w-4 h-4 ${isDark ? 'text-white' : 'text-gray-400'}`} />
-          <Sun className={`w-4 h-4 ${isDark ? 'text-gray-600' : 'text-yellow-400'}`} />
+          <Sun className={`w-4 h-4 ${isDark ? 'text-gray-600' : 'text-amber-400'}`} />
         </motion.div>
       </motion.div>
     </motion.div>

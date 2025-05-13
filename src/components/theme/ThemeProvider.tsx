@@ -22,10 +22,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const root = window.document.documentElement;
+    const body = window.document.body;
     
     // Remove the previous theme class and add the new one
     root.classList.remove('dark', 'light');
     root.classList.add(theme);
+    
+    // Also apply theme to body for additional styling options
+    body.classList.remove('dark', 'light');
+    body.classList.add(theme);
     
     // Save the theme to localStorage
     localStorage.setItem('theme', theme);

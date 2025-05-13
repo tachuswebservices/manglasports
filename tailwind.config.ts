@@ -60,6 +60,8 @@ export default {
 					blue: '#00A3DA', // Bright blue based on the reference image
 					'dark-gray': '#1A1A1A', // Secondary dark
 					'light-gray': '#A0A0A0', // Subtle gray text
+					'light-bg': '#f8fafc', // Light theme background
+					'light-accent': '#e0f2fe', // Light theme accent
 				}
 			},
 			borderRadius: {
@@ -113,6 +115,14 @@ export default {
 						opacity: '1',
 						transform: 'translateY(0)'
 					}
+				},
+				'theme-fade': {
+					'0%': {
+						opacity: '0.2',
+					},
+					'100%': {
+						opacity: '1',
+					}
 				}
 			},
 			animation: {
@@ -120,7 +130,8 @@ export default {
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.7s ease-out forwards',
 				'fade-up': 'fade-up 0.7s ease-out forwards',
-				'fade-down': 'fade-down 0.7s ease-out forwards'
+				'fade-down': 'fade-down 0.7s ease-out forwards',
+				'theme-fade': 'theme-fade 0.5s ease-out forwards'
 			},
 			fontFamily: {
 				'montserrat': ['Montserrat', 'sans-serif'],
