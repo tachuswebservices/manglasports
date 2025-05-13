@@ -34,8 +34,8 @@ const Navbar = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 w-full">
-      {/* Top bar with contact info */}
+    <header className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${isScrolled ? 'shadow-md' : ''}`}>
+      {/* Top navigation bar with contact and info links */}
       <div className="bg-mangla py-2 hidden md:block">
         <div className="container-custom flex justify-between items-center">
           <div className="flex items-center space-x-6">
@@ -55,56 +55,86 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Main navigation bar */}
-      <div className={`bg-mangla-blue transition-all duration-300 ${isScrolled ? 'py-2' : 'py-3'}`}>
+      {/* Main navigation with unique design */}
+      <div className={`bg-gradient-to-r from-mangla-blue to-mangla-blue/90 transition-all duration-300 ${isScrolled ? 'py-2' : 'py-4'}`}>
         <div className="container-custom flex items-center justify-between">
+          {/* Logo */}
           <Link to="/" className="flex items-center">
-            <span className="text-white font-montserrat font-bold text-2xl">MANGLA SPORTS</span>
+            <motion.span 
+              className="text-white font-montserrat font-bold text-2xl"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              MANGLA SPORTS
+            </motion.span>
           </Link>
 
-          {/* Desktop Categories */}
-          <div className="hidden md:flex items-center space-x-8">
-            <Link to="/products/air-rifles" className="text-white hover:text-mangla-gold transition-colors">
-              Air Rifles
-            </Link>
-            <Link to="/products/air-pistols" className="text-white hover:text-mangla-gold transition-colors">
-              Air Pistols
-            </Link>
-            <Link to="/products/pellets" className="text-white hover:text-mangla-gold transition-colors">
-              Pellets
-            </Link>
-            <Link to="/products/gloves" className="text-white hover:text-mangla-gold transition-colors">
-              Gloves
-            </Link>
-            <Link to="/products/shoes" className="text-white hover:text-mangla-gold transition-colors">
-              Shoes
-            </Link>
-            <Link to="/products/glasses" className="text-white hover:text-mangla-gold transition-colors">
-              Glasses
-            </Link>
-            
-            {/* Search Form - Always visible on desktop */}
-            <form onSubmit={handleSearch} className="relative flex items-center">
+          {/* Desktop Categories - Uniquely styled as a horizontal menu */}
+          <div className="hidden md:flex items-center space-x-1">
+            {/* Product Categories with unique hover effects */}
+            <div className="group relative">
+              <Link to="/products/air-rifles" className="text-white px-4 py-3 inline-block group-hover:text-mangla-gold transition-all duration-300 border-b-2 border-transparent hover:border-mangla-gold">
+                Air Rifles
+              </Link>
+            </div>
+            <div className="group relative">
+              <Link to="/products/air-pistols" className="text-white px-4 py-3 inline-block group-hover:text-mangla-gold transition-all duration-300 border-b-2 border-transparent hover:border-mangla-gold">
+                Air Pistols
+              </Link>
+            </div>
+            <div className="group relative">
+              <Link to="/products/pellets" className="text-white px-4 py-3 inline-block group-hover:text-mangla-gold transition-all duration-300 border-b-2 border-transparent hover:border-mangla-gold">
+                Pellets
+              </Link>
+            </div>
+            <div className="group relative">
+              <Link to="/products/gloves" className="text-white px-4 py-3 inline-block group-hover:text-mangla-gold transition-all duration-300 border-b-2 border-transparent hover:border-mangla-gold">
+                Gloves
+              </Link>
+            </div>
+            <div className="group relative">
+              <Link to="/products/shoes" className="text-white px-4 py-3 inline-block group-hover:text-mangla-gold transition-all duration-300 border-b-2 border-transparent hover:border-mangla-gold">
+                Shoes
+              </Link>
+            </div>
+            <div className="group relative">
+              <Link to="/products/glasses" className="text-white px-4 py-3 inline-block group-hover:text-mangla-gold transition-all duration-300 border-b-2 border-transparent hover:border-mangla-gold">
+                Glasses
+              </Link>
+            </div>
+          </div>
+          
+          {/* Search and Theme Toggle */}
+          <div className="hidden md:flex items-center space-x-4">
+            {/* Search Form */}
+            <motion.form 
+              onSubmit={handleSearch} 
+              className="relative flex items-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+            >
               <Input
                 type="text"
                 placeholder="Search Products"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-white text-mangla rounded-l-md border-0 focus:ring-0 w-[180px] py-1"
+                className="bg-white/10 text-white placeholder:text-white/70 rounded-l-md border-0 focus:ring-1 focus:ring-mangla-gold w-[180px] py-1"
               />
               <button 
                 type="submit"
-                className="bg-mangla text-white p-1.5 rounded-r-md hover:bg-mangla-gold transition-colors"
+                className="bg-mangla-gold text-white p-1.5 rounded-r-md hover:bg-yellow-500 transition-colors"
                 aria-label="Search"
               >
                 <Search className="w-4 h-4" />
               </button>
-            </form>
+            </motion.form>
             
             <ThemeToggle />
           </div>
 
-          {/* Mobile Nav */}
+          {/* Mobile Nav Controls */}
           <div className="md:hidden flex items-center space-x-4">
             <motion.button
               aria-label="Search"
@@ -139,7 +169,7 @@ const Navbar = () => {
       <AnimatePresence>
         {isSearchOpen && (
           <motion.div 
-            className="md:hidden absolute top-full left-0 right-0 bg-mangla-blue border-t border-gray-700 shadow-lg"
+            className="md:hidden absolute top-full left-0 right-0 bg-mangla-blue/95 backdrop-blur-sm border-t border-gray-700 shadow-lg"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
@@ -152,12 +182,12 @@ const Navbar = () => {
                   placeholder="Search for products..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="flex-grow bg-white border-0 focus:border-0"
+                  className="flex-grow bg-white/10 border-0 focus:border-0 text-white placeholder:text-white/70"
                   autoFocus
                 />
                 <motion.button 
                   type="submit"
-                  className="bg-mangla text-white p-2 rounded-md hover:bg-mangla-gold transition-colors"
+                  className="bg-mangla-gold text-white p-2 rounded-md hover:bg-yellow-500 transition-colors"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -169,26 +199,38 @@ const Navbar = () => {
         )}
       </AnimatePresence>
 
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden bg-mangla absolute top-full left-0 right-0 border-t border-gray-800 animate-fade-down z-50">
-          <div className="container-custom py-4 flex flex-col space-y-3">
-            <Link to="/blog" className="text-mangla-foreground hover:text-mangla-gold transition-colors py-1">BLOG</Link>
-            <Link to="/contact" className="text-mangla-foreground hover:text-mangla-gold transition-colors py-1">CONTACT</Link>
-            <Link to="/explore" className="text-mangla-foreground hover:text-mangla-gold transition-colors py-1">EXPLORE</Link>
-            <Link to="/about" className="text-mangla-foreground hover:text-mangla-gold transition-colors py-1">ABOUT</Link>
-            
-            <div className="h-px bg-gray-700 my-2"></div>
-            
-            <Link to="/products/air-rifles" className="text-mangla-foreground hover:text-mangla-gold transition-colors py-1">Air Rifles</Link>
-            <Link to="/products/air-pistols" className="text-mangla-foreground hover:text-mangla-gold transition-colors py-1">Air Pistols</Link>
-            <Link to="/products/pellets" className="text-mangla-foreground hover:text-mangla-gold transition-colors py-1">Pellets</Link>
-            <Link to="/products/gloves" className="text-mangla-foreground hover:text-mangla-gold transition-colors py-1">Gloves</Link>
-            <Link to="/products/shoes" className="text-mangla-foreground hover:text-mangla-gold transition-colors py-1">Shoes</Link>
-            <Link to="/products/glasses" className="text-mangla-foreground hover:text-mangla-gold transition-colors py-1">Glasses</Link>
-          </div>
-        </div>
-      )}
+      {/* Mobile Menu - Redesigned with animations */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div 
+            className="md:hidden bg-mangla-blue/95 backdrop-blur-md absolute top-full left-0 right-0 border-t border-gray-700 shadow-lg z-50"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="container-custom py-4">
+              <div className="grid grid-cols-2 gap-3">
+                <Link to="/blog" className="bg-mangla-dark/20 rounded-md px-3 py-2 text-white hover:bg-mangla-gold/20 transition-colors">BLOG</Link>
+                <Link to="/contact" className="bg-mangla-dark/20 rounded-md px-3 py-2 text-white hover:bg-mangla-gold/20 transition-colors">CONTACT</Link>
+                <Link to="/explore" className="bg-mangla-dark/20 rounded-md px-3 py-2 text-white hover:bg-mangla-gold/20 transition-colors">EXPLORE</Link>
+                <Link to="/about" className="bg-mangla-dark/20 rounded-md px-3 py-2 text-white hover:bg-mangla-gold/20 transition-colors">ABOUT</Link>
+              </div>
+              
+              <div className="h-px bg-gray-700 my-3"></div>
+              
+              <div className="grid grid-cols-2 gap-3">
+                <Link to="/products/air-rifles" className="bg-mangla-dark/20 rounded-md px-3 py-2 text-white hover:bg-mangla-gold/20 transition-colors">Air Rifles</Link>
+                <Link to="/products/air-pistols" className="bg-mangla-dark/20 rounded-md px-3 py-2 text-white hover:bg-mangla-gold/20 transition-colors">Air Pistols</Link>
+                <Link to="/products/pellets" className="bg-mangla-dark/20 rounded-md px-3 py-2 text-white hover:bg-mangla-gold/20 transition-colors">Pellets</Link>
+                <Link to="/products/gloves" className="bg-mangla-dark/20 rounded-md px-3 py-2 text-white hover:bg-mangla-gold/20 transition-colors">Gloves</Link>
+                <Link to="/products/shoes" className="bg-mangla-dark/20 rounded-md px-3 py-2 text-white hover:bg-mangla-gold/20 transition-colors">Shoes</Link>
+                <Link to="/products/glasses" className="bg-mangla-dark/20 rounded-md px-3 py-2 text-white hover:bg-mangla-gold/20 transition-colors">Glasses</Link>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };
