@@ -144,7 +144,7 @@ const BestSellers = () => {
           transition={{ duration: 0.6 }}
         >
           <div>
-            <h2 className={`section-title ${isDark ? 'text-white' : 'text-slate-900'}`}>Featured Collections</h2>
+            <h2 className={`section-title ${isDark ? 'text-white' : 'text-slate-900'}`}>Best Sellers</h2>
             <motion.div 
               className="w-20 h-1 bg-mangla-gold mt-2 mb-4"
               initial={{ width: 0, opacity: 0 }}
@@ -152,7 +152,7 @@ const BestSellers = () => {
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             ></motion.div>
-            <p className={`${isDark ? 'text-gray-400' : 'text-slate-600'}`}>Premium shooting equipment for professional athletes</p>
+            <p className={`${isDark ? 'text-gray-400' : 'text-slate-600'}`}>Our most popular premium shooting equipment</p>
           </div>
           <motion.button 
             className={`hidden md:block ${isDark ? 'text-mangla-gold hover:text-white border border-mangla-gold hover:border-white' : 'text-blue-600 hover:text-white border border-blue-600 hover:border-white hover:bg-blue-600'} px-6 py-2 rounded-md transition-colors`}
