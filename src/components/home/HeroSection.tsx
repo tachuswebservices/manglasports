@@ -30,25 +30,25 @@ const HeroSection = () => {
           <img 
             src="/lovable-uploads/043df67b-a8e3-4d7b-a886-d29c545973ab.png"
             alt="Mangla Sports" 
-            className="w-full h-full object-cover object-top"
+            className="w-full h-full object-cover object-center md:object-top"
           />
         </div>
         
         {/* Content container repositioned to match the green box area */}
         <div className="relative h-full flex items-center justify-end">
           <div className="container mx-auto px-4 flex justify-end">
-            {/* Modified for better positioning - moved down from the top on normal screens */}
+            {/* Modified for better positioning across screen sizes */}
             <div className={`${
               isMobile 
-                ? 'absolute bottom-24 right-4 max-w-[280px]' 
-                : 'max-w-[40%] xl:max-w-[35%] mt-64'
+                ? 'absolute bottom-24 right-4 max-w-[280px] opacity-90' 
+                : 'max-w-[40%] xl:max-w-[35%] mt-64 transform-none'
               } py-6 md:py-8`}>
               <motion.div
                 className={cn(
                   "p-4 md:p-5 backdrop-blur-md rounded-lg border shadow-lg",
                   isDark 
-                    ? "bg-black/15 border-mangla-gold/10 shadow-black/20" 
-                    : "bg-white/10 border-amber-500/10 shadow-black/10"
+                    ? "bg-black/10 border-mangla-gold/10 shadow-black/20" 
+                    : "bg-white/5 border-amber-500/10 shadow-black/10"
                 )}
                 initial={{ x: 50, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
