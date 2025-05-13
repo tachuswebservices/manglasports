@@ -57,7 +57,7 @@ export default {
 					DEFAULT: '#121212', // Deep charcoal
 					foreground: '#F0F0F0', // Off-white text
 					gold: '#D4AF37', // Gold accent
-					blue: '#1E40AF', // Royal blue accent
+					blue: '#00A3DA', // Bright blue based on the reference image
 					'dark-gray': '#1A1A1A', // Secondary dark
 					'light-gray': '#A0A0A0', // Subtle gray text
 				}
