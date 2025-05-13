@@ -17,7 +17,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     // Check if the user has set a preference in their OS
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
-    return savedTheme || (prefersDark ? 'dark' : 'light');
+    // Default to dark mode if no preference is set
+    return savedTheme || (prefersDark ? 'dark' : 'dark'); // Changed default to 'dark'
   });
 
   useEffect(() => {
