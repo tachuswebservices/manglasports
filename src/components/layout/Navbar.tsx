@@ -1,10 +1,19 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Search } from 'lucide-react';
+import { Search, Crosshair } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import ThemeToggle from '../theme/ThemeToggle';
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+import { cn } from '@/lib/utils';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -46,9 +55,40 @@ const Navbar = () => {
 
         <nav className="hidden md:flex items-center space-x-8">
           <Link to="/" className="text-mangla-foreground hover:text-mangla-gold transition-colors">Home</Link>
-          <Link to="#" className="text-mangla-foreground hover:text-mangla-gold transition-colors">Products</Link>
+          
+          <NavigationMenu>
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="bg-transparent hover:bg-transparent hover:text-mangla-gold focus:bg-transparent">Products</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                    {[
+                      { title: "Air Rifles", icon: <Crosshair className="w-4 h-4 mr-2" /> },
+                      { title: "Air Pistols", icon: <Crosshair className="w-4 h-4 mr-2" /> },
+                      { title: "Pellets", icon: <Crosshair className="w-4 h-4 mr-2" /> },
+                      { title: "Gloves", icon: <Crosshair className="w-4 h-4 mr-2" /> },
+                      { title: "Shoes", icon: <Crosshair className="w-4 h-4 mr-2" /> },
+                      { title: "Glasses", icon: <Crosshair className="w-4 h-4 mr-2" /> },
+                    ].map((item) => (
+                      <li key={item.title}>
+                        <NavigationMenuLink asChild>
+                          <a
+                            href="#"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground flex items-center"
+                          >
+                            {item.icon}
+                            <div className="text-sm font-medium leading-none">{item.title}</div>
+                          </a>
+                        </NavigationMenuLink>
+                      </li>
+                    ))}
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+          
           <Link to="#" className="text-mangla-foreground hover:text-mangla-gold transition-colors">About Us</Link>
-          <Link to="#" className="text-mangla-foreground hover:text-mangla-gold transition-colors">News</Link>
           <Link to="#" className="text-mangla-foreground hover:text-mangla-gold transition-colors">Contact</Link>
           
           <motion.button
@@ -141,9 +181,19 @@ const Navbar = () => {
         <div className="md:hidden bg-mangla-dark-gray absolute top-full left-0 right-0 border-t border-gray-800 animate-fade-down">
           <div className="container-custom py-4 flex flex-col space-y-4">
             <Link to="/" className="text-mangla-foreground hover:text-mangla-gold transition-colors py-2">Home</Link>
-            <Link to="#" className="text-mangla-foreground hover:text-mangla-gold transition-colors py-2">Products</Link>
+            
+            {/* Mobile Product Categories */}
+            <div className="flex flex-col space-y-2 pl-4">
+              <div className="font-medium text-mangla-gold py-1">Products:</div>
+              <Link to="#" className="text-mangla-foreground hover:text-mangla-gold transition-colors py-1">Air Rifles</Link>
+              <Link to="#" className="text-mangla-foreground hover:text-mangla-gold transition-colors py-1">Air Pistols</Link>
+              <Link to="#" className="text-mangla-foreground hover:text-mangla-gold transition-colors py-1">Pellets</Link>
+              <Link to="#" className="text-mangla-foreground hover:text-mangla-gold transition-colors py-1">Gloves</Link>
+              <Link to="#" className="text-mangla-foreground hover:text-mangla-gold transition-colors py-1">Shoes</Link>
+              <Link to="#" className="text-mangla-foreground hover:text-mangla-gold transition-colors py-1">Glasses</Link>
+            </div>
+            
             <Link to="#" className="text-mangla-foreground hover:text-mangla-gold transition-colors py-2">About Us</Link>
-            <Link to="#" className="text-mangla-foreground hover:text-mangla-gold transition-colors py-2">News</Link>
             <Link to="#" className="text-mangla-foreground hover:text-mangla-gold transition-colors py-2">Contact</Link>
           </div>
         </div>

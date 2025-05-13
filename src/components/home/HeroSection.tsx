@@ -52,7 +52,7 @@ const HeroSection = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.5 }}
           >
-            India's premier destination for elite shooting sports equipment, expertise and guidance.
+            India's premier destination for shooting sports equipment, expertise and guidance.
           </motion.p>
           
           <motion.div 
@@ -67,7 +67,7 @@ const HeroSection = () => {
               whileTap={{ scale: 0.98 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
-              Explore Our Elite Collection
+              Explore Our Collection
             </motion.button>
             <motion.button 
               className="btn-secondary text-base md:text-lg"

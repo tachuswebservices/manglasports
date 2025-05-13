@@ -12,7 +12,7 @@ const categories: CategoryProps[] = [
   {
     title: "Precision Rifles",
     icon: "https://images.unsplash.com/photo-1584178668396-37ae4e4bbb2b?q=80&w=1000&auto=format&fit=crop",
-    description: "Elite selection of competition-grade precision rifles for target shooting and sport."
+    description: "Competition-grade precision rifles for target shooting and sport."
   },
   {
     title: "Performance Handguns",
