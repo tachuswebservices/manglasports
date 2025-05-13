@@ -39,10 +39,8 @@ const Navbar = () => {
       <div className="bg-mangla py-2 hidden md:block">
         <div className="container-custom flex justify-between items-center">
           <div className="flex items-center space-x-6">
-            <Link to="/blog" className="text-mangla-foreground hover:text-mangla-gold transition-colors text-sm">BLOG</Link>
-            <Link to="/contact" className="text-mangla-foreground hover:text-mangla-gold transition-colors text-sm">CONTACT</Link>
-            <Link to="/explore" className="text-mangla-foreground hover:text-mangla-gold transition-colors text-sm">EXPLORE</Link>
             <Link to="/about" className="text-mangla-foreground hover:text-mangla-gold transition-colors text-sm">ABOUT</Link>
+            <Link to="/contact" className="text-mangla-foreground hover:text-mangla-gold transition-colors text-sm">CONTACT</Link>
           </div>
           <div className="flex items-center space-x-6 text-sm">
             <a href="mailto:info@manglasports.com" className="text-mangla-foreground hover:text-mangla-gold flex items-center gap-2">
@@ -56,7 +54,7 @@ const Navbar = () => {
       </div>
 
       {/* Main navigation with unique design */}
-      <div className={`bg-gradient-to-r from-mangla-blue to-mangla-blue/90 transition-all duration-300 ${isScrolled ? 'py-2' : 'py-4'}`}>
+      <div className={`bg-gradient-to-r from-mangla-blue via-blue-700 to-blue-600 transition-all duration-300 ${isScrolled ? 'py-2' : 'py-4'}`}>
         <div className="container-custom flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center">
@@ -107,29 +105,49 @@ const Navbar = () => {
           
           {/* Search and Theme Toggle */}
           <div className="hidden md:flex items-center space-x-4">
-            {/* Search Form */}
-            <motion.form 
-              onSubmit={handleSearch} 
-              className="relative flex items-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-            >
-              <Input
-                type="text"
-                placeholder="Search Products"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-white/10 text-white placeholder:text-white/70 rounded-l-md border-0 focus:ring-1 focus:ring-mangla-gold w-[180px] py-1"
-              />
-              <button 
-                type="submit"
-                className="bg-mangla-gold text-white p-1.5 rounded-r-md hover:bg-yellow-500 transition-colors"
+            {/* Search Icon that reveals search form on click */}
+            <div className="relative">
+              <motion.button
                 aria-label="Search"
+                onClick={() => setIsSearchOpen(!isSearchOpen)}
+                className="text-white hover:text-mangla-gold transition-colors focus:outline-none p-2 rounded-full hover:bg-white/10"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <Search className="w-4 h-4" />
-              </button>
-            </motion.form>
+                <Search className="w-5 h-5" />
+              </motion.button>
+              
+              {/* Desktop Search Overlay */}
+              <AnimatePresence>
+                {isSearchOpen && (
+                  <motion.div 
+                    className="absolute right-0 top-full mt-2 w-64 bg-white shadow-lg rounded-md overflow-hidden z-50"
+                    initial={{ opacity: 0, y: -10, width: 0 }}
+                    animate={{ opacity: 1, y: 0, width: "16rem" }}
+                    exit={{ opacity: 0, y: -10, width: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <form onSubmit={handleSearch} className="flex items-center">
+                      <Input
+                        type="text"
+                        placeholder="Search Products..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full border-0 focus:ring-0"
+                        autoFocus
+                      />
+                      <button 
+                        type="submit"
+                        className="bg-mangla-gold text-white p-2 hover:bg-yellow-500 transition-colors"
+                        aria-label="Search"
+                      >
+                        <Search className="w-4 h-4" />
+                      </button>
+                    </form>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
             
             <ThemeToggle />
           </div>
@@ -211,10 +229,8 @@ const Navbar = () => {
           >
             <div className="container-custom py-4">
               <div className="grid grid-cols-2 gap-3">
-                <Link to="/blog" className="bg-mangla-dark/20 rounded-md px-3 py-2 text-white hover:bg-mangla-gold/20 transition-colors">BLOG</Link>
-                <Link to="/contact" className="bg-mangla-dark/20 rounded-md px-3 py-2 text-white hover:bg-mangla-gold/20 transition-colors">CONTACT</Link>
-                <Link to="/explore" className="bg-mangla-dark/20 rounded-md px-3 py-2 text-white hover:bg-mangla-gold/20 transition-colors">EXPLORE</Link>
                 <Link to="/about" className="bg-mangla-dark/20 rounded-md px-3 py-2 text-white hover:bg-mangla-gold/20 transition-colors">ABOUT</Link>
+                <Link to="/contact" className="bg-mangla-dark/20 rounded-md px-3 py-2 text-white hover:bg-mangla-gold/20 transition-colors">CONTACT</Link>
               </div>
               
               <div className="h-px bg-gray-700 my-3"></div>
@@ -236,3 +252,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
