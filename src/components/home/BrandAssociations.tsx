@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useTheme } from '../theme/ThemeProvider';
 
 // Real sporting brands logos
 const logos = [
@@ -29,11 +30,14 @@ const item = {
 };
 
 const BrandAssociations = () => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
   return (
-    <section className="py-10 bg-mangla-dark-gray">
+    <section className={`py-10 ${isDark ? 'bg-mangla-dark-gray' : 'bg-slate-100'}`}>
       <div className="container-custom">
         <motion.h2 
-          className="text-2xl md:text-3xl font-bold mb-6 text-center"
+          className={`text-2xl md:text-3xl font-bold mb-6 text-center ${isDark ? 'text-white' : 'text-slate-800'}`}
           initial={{ y: 30, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           viewport={{ once: true, amount: 0.3 }}
@@ -53,7 +57,7 @@ const BrandAssociations = () => {
             <motion.div 
               key={index}
               variants={item}
-              className="flex items-center justify-center bg-white bg-opacity-10 rounded-lg p-4 grayscale hover:grayscale-0 opacity-70 hover:opacity-100 transition-all duration-300"
+              className={`flex items-center justify-center ${isDark ? 'bg-white bg-opacity-10' : 'bg-white shadow-sm'} rounded-lg p-4 grayscale hover:grayscale-0 ${isDark ? 'opacity-70' : 'opacity-90'} hover:opacity-100 transition-all duration-300`}
               whileHover={{ 
                 scale: 1.05, 
                 transition: { duration: 0.3 } 
