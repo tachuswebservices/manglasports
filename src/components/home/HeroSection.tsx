@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../theme/ThemeProvider';
 import { cn } from '@/lib/utils';
@@ -12,6 +12,21 @@ const HeroSection = () => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const isMobile = useIsMobile();
+  const [imageLoaded, setImageLoaded] = useState(false);
+  
+  // Preload hero image when component mounts
+  useEffect(() => {
+    const img = new Image();
+    img.src = "/lovable-uploads/043df67b-a8e3-4d7b-a886-d29c545973ab.png";
+    img.onload = () => setImageLoaded(true);
+    
+    // Fallback in case image takes too long
+    const timer = setTimeout(() => {
+      if (!imageLoaded) setImageLoaded(true);
+    }, 2000);
+    
+    return () => clearTimeout(timer);
+  }, []);
   
   // Function to handle scroll indicator animation
   const scrollToNextSection = () => {
@@ -23,14 +38,22 @@ const HeroSection = () => {
   
   return (
     <section className="relative min-h-screen overflow-hidden pt-16">
+      {/* Loading state */}
+      {!imageLoaded && (
+        <div className="absolute inset-0 bg-mangla flex items-center justify-center">
+          <div className="w-12 h-12 border-4 border-mangla-gold border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      )}
+      
       {/* Main hero container */}
-      <div className="relative min-h-[calc(100vh-64px)] w-full">
+      <div className={`relative min-h-[calc(100vh-64px)] w-full ${!imageLoaded ? 'opacity-0' : 'opacity-100 transition-opacity duration-500'}`}>
         {/* Background image that covers the entire section with adjusted positioning to show shooter's head */}
         <div className="absolute inset-0 w-full h-full">
           <img 
             src="/lovable-uploads/043df67b-a8e3-4d7b-a886-d29c545973ab.png"
             alt="Mangla Sports" 
             className="w-full h-full object-cover object-center md:object-top"
+            fetchpriority="high"
           />
         </div>
         
