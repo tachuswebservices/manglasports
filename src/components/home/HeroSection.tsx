@@ -45,17 +45,17 @@ const HeroSection = () => {
               } py-6 md:py-8`}>
               <motion.div
                 className={cn(
-                  "p-4 md:p-5 backdrop-blur-xl rounded-lg border",
+                  "p-4 md:p-5 backdrop-blur-md rounded-lg border shadow-lg",
                   isDark 
-                    ? "bg-mangla-dark-gray/20 border-mangla-gold/20" 
-                    : "bg-mangla-light-bg/20 border-amber-500/20"
+                    ? "bg-black/15 border-mangla-gold/10 shadow-black/20" 
+                    : "bg-white/10 border-amber-500/10 shadow-black/10"
                 )}
                 initial={{ x: 50, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.8 }}
               >
                 <motion.h1 
-                  className={`text-xl md:text-2xl lg:text-3xl font-bold mb-2 leading-tight ${isDark ? 'text-white' : 'text-slate-800'}`}
+                  className={`text-xl md:text-2xl lg:text-3xl font-bold mb-2 leading-tight ${isDark ? 'text-white/95' : 'text-slate-800/95'}`}
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.8, delay: 0.2 }}
@@ -65,7 +65,7 @@ const HeroSection = () => {
                 </motion.h1>
                 
                 <motion.p 
-                  className={`text-xs md:text-sm mb-3 ${isDark ? 'text-gray-200' : 'text-slate-700'}`}
+                  className={`text-xs md:text-sm mb-3 ${isDark ? 'text-gray-200/90' : 'text-slate-700/90'}`}
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.8, delay: 0.5 }}
@@ -95,7 +95,7 @@ const HeroSection = () => {
                 </motion.div>
                 
                 <motion.p 
-                  className={`mt-2 ${isDark ? 'text-mangla-gold' : 'text-amber-500'} italic text-xs`}
+                  className={`mt-2 ${isDark ? 'text-mangla-gold/90' : 'text-amber-500/90'} italic text-xs`}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.8, delay: 1 }}
