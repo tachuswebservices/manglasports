@@ -37,13 +37,14 @@ const HeroSection = () => {
         {/* Content container positioned at far right to maximize image visibility */}
         <div className="relative h-full flex items-center">
           <div className="container mx-auto px-4 flex justify-end">
-            <div className={`${isMobile ? 'max-w-full pr-0' : 'max-w-[45%] lg:max-w-[40%] xl:max-w-[35%] pr-0'} py-12 md:py-16`}>
+            {/* Improved responsive behavior to prevent overlap on small screens */}
+            <div className={`${isMobile ? 'mt-auto mb-16 max-w-full' : 'max-w-[45%] lg:max-w-[40%] xl:max-w-[35%]'} py-12 md:py-16`}>
               <motion.div
                 className={cn(
                   "p-6 md:p-8 backdrop-blur-sm rounded-lg border",
                   isDark 
-                    ? "bg-mangla-dark-gray/60 border-mangla-gold/30" 
-                    : "bg-mangla-light-bg/60 border-amber-500/30"
+                    ? "bg-mangla-dark-gray/50 border-mangla-gold/30" 
+                    : "bg-mangla-light-bg/50 border-amber-500/30"
                 )}
                 initial={{ x: 50, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
