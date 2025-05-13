@@ -34,10 +34,10 @@ const HeroSection = () => {
           />
         </div>
         
-        {/* Content container - moved to the right side */}
+        {/* Content container positioned further right to show more of the shooter */}
         <div className="relative h-full flex items-center justify-end">
           <div className="container mx-auto px-4 flex justify-end">
-            <div className={`${isMobile ? 'max-w-full' : 'max-w-[60%] lg:max-w-[55%] xl:max-w-[50%]'} py-12 md:py-16 ml-auto`}>
+            <div className={`${isMobile ? 'max-w-full' : 'max-w-[50%] lg:max-w-[45%] xl:max-w-[40%]'} py-12 md:py-16 ml-auto`}>
               <motion.div
                 className={cn(
                   "p-8 md:p-12",
@@ -81,14 +81,6 @@ const HeroSection = () => {
                     transition={{ type: "spring", stiffness: 400, damping: 17 }}
                   >
                     Explore Our Collection
-                  </motion.button>
-                  <motion.button 
-                    className={`btn-secondary text-base md:text-lg ${!isDark && 'border-amber-500 text-amber-600 hover:bg-amber-500 hover:text-white'}`}
-                    whileHover={{ scale: 1.05, borderColor: isDark ? "#F2C250" : "#f59e0b" }}
-                    whileTap={{ scale: 0.98 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                  >
-                    Learn About Our Legacy
                   </motion.button>
                 </motion.div>
                 
