@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import ThemeToggle from '../theme/ThemeToggle';
 import { useTheme } from '../theme/ThemeProvider';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Navbar = () => {
   const { theme } = useTheme();
@@ -14,6 +15,7 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -45,6 +47,29 @@ const Navbar = () => {
             <Link to="/about" className="text-mangla-foreground hover:text-mangla-gold transition-colors text-sm">ABOUT</Link>
             <Link to="/contact" className="text-mangla-foreground hover:text-mangla-gold transition-colors text-sm">CONTACT</Link>
           </div>
+          
+          {/* Desktop Search Bar - Moved to the top bar */}
+          {!isMobile && (
+            <div className="relative max-w-md w-full">
+              <form onSubmit={handleSearch} className="flex items-center">
+                <Input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full h-8 bg-mangla-dark-gray/70 border-0 rounded-l-md text-sm text-white placeholder:text-white/60"
+                />
+                <button 
+                  type="submit"
+                  className="bg-mangla-gold h-8 text-white px-3 rounded-r-md hover:bg-yellow-500 transition-colors flex items-center justify-center"
+                  aria-label="Search"
+                >
+                  <Search className="w-4 h-4" />
+                </button>
+              </form>
+            </div>
+          )}
+          
           <div className="flex items-center space-x-6 text-sm">
             <a href="mailto:info@manglasports.com" className="text-mangla-foreground hover:text-mangla-gold flex items-center gap-2">
               <span>info@manglasports.com</span>
@@ -61,14 +86,15 @@ const Navbar = () => {
         <div className="container-custom flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <motion.span 
-              className="text-white font-montserrat font-bold text-2xl"
+            <motion.div
+              className="flex flex-col"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              MANGLA SPORTS
-            </motion.span>
+              <span className="text-white font-montserrat font-bold text-2xl">MANGLA SPORTS</span>
+              <span className="text-white/80 text-xs tracking-wider mt-0.5">Precision. Performance. Passion.</span>
+            </motion.div>
           </Link>
 
           {/* Desktop Categories - Uniquely styled as a horizontal menu */}
@@ -108,49 +134,51 @@ const Navbar = () => {
           
           {/* Search and Theme Toggle */}
           <div className="hidden md:flex items-center space-x-4">
-            {/* Search Icon that reveals search form on click */}
-            <div className="relative">
-              <motion.button
-                aria-label="Search"
-                onClick={() => setIsSearchOpen(!isSearchOpen)}
-                className="text-white hover:text-mangla-gold transition-colors focus:outline-none p-2 rounded-full hover:bg-white/10"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Search className="w-5 h-5" />
-              </motion.button>
-              
-              {/* Desktop Search Overlay */}
-              <AnimatePresence>
-                {isSearchOpen && (
-                  <motion.div 
-                    className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-mangla-dark-gray shadow-xl rounded-lg overflow-hidden z-50"
-                    initial={{ opacity: 0, y: -10, width: 0 }}
-                    animate={{ opacity: 1, y: 0, width: "20rem" }}
-                    exit={{ opacity: 0, y: -10, width: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <form onSubmit={handleSearch} className="flex items-center">
-                      <Input
-                        type="text"
-                        placeholder="Search Products..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full border-0 focus:ring-0 rounded-none py-3 px-4 dark:bg-mangla-dark-gray dark:text-white"
-                        autoFocus
-                      />
-                      <button 
-                        type="submit"
-                        className="bg-mangla-gold text-white p-3 hover:bg-yellow-500 transition-colors"
-                        aria-label="Search"
-                      >
-                        <Search className="w-5 h-5" />
-                      </button>
-                    </form>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+            {/* Search Icon only visible on mobile now */}
+            {isMobile && (
+              <div className="relative">
+                <motion.button
+                  aria-label="Search"
+                  onClick={() => setIsSearchOpen(!isSearchOpen)}
+                  className="text-white hover:text-mangla-gold transition-colors focus:outline-none p-2 rounded-full hover:bg-white/10"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Search className="w-5 h-5" />
+                </motion.button>
+                
+                {/* Desktop Search Overlay */}
+                <AnimatePresence>
+                  {isSearchOpen && (
+                    <motion.div 
+                      className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-mangla-dark-gray shadow-xl rounded-lg overflow-hidden z-50"
+                      initial={{ opacity: 0, y: -10, width: 0 }}
+                      animate={{ opacity: 1, y: 0, width: "20rem" }}
+                      exit={{ opacity: 0, y: -10, width: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <form onSubmit={handleSearch} className="flex items-center">
+                        <Input
+                          type="text"
+                          placeholder="Search Products..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className="w-full border-0 focus:ring-0 rounded-none py-3 px-4 dark:bg-mangla-dark-gray dark:text-white"
+                          autoFocus
+                        />
+                        <button 
+                          type="submit"
+                          className="bg-mangla-gold text-white p-3 hover:bg-yellow-500 transition-colors"
+                          aria-label="Search"
+                        >
+                          <Search className="w-5 h-5" />
+                        </button>
+                      </form>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
             
             <ThemeToggle />
           </div>
@@ -188,7 +216,7 @@ const Navbar = () => {
 
       {/* Mobile Search Overlay */}
       <AnimatePresence>
-        {isSearchOpen && (
+        {isSearchOpen && isMobile && (
           <motion.div 
             className="md:hidden absolute top-full left-0 right-0 bg-mangla-blue/95 backdrop-blur-sm border-t border-gray-700 shadow-lg"
             initial={{ opacity: 0, y: -20 }}
