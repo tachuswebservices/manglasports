@@ -35,13 +35,13 @@ const HeroSection = () => {
         </div>
         
         {/* Content container repositioned to match the green box area */}
-        <div className="relative h-full flex items-center">
+        <div className="relative h-full flex items-center justify-end">
           <div className="container mx-auto px-4 flex justify-end">
-            {/* Modified for better positioning on mobile - positioned in the green box area */}
+            {/* Modified for better positioning - moved down from the top on normal screens */}
             <div className={`${
               isMobile 
                 ? 'absolute bottom-24 right-4 max-w-[280px]' 
-                : 'max-w-[40%] xl:max-w-[35%]'
+                : 'max-w-[40%] xl:max-w-[35%] mt-32'
               } py-6 md:py-8`}>
               <motion.div
                 className={cn(
