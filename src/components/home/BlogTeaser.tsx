@@ -1,5 +1,7 @@
 
 import React, { useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { AnimatedHeading, AnimatedDivider, AnimatedText } from '../animation/TextAnimations';
 
 interface BlogPostProps {
   title: string;
@@ -28,7 +30,18 @@ const blogPosts: BlogPostProps[] = [
 
 const BlogPostCard: React.FC<BlogPostProps> = ({ title, excerpt, image, date, author }) => {
   return (
-    <div className="reveal-animation bg-mangla-dark-gray rounded-lg overflow-hidden border border-gray-800 group">
+    <motion.div 
+      className="bg-mangla-dark-gray rounded-lg overflow-hidden border border-gray-800 group"
+      initial={{ y: 20, opacity: 0 }}
+      whileInView={{ y: 0, opacity: 1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5 }}
+      whileHover={{ 
+        y: -5,
+        boxShadow: "0 10px 30px -15px rgba(212, 175, 55, 0.25)",
+        borderColor: "#D4AF37"
+      }}
+    >
       <div className="h-48 overflow-hidden">
         <img 
           src={image} 
@@ -43,9 +56,10 @@ const BlogPostCard: React.FC<BlogPostProps> = ({ title, excerpt, image, date, au
         </div>
         <h3 className="text-xl font-bold mb-3 text-white group-hover:text-mangla-gold transition-colors">{title}</h3>
         <p className="text-gray-400 mb-4">{excerpt}</p>
-        <a 
+        <motion.a 
           href="#" 
           className="text-mangla-gold flex items-center font-medium group-hover:translate-x-2 transition-transform"
+          whileHover={{ x: 5 }}
         >
           Read More
           <svg 
@@ -62,39 +76,25 @@ const BlogPostCard: React.FC<BlogPostProps> = ({ title, excerpt, image, date, au
               d="M14 5l7 7m0 0l-7 7m7-7H3" 
             />
           </svg>
-        </a>
+        </motion.a>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
 const BlogTeaser = () => {
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-fade-up');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
-
-    const elements = document.querySelectorAll('.reveal-animation');
-    elements.forEach((el) => observer.observe(el));
-
-    return () => {
-      elements.forEach((el) => observer.unobserve(el));
-    };
-  }, []);
-
   return (
     <section className="section-padding bg-gradient-to-b from-mangla to-mangla-dark-gray">
       <div className="container-custom">
-        <h2 className="section-title text-center reveal-animation">Insights from the Range</h2>
-        <div className="w-20 h-1 bg-mangla-gold mx-auto mb-8 reveal-animation"></div>
-        <p className="section-subtitle text-center reveal-animation">
+        <AnimatedHeading type="section-title" className="text-center">
+          Insights from the Range
+        </AnimatedHeading>
+        
+        <AnimatedDivider />
+        
+        <AnimatedText className="section-subtitle text-center" delay={0.4}>
           Stay informed with the latest news, expert advice, and insights from the world of shooting sports.
-        </p>
+        </AnimatedText>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
           {blogPosts.map((post, index) => (
@@ -109,11 +109,21 @@ const BlogTeaser = () => {
           ))}
         </div>
         
-        <div className="text-center mt-12 reveal-animation">
-          <button className="btn-secondary">
+        <motion.div 
+          className="text-center mt-12"
+          initial={{ y: 20, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+        >
+          <motion.button 
+            className="btn-secondary"
+            whileHover={{ scale: 1.05, backgroundColor: "rgba(212, 175, 55, 0.1)" }}
+            whileTap={{ scale: 0.98 }}
+          >
             View All Articles
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       </div>
     </section>
   );

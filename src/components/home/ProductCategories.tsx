@@ -2,6 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../theme/ThemeProvider';
+import { AnimatedHeading, AnimatedText, AnimatedDivider } from '../animation/TextAnimations';
 
 interface CategoryProps {
   title: string;
@@ -115,33 +116,21 @@ const ProductCategories = () => {
   return (
     <section className={`section-padding ${isDark ? 'bg-mangla' : 'bg-[#f8fafc]'}`}>
       <div className="container-custom">
-        <motion.h2 
-          className={`section-title text-center ${isDark ? 'text-white' : 'text-slate-800'}`}
-          initial={{ y: 30, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6 }}
+        <AnimatedHeading 
+          type="section-title"
+          className={`text-center ${isDark ? 'text-white' : 'text-slate-800'}`}
         >
           Featured Collections
-        </motion.h2>
+        </AnimatedHeading>
         
-        <motion.div 
-          className="w-20 h-1 bg-mangla-gold mx-auto mb-8"
-          initial={{ width: 0, opacity: 0 }}
-          whileInView={{ width: 80, opacity: 1 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-        ></motion.div>
+        <AnimatedDivider />
         
-        <motion.p 
-          className={`section-subtitle text-center ${isDark ? 'text-gray-300' : 'text-slate-600'}`}
-          initial={{ y: 30, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
+        <AnimatedText 
+          className={`section-subtitle text-center ${isDark ? 'text-gray-300' : 'text-slate-600'}`} 
+          delay={0.4}
         >
           Explore our curated selection of premium shooting sports equipment, designed for champions.
-        </motion.p>
+        </AnimatedText>
         
         <motion.div 
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12"

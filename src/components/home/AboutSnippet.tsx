@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import { AnimatedHeading, AnimatedText, AnimatedDivider } from '../animation/TextAnimations';
 
 const AboutSnippet = () => {
   return (
@@ -13,36 +14,21 @@ const AboutSnippet = () => {
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.8 }}
         >
-          <motion.h2 
-            className="section-title"
-            initial={{ y: 30, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.6 }}
-          >
+          <AnimatedHeading type="section-title">
             About Mangla Sports
-          </motion.h2>
+          </AnimatedHeading>
           
-          <motion.div 
-            className="w-20 h-1 bg-mangla-gold mx-auto mb-8"
-            initial={{ width: 0, opacity: 0 }}
-            whileInView={{ width: 80, opacity: 1 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          ></motion.div>
+          <AnimatedDivider />
           
-          <motion.p 
+          <AnimatedText 
             className="text-xl mb-8 leading-relaxed"
-            initial={{ y: 30, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            delay={0.4}
           >
             Established with a vision to elevate the shooting sports experience in India, 
             Mangla Sports represents the pinnacle of quality, expertise, and passion. 
             We curate only the finest equipment, backed by decades of collective experience 
             and an unwavering commitment to the shooting community.
-          </motion.p>
+          </AnimatedText>
           
           <motion.a 
             href="#" 
