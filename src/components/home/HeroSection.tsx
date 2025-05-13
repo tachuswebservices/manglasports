@@ -25,19 +25,17 @@ const HeroSection = () => {
           animate={{ opacity: 0.7 }}
           transition={{ duration: 1.5 }}
         ></motion.div>
-        {isDark && (
-          <motion.div 
-            className="absolute inset-0 bg-center bg-cover z-0" 
-            style={{
-              backgroundImage: `url('https://images.unsplash.com/photo-1530424272458-06235f040299?q=80&w=2070&auto=format&fit=crop')`,
-              backgroundPosition: 'center',
-              backgroundSize: 'cover',
-            }}
-            initial={{ scale: 1.1 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 1.5, ease: "easeOut" }}
-          ></motion.div>
-        )}
+        <motion.div 
+          className="absolute inset-0 bg-center bg-cover z-0" 
+          style={{
+            backgroundImage: `url('/lovable-uploads/043df67b-a8e3-4d7b-a886-d29c545973ab.png')`,
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+          }}
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+        ></motion.div>
       </div>
 
       <div className="container-custom relative z-20 text-center py-10">
