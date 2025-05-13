@@ -38,20 +38,20 @@ const HeroSection = () => {
         <div className="relative h-full flex items-center">
           <div className="container mx-auto px-4 flex justify-end">
             {/* Improved responsive behavior to prevent overlap on small screens */}
-            <div className={`${isMobile ? 'mt-auto mb-16 max-w-full' : 'max-w-[45%] lg:max-w-[40%] xl:max-w-[35%]'} py-12 md:py-16`}>
+            <div className={`${isMobile ? 'absolute bottom-12 right-4 left-4' : 'max-w-[40%] xl:max-w-[35%]'} py-8 md:py-12`}>
               <motion.div
                 className={cn(
-                  "p-6 md:p-8 backdrop-blur-sm rounded-lg border",
+                  "p-5 md:p-6 backdrop-blur-md rounded-lg border",
                   isDark 
-                    ? "bg-mangla-dark-gray/50 border-mangla-gold/30" 
-                    : "bg-mangla-light-bg/50 border-amber-500/30"
+                    ? "bg-mangla-dark-gray/40 border-mangla-gold/30" 
+                    : "bg-mangla-light-bg/40 border-amber-500/30"
                 )}
                 initial={{ x: 50, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.8 }}
               >
                 <motion.h1 
-                  className={`text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight ${isDark ? 'text-white' : 'text-slate-800'}`}
+                  className={`text-2xl md:text-3xl lg:text-4xl font-bold mb-3 leading-tight ${isDark ? 'text-white' : 'text-slate-800'}`}
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.8, delay: 0.2 }}
@@ -61,7 +61,7 @@ const HeroSection = () => {
                 </motion.h1>
                 
                 <motion.p 
-                  className={`text-base md:text-lg mb-6 ${isDark ? 'text-gray-200' : 'text-slate-700'}`}
+                  className={`text-sm md:text-base mb-4 ${isDark ? 'text-gray-200' : 'text-slate-700'}`}
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.8, delay: 0.5 }}
@@ -77,7 +77,7 @@ const HeroSection = () => {
                 >
                   <Button
                     variant={isDark ? "default" : "default"}
-                    className={`${isDark ? 'bg-mangla-gold hover:bg-mangla-gold/90 text-mangla' : 'bg-amber-500 hover:bg-amber-600 text-white'} px-6 py-5 h-auto font-medium text-sm md:text-base`}
+                    className={`${isDark ? 'bg-mangla-gold hover:bg-mangla-gold/90 text-mangla' : 'bg-amber-500 hover:bg-amber-600 text-white'} px-5 py-4 h-auto font-medium text-sm`}
                     asChild
                   >
                     <motion.button
@@ -91,7 +91,7 @@ const HeroSection = () => {
                 </motion.div>
                 
                 <motion.p 
-                  className={`mt-6 ${isDark ? 'text-mangla-gold' : 'text-amber-500'} italic text-sm`}
+                  className={`mt-4 ${isDark ? 'text-mangla-gold' : 'text-amber-500'} italic text-xs md:text-sm`}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.8, delay: 1 }}
