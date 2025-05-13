@@ -1,66 +1,126 @@
 
 import React, { useEffect } from 'react';
+import { motion } from 'framer-motion';
 
 const HeroSection = () => {
-  // Function to handle animation on page load
-  useEffect(() => {
-    const animatedElements = document.querySelectorAll('.animate-on-scroll');
-    
-    // Add animation classes with slight delay between elements
-    animatedElements.forEach((element, index) => {
-      setTimeout(() => {
-        element.classList.add('animate-fade-up');
-      }, 200 * (index + 1));
-    });
-  }, []);
+  // Function to handle scroll indicator animation
+  const scrollToNextSection = () => {
+    const aboutSection = document.getElementById('about-section');
+    if (aboutSection) {
+      aboutSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
   
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-mangla bg-fixed overflow-hidden pt-16">
       {/* Background overlay & image */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-mangla to-black opacity-70 z-10"></div>
-        <div 
+        <motion.div 
+          className="absolute inset-0 bg-gradient-to-b from-mangla to-black opacity-70 z-10"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.7 }}
+          transition={{ duration: 1.5 }}
+        ></motion.div>
+        <motion.div 
           className="absolute inset-0 bg-center bg-cover z-0" 
           style={{
             backgroundImage: `url('https://images.unsplash.com/photo-1530424272458-06235f040299?q=80&w=2070&auto=format&fit=crop')`,
             backgroundPosition: 'center',
             backgroundSize: 'cover',
           }}
-        ></div>
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+        ></motion.div>
       </div>
 
       <div className="container-custom relative z-20 text-center py-10">
         <div className="max-w-4xl mx-auto">
-          <h1 className="animate-on-scroll opacity-0 text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+          <motion.h1 
+            className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight"
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
             Mangla Sports: <br />
             <span className="text-mangla-gold">Precision. Performance. Passion</span>
-          </h1>
+          </motion.h1>
           
-          <p className="animate-on-scroll opacity-0 text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-gray-300">
+          <motion.p 
+            className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-gray-300"
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+          >
             India's premier destination for elite shooting sports equipment, expertise and guidance.
-          </p>
+          </motion.p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-on-scroll opacity-0">
-            <button className="btn-primary text-base md:text-lg">
+          <motion.div 
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+          >
+            <motion.button 
+              className="btn-primary text-base md:text-lg"
+              whileHover={{ scale: 1.05, backgroundColor: "#1C3882" }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+            >
               Explore Our Elite Collection
-            </button>
-            <button className="btn-secondary text-base md:text-lg">
+            </motion.button>
+            <motion.button 
+              className="btn-secondary text-base md:text-lg"
+              whileHover={{ scale: 1.05, borderColor: "#F2C250" }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+            >
               Learn About Our Legacy
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
           
-          <p className="animate-on-scroll opacity-0 mt-8 text-mangla-gold italic">
+          <motion.p 
+            className="mt-8 text-mangla-gold italic"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 1 }}
+          >
             Trusted by India's Elite Shooters
-          </p>
+          </motion.p>
         </div>
       </div>
       
       {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce z-20 hidden md:block">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-8 h-8 text-mangla-gold">
+      <motion.div 
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 hidden md:block cursor-pointer"
+        initial={{ y: -10, opacity: 0 }}
+        animate={{ 
+          y: 0, 
+          opacity: 1,
+          transition: {
+            duration: 0.5, 
+            delay: 1.2
+          }
+        }}
+        whileHover={{ scale: 1.2 }}
+        onClick={scrollToNextSection}
+      >
+        <motion.svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          fill="none" 
+          viewBox="0 0 24 24" 
+          stroke="currentColor" 
+          className="w-8 h-8 text-mangla-gold"
+          animate={{ y: [0, 10, 0] }}
+          transition={{ 
+            duration: 1.5, 
+            repeat: Infinity, 
+            ease: "easeInOut" 
+          }}
+        >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-        </svg>
-      </div>
+        </motion.svg>
+      </motion.div>
     </section>
   );
 };

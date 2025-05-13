@@ -45,10 +45,12 @@
   
   html {
     @apply scroll-smooth;
+    scroll-behavior: smooth;
   }
 
   body {
     @apply bg-mangla text-mangla-foreground font-inter antialiased;
+    overflow-x: hidden;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -62,11 +64,11 @@
   }
 
   .btn-primary {
-    @apply bg-mangla-blue hover:bg-blue-800 text-white px-6 py-3 rounded-md font-medium transition-colors duration-300;
+    @apply bg-mangla-blue hover:bg-blue-800 text-white px-6 py-3 rounded-md font-medium transition-all duration-300;
   }
 
   .btn-secondary {
-    @apply border border-mangla-gold text-mangla-gold hover:bg-mangla-gold hover:text-mangla px-6 py-3 rounded-md font-medium transition-colors duration-300;
+    @apply border border-mangla-gold text-mangla-gold hover:bg-mangla-gold hover:text-mangla px-6 py-3 rounded-md font-medium transition-all duration-300;
   }
 
   .section-title {
@@ -83,5 +85,28 @@
 
   .reveal-animation {
     @apply opacity-0;
+  }
+}
+
+/* Add custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-mangla;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-700 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-mangla-gold;
+}
+
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 5px;
   }
 }

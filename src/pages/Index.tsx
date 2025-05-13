@@ -8,6 +8,7 @@ import WhyChooseUs from '../components/home/WhyChooseUs';
 import Testimonials from '../components/home/Testimonials';
 import BrandAssociations from '../components/home/BrandAssociations';
 import Footer from '../components/layout/Footer';
+import { motion } from 'framer-motion';
 
 const Index = () => {
   // Set page title
@@ -16,7 +17,12 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="bg-mangla min-h-screen">
+    <motion.div 
+      className="bg-mangla min-h-screen"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <Navbar />
       
       <main>
@@ -29,7 +35,7 @@ const Index = () => {
       </main>
       
       <Footer />
-    </div>
+    </motion.div>
   );
 };
 

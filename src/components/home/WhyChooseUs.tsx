@@ -1,5 +1,6 @@
 
-import React, { useEffect } from 'react';
+import React from 'react';
+import { motion } from 'framer-motion';
 
 interface FeatureProps {
   title: string;
@@ -46,47 +47,88 @@ const features: FeatureProps[] = [
   }
 ];
 
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.3
+    }
+  }
+};
+
+const item = {
+  hidden: { y: 20, opacity: 0 },
+  show: { y: 0, opacity: 1, transition: { duration: 0.6 } }
+};
+
 const FeatureCard: React.FC<FeatureProps> = ({ title, description, icon }) => {
   return (
-    <div className="reveal-animation bg-mangla-dark-gray p-8 rounded-lg border border-gray-800 hover:border-mangla-gold transition-all duration-300">
-      <div className="text-mangla-gold mb-6">
+    <motion.div 
+      variants={item}
+      className="bg-mangla-dark-gray p-8 rounded-lg border border-gray-800"
+      whileHover={{ 
+        scale: 1.03, 
+        borderColor: "#D4AF37",
+        boxShadow: "0 10px 30px -15px rgba(212, 175, 55, 0.2)"
+      }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+    >
+      <motion.div 
+        className="text-mangla-gold mb-6"
+        initial={{ scale: 0.8, opacity: 0 }}
+        whileInView={{ scale: 1, opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
         {icon}
-      </div>
+      </motion.div>
       <h3 className="text-xl font-bold mb-4">{title}</h3>
       <p className="text-gray-400">{description}</p>
-    </div>
+    </motion.div>
   );
 };
 
 const WhyChooseUs = () => {
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-fade-up');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
-
-    const elements = document.querySelectorAll('.reveal-animation');
-    elements.forEach((el) => observer.observe(el));
-
-    return () => {
-      elements.forEach((el) => observer.unobserve(el));
-    };
-  }, []);
-
   return (
     <section className="section-padding bg-gradient-to-b from-mangla-dark-gray to-mangla">
       <div className="container-custom">
-        <h2 className="section-title text-center reveal-animation">Why Choose Mangla Sports?</h2>
-        <div className="w-20 h-1 bg-mangla-gold mx-auto mb-8 reveal-animation"></div>
-        <p className="section-subtitle text-center reveal-animation">
-          Our commitment to excellence makes us the trusted partner for shooting sports enthusiasts across India.
-        </p>
+        <motion.h2 
+          className="section-title text-center"
+          initial={{ y: 30, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6 }}
+        >
+          Why Choose Mangla Sports?
+        </motion.h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
+        <motion.div 
+          className="w-20 h-1 bg-mangla-gold mx-auto mb-8"
+          initial={{ width: 0, opacity: 0 }}
+          whileInView={{ width: 80, opacity: 1 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        ></motion.div>
+        
+        <motion.p 
+          className="section-subtitle text-center"
+          initial={{ y: 30, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+        >
+          Our commitment to excellence makes us the trusted partner for shooting sports enthusiasts across India.
+        </motion.p>
+        
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12"
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.1 }}
+        >
           {features.map((feature, index) => (
             <FeatureCard 
               key={index} 
@@ -95,7 +137,7 @@ const WhyChooseUs = () => {
               icon={feature.icon}
             />
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
