@@ -1,14 +1,13 @@
 
 import React, { useEffect } from 'react';
+import { motion } from 'framer-motion';
 import Navbar from '../components/layout/Navbar';
 import HeroSection from '../components/home/HeroSection';
-import AboutSnippet from '../components/home/AboutSnippet';
 import ProductCategories from '../components/home/ProductCategories';
-import WhyChooseUs from '../components/home/WhyChooseUs';
+import NewArrivals from '../components/home/NewArrivals';
+import BestSellers from '../components/home/BestSellers';
 import Testimonials from '../components/home/Testimonials';
-import BrandAssociations from '../components/home/BrandAssociations';
 import Footer from '../components/layout/Footer';
-import { motion } from 'framer-motion';
 
 const Index = () => {
   // Set page title
@@ -27,11 +26,10 @@ const Index = () => {
       
       <main>
         <HeroSection />
-        <AboutSnippet />
         <ProductCategories />
-        <WhyChooseUs />
+        <NewArrivals />
+        <BestSellers />
         <Testimonials />
-        <BrandAssociations />
       </main>
       
       <Footer />
