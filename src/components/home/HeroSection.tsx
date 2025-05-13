@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../theme/ThemeProvider';
@@ -51,9 +50,9 @@ const HeroSection = () => {
         <div className="absolute inset-0 w-full h-full">
           <img 
             src="/lovable-uploads/043df67b-a8e3-4d7b-a886-d29c545973ab.png"
-            alt="Mangla Sports" 
+            alt="Professional Shooting Equipment" 
             className="w-full h-full object-cover object-center md:object-top"
-            fetchpriority="high"
+            fetchPriority="high" 
           />
         </div>
         

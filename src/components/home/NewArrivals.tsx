@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
@@ -15,25 +14,25 @@ const products: ProductProps[] = [
   {
     name: "Walther LG500 ITEC Triple Edition",
     price: "₹199,999",
-    image: "https://images.unsplash.com/photo-1584178668396-37ae4e4bbb2b?q=80&w=1000&auto=format&fit=crop",
+    image: "/lovable-uploads/44b2615c-e47e-41de-b6c4-97af839d9903.png",
     category: "Air Rifles"
   },
   {
     name: "Pardini K12 J Short",
     price: "₹185,999",
-    image: "https://images.unsplash.com/photo-1584178045080-cffef477173a?q=80&w=1000&auto=format&fit=crop",
+    image: "/lovable-uploads/5818a836-9981-47bc-bfb7-4efb566262b6.png",
     category: "Air Pistols"
   },
   {
     name: "Umarex 12g CO2 Cartridges (Capsules)",
     price: "₹1,499",
-    image: "https://images.unsplash.com/photo-1585589266883-32e9457ec269?q=80&w=1000&auto=format&fit=crop",
+    image: "/lovable-uploads/343e01c8-d47b-4613-9aad-6f7197159da6.png",
     category: "Consumables"
   },
   {
     name: "SCATT MX-W2 WI-FI",
     price: "₹89,999",
-    image: "https://images.unsplash.com/photo-1617124074721-767bc360aafc?q=80&w=1000&auto=format&fit=crop",
+    image: "/lovable-uploads/e284a5bc-98e2-45a3-b9b1-11aea9dadfb1.png",
     category: "Scatt Training Systems"
   }
 ];
@@ -71,7 +70,7 @@ const ProductCard: React.FC<ProductProps> = ({ name, price, image, category }) =
             <img 
               src={image} 
               alt={name} 
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              className="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-110"
             />
           </AspectRatio>
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">

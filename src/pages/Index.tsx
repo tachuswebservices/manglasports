@@ -9,6 +9,7 @@ import NewArrivals from '../components/home/NewArrivals';
 import BestSellers from '../components/home/BestSellers';
 import Testimonials from '../components/home/Testimonials';
 import BrandAssociations from '../components/home/BrandAssociations';
+import WhyChooseUs from '../components/home/WhyChooseUs';
 import Footer from '../components/layout/Footer';
 
 const Index = () => {
@@ -31,6 +32,7 @@ const Index = () => {
         <FeaturedCollections />
         <NewArrivals />
         <BestSellers />
+        <WhyChooseUs />
         <BrandAssociations />
         <Testimonials />
       </main>
