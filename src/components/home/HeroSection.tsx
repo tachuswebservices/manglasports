@@ -25,12 +25,12 @@ const HeroSection = () => {
     <section className="relative min-h-screen overflow-hidden pt-16">
       {/* Main hero container */}
       <div className="relative min-h-[calc(100vh-64px)] w-full">
-        {/* Background image that covers the entire section */}
+        {/* Background image that covers the entire section with adjusted positioning to show shooter's head */}
         <div className="absolute inset-0 w-full h-full">
           <img 
             src="/lovable-uploads/043df67b-a8e3-4d7b-a886-d29c545973ab.png"
             alt="Mangla Sports" 
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-top"
           />
         </div>
         
@@ -47,8 +47,8 @@ const HeroSection = () => {
                 className={cn(
                   "p-4 md:p-5 backdrop-blur-xl rounded-lg border",
                   isDark 
-                    ? "bg-mangla-dark-gray/30 border-mangla-gold/20" 
-                    : "bg-mangla-light-bg/30 border-amber-500/20"
+                    ? "bg-mangla-dark-gray/20 border-mangla-gold/20" 
+                    : "bg-mangla-light-bg/20 border-amber-500/20"
                 )}
                 initial={{ x: 50, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
