@@ -2,6 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../theme/ThemeProvider';
+import { cn } from '@/lib/utils';
 
 const HeroSection = () => {
   const { theme } = useTheme();
@@ -32,24 +33,34 @@ const HeroSection = () => {
           transition={{ duration: 1.5, ease: "easeOut" }}
         />
         
-        {/* Overlay to control image brightness and contrast based on theme */}
+        {/* Subtle overlay to darken/lighten image based on theme */}
         <motion.div 
-          className={`absolute inset-0 z-10 ${
-            isDark 
-              ? 'bg-gradient-to-b from-black/70 to-black/90' 
-              : 'bg-gradient-to-b from-white/30 to-blue-100/60'
-          }`}
+          className={cn(
+            "absolute inset-0 z-10",
+            isDark ? "bg-black/30" : "bg-white/10"
+          )}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.5 }}
         />
       </div>
 
-      <div className="container-custom relative z-20 text-center py-10">
-        <div className="max-w-4xl mx-auto">
+      <div className="container-custom relative z-20 py-10">
+        {/* Glassmorphism card overlay for text */}
+        <motion.div
+          className={cn(
+            "max-w-3xl mx-auto rounded-xl p-8 backdrop-blur-md border",
+            isDark 
+              ? "bg-black/40 border-white/10 shadow-lg" 
+              : "bg-white/30 border-white/20 shadow-xl"
+          )}
+          initial={{ y: 30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8 }}
+        >
           <motion.h1 
             className={`text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight ${isDark ? 'text-white' : 'text-slate-800'}`}
-            initial={{ y: 30, opacity: 0 }}
+            initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
@@ -58,8 +69,8 @@ const HeroSection = () => {
           </motion.h1>
           
           <motion.p 
-            className={`text-xl md:text-2xl mb-8 max-w-3xl mx-auto ${isDark ? 'text-gray-300' : 'text-slate-600'}`}
-            initial={{ y: 30, opacity: 0 }}
+            className={`text-xl md:text-2xl mb-8 max-w-3xl mx-auto ${isDark ? 'text-gray-300' : 'text-slate-700'}`}
+            initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.5 }}
           >
@@ -68,7 +79,7 @@ const HeroSection = () => {
           
           <motion.div 
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-            initial={{ y: 30, opacity: 0 }}
+            initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.8 }}
           >
@@ -98,7 +109,7 @@ const HeroSection = () => {
           >
             Trusted by Champions Across India
           </motion.p>
-        </div>
+        </motion.div>
       </div>
       
       {/* Scroll indicator */}
