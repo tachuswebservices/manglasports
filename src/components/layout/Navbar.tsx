@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Search } from 'lucide-react';
+import { Search, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import ThemeToggle from '../theme/ThemeToggle';
@@ -37,6 +37,20 @@ const Navbar = () => {
     setSearchQuery('');
     setIsSearchOpen(false);
   };
+
+  const menuItems = [
+    { title: 'Air Rifles', link: '/products/air-rifles' },
+    { title: 'Air Pistols', link: '/products/air-pistols' },
+    { title: 'Pellets', link: '/products/pellets' },
+    { title: 'Gloves', link: '/products/gloves' },
+    { title: 'Shoes', link: '/products/shoes' },
+    { title: 'Glasses', link: '/products/glasses' }
+  ];
+
+  const infoItems = [
+    { title: 'ABOUT', link: '/about' },
+    { title: 'CONTACT', link: '/contact' }
+  ];
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${isScrolled ? 'shadow-md' : ''}`}>
@@ -199,16 +213,38 @@ const Navbar = () => {
             
             <button 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
-              className="text-white"
+              className="text-white p-1 rounded-md transition-all duration-300 relative z-20"
               aria-label="Toggle menu"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">
-                {isMobileMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
-                )}
-              </svg>
+              <motion.div
+                initial={false}
+                animate={isMobileMenuOpen ? "open" : "closed"}
+                className="w-6 h-6 flex flex-col justify-center items-center"
+              >
+                <motion.span
+                  variants={{
+                    closed: { rotate: 0, y: 0 },
+                    open: { rotate: 45, y: 2 }
+                  }}
+                  className="w-6 h-0.5 bg-white block transition-all rounded-full"
+                  style={{ transformOrigin: "center" }}
+                />
+                <motion.span
+                  variants={{
+                    closed: { opacity: 1 },
+                    open: { opacity: 0 }
+                  }}
+                  className="w-6 h-0.5 bg-white block my-1 transition-all rounded-full"
+                />
+                <motion.span
+                  variants={{
+                    closed: { rotate: 0, y: 0 },
+                    open: { rotate: -45, y: -2 }
+                  }}
+                  className="w-6 h-0.5 bg-white block transition-all rounded-full"
+                  style={{ transformOrigin: "center" }}
+                />
+              </motion.div>
             </button>
           </div>
         </div>
@@ -252,27 +288,87 @@ const Navbar = () => {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div 
-            className="md:hidden bg-mangla-blue/95 backdrop-blur-md absolute top-full left-0 right-0 border-t border-gray-700 shadow-lg z-50"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
+            className="md:hidden fixed inset-0 z-10 bg-gradient-to-b from-mangla-blue to-blue-900 backdrop-blur-md overflow-auto"
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
-            <div className="container-custom py-4">
-              <div className="grid grid-cols-2 gap-3">
-                <Link to="/about" className="bg-mangla-dark/20 rounded-md px-3 py-2 text-white hover:bg-mangla-gold/20 transition-colors">ABOUT</Link>
-                <Link to="/contact" className="bg-mangla-dark/20 rounded-md px-3 py-2 text-white hover:bg-mangla-gold/20 transition-colors">CONTACT</Link>
+            <div className="pt-20 pb-6 px-4 h-full flex flex-col">
+              {/* Logo and branding in mobile menu */}
+              <div className="text-center mb-8">
+                <h2 className="text-mangla-gold font-montserrat text-2xl font-bold">MANGLA SPORTS</h2>
+                <p className="text-white/80 text-xs mt-1">Precision. Performance. Passion.</p>
               </div>
               
-              <div className="h-px bg-gray-700 my-3"></div>
+              {/* Main navigation links */}
+              <div className="space-y-6 flex-1">
+                <div className="space-y-3">
+                  <h3 className="text-mangla-gold text-xs uppercase tracking-wider font-bold pl-2">Products</h3>
+                  <div className="space-y-1">
+                    {menuItems.map((item, index) => (
+                      <motion.div
+                        key={item.title}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                      >
+                        <Link 
+                          to={item.link} 
+                          className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-colors"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          <span className="font-medium">{item.title}</span>
+                          <ChevronRight className="w-4 h-4 text-mangla-gold" />
+                        </Link>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="space-y-3">
+                  <h3 className="text-mangla-gold text-xs uppercase tracking-wider font-bold pl-2">Company</h3>
+                  <div className="space-y-1">
+                    {infoItems.map((item, index) => (
+                      <motion.div
+                        key={item.title}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.3 + index * 0.05 }}
+                      >
+                        <Link 
+                          to={item.link} 
+                          className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-colors"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          <span className="font-medium">{item.title}</span>
+                          <ChevronRight className="w-4 h-4 text-mangla-gold" />
+                        </Link>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              </div>
               
-              <div className="grid grid-cols-2 gap-3">
-                <Link to="/products/air-rifles" className="bg-mangla-dark/20 rounded-md px-3 py-2 text-white hover:bg-mangla-gold/20 transition-colors">Air Rifles</Link>
-                <Link to="/products/air-pistols" className="bg-mangla-dark/20 rounded-md px-3 py-2 text-white hover:bg-mangla-gold/20 transition-colors">Air Pistols</Link>
-                <Link to="/products/pellets" className="bg-mangla-dark/20 rounded-md px-3 py-2 text-white hover:bg-mangla-gold/20 transition-colors">Pellets</Link>
-                <Link to="/products/gloves" className="bg-mangla-dark/20 rounded-md px-3 py-2 text-white hover:bg-mangla-gold/20 transition-colors">Gloves</Link>
-                <Link to="/products/shoes" className="bg-mangla-dark/20 rounded-md px-3 py-2 text-white hover:bg-mangla-gold/20 transition-colors">Shoes</Link>
-                <Link to="/products/glasses" className="bg-mangla-dark/20 rounded-md px-3 py-2 text-white hover:bg-mangla-gold/20 transition-colors">Glasses</Link>
+              {/* Contact information */}
+              <div className="mt-6 pt-6 border-t border-white/10">
+                <div className="grid gap-3">
+                  <a href="tel:+919999999999" className="flex items-center space-x-3 text-white/90 hover:text-mangla-gold transition-colors">
+                    <span>+91 99999 99999</span>
+                  </a>
+                  <a href="mailto:info@manglasports.com" className="flex items-center space-x-3 text-white/90 hover:text-mangla-gold transition-colors">
+                    <span>info@manglasports.com</span>
+                  </a>
+                </div>
+                
+                <div className="mt-6 text-center">
+                  <button 
+                    className="px-6 py-2 rounded-full bg-mangla-gold text-white font-medium hover:bg-yellow-600 transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Close Menu
+                  </button>
+                </div>
               </div>
             </div>
           </motion.div>
