@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Navbar from '../components/layout/Navbar';
 import HeroSection from '../components/home/HeroSection';
+import FeaturedCollections from '../components/home/FeaturedCollections';
 import ProductCategories from '../components/home/ProductCategories';
 import NewArrivals from '../components/home/NewArrivals';
 import BestSellers from '../components/home/BestSellers';
@@ -27,6 +28,7 @@ const Index = () => {
       
       <main>
         <HeroSection />
+        <FeaturedCollections />
         <ProductCategories />
         <NewArrivals />
         <BestSellers />
