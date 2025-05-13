@@ -29,11 +29,10 @@ const Index = () => {
       <main>
         <HeroSection />
         <FeaturedCollections />
-        <ProductCategories />
         <NewArrivals />
         <BestSellers />
-        <Testimonials />
         <BrandAssociations />
+        <Testimonials />
       </main>
       
       <Footer />
