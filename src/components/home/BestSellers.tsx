@@ -90,7 +90,9 @@ const BestSellerCard: React.FC<BestSellerProps> = ({ name, price, image, categor
                   maxHeight: "100%", 
                   maxWidth: "100%", 
                   objectFit: "contain",
-                  display: "block"
+                  objectPosition: "center",
+                  width: "auto",
+                  height: "auto"
                 }}
               />
             </div>
