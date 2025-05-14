@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Shield, BookOpen, Package, Flag } from 'lucide-react';
+import { Shield, Tag, Package, Flag } from 'lucide-react';
 import { useTheme } from '../theme/ThemeProvider';
 
 interface FeatureProps {
@@ -17,9 +17,9 @@ const features: FeatureProps[] = [
     icon: <Shield className="h-10 w-10" />
   },
   {
-    title: "Expert Guidance & Support",
-    description: "Our team of seasoned professionals offers personalized consultation and ongoing support to elevate your shooting experience.",
-    icon: <BookOpen className="h-10 w-10" />
+    title: "Best Pricing",
+    description: "Our team offers competitive pricing with no compromise on quality, ensuring you get premium shooting equipment at the best value.",
+    icon: <Tag className="h-10 w-10" />
   },
   {
     title: "Curated Selection",
