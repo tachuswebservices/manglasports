@@ -75,8 +75,8 @@ const BestSellerCard: React.FC<BestSellerProps> = ({ name, price, image, categor
       transition={{ type: "spring", stiffness: 400, damping: 17 }}
     >
       <div className={`${isDark ? 'bg-mangla-dark-gray' : 'bg-white'} rounded-lg overflow-hidden border ${isDark ? 'border-gray-800' : 'border-gray-300'} h-full relative`}>
-        <div className="absolute top-4 right-4 z-10">
-          <span className="bg-mangla-gold text-mangla-dark-gray text-xs font-bold px-2 py-1 rounded">FEATURED</span>
+        <div className="absolute top-4 left-4 z-10">
+          <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md shadow-md">HOT</span>
         </div>
         <div className="relative overflow-hidden">
           <div className="w-full h-[260px] flex items-center justify-center bg-white">

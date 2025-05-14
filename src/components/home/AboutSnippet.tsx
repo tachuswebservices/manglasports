@@ -1,10 +1,20 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useTheme } from '../theme/ThemeProvider';
+import { cn } from '@/lib/utils';
 
 const AboutSnippet = () => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  
   return (
-    <section id="about-section" className="section-padding bg-gradient-to-b from-mangla to-mangla-dark-gray">
+    <section id="about-section" className={cn(
+      "section-padding",
+      isDark 
+        ? "bg-gradient-to-b from-mangla to-mangla-dark-gray" 
+        : "bg-gradient-to-b from-amber-50 to-amber-100 border-t border-b border-amber-200"
+    )}>
       <div className="container-custom">
         <motion.div 
           className="max-w-4xl mx-auto text-center"
@@ -14,7 +24,10 @@ const AboutSnippet = () => {
           transition={{ duration: 0.8 }}
         >
           <motion.h2 
-            className="section-title"
+            className={cn(
+              "section-title text-3xl md:text-4xl font-bold",
+              isDark ? "text-white" : "text-slate-900"
+            )}
             initial={{ y: 30, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             viewport={{ once: true, amount: 0.3 }}
@@ -32,7 +45,10 @@ const AboutSnippet = () => {
           ></motion.div>
           
           <motion.p 
-            className="text-xl mb-8 leading-relaxed"
+            className={cn(
+              "text-xl mb-8 leading-relaxed",
+              isDark ? "text-gray-300" : "text-slate-700"
+            )}
             initial={{ y: 30, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             viewport={{ once: true, amount: 0.3 }}
@@ -46,7 +62,12 @@ const AboutSnippet = () => {
           
           <motion.a 
             href="#" 
-            className="inline-block text-mangla-gold hover:text-white border-b border-mangla-gold hover:border-white transition-colors duration-300 text-lg font-medium"
+            className={cn(
+              "inline-block border-b text-lg font-medium transition-colors duration-300",
+              isDark 
+                ? "text-mangla-gold hover:text-white border-mangla-gold hover:border-white" 
+                : "text-amber-600 hover:text-amber-800 border-amber-500 hover:border-amber-800"
+            )}
             initial={{ y: 20, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             viewport={{ once: true, amount: 0.3 }}

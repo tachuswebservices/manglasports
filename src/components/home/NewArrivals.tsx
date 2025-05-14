@@ -67,6 +67,12 @@ const ProductCard: React.FC<ProductProps> = ({ name, price, image, category }) =
     >
       <div className={`${isDark ? 'bg-mangla-dark-gray' : 'bg-white'} rounded-lg overflow-hidden border ${isDark ? 'border-gray-800' : 'border-gray-200'} h-full`}>
         <div className="relative overflow-hidden">
+          {/* Just Arrived badge */}
+          <div className="absolute top-2 right-2 z-10">
+            <div className="bg-blue-500 text-white text-xs font-bold py-1 px-3 rounded shadow-md">
+              JUST ARRIVED
+            </div>
+          </div>
           {/* Standardized image container with fixed dimensions */}
           <div className="w-full h-[260px] flex items-center justify-center bg-white">
             <div className="p-4 flex items-center justify-center w-full h-full">

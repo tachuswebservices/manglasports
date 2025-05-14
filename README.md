@@ -1,6 +1,8 @@
-# Welcome to your Lovable project
+# Mangla Sports & Associates Website
 
-## Project info
+## Project Overview
+
+Mangla Sports & Associates is a premier shooting sports equipment retailer in India. This website serves as a professional showcase for their products, expertise, and services.
 
 **URL**: https://lovable.dev/projects/f2910313-f739-41e3-bbb9-85c30cfef562
 
@@ -54,11 +56,39 @@ npm run dev
 
 This project is built with:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- Vite - Fast build tool and development server
+- TypeScript - For type-safe code
+- React - UI component library
+- shadcn-ui - High-quality component system
+- Tailwind CSS - Utility-first CSS framework
+- Framer Motion - Animation library
+- React Router - Client-side routing
+- React Query - Data fetching and state management
+
+## Key Features
+
+- **Professional Home Page with Sections**:
+  - Hero section with shooting sports imagery
+  - Featured collections with "FEATURED" badges
+  - New arrivals with "JUST ARRIVED" badges
+  - Best sellers with "HOT" badges
+  - Company values showcase
+  - Customer testimonials
+  - Brand associations/partners
+  - About snippet with theme-aware styling
+
+- **UI/UX Features**:
+  - Dark/Light theme with persistent preference
+  - Responsive design for all devices
+  - Smooth animations and transitions
+  - Consistent product display cards
+  - Product badging system with visual hierarchy
+  - Modern, clean aesthetic
+
+- **Shopping & Navigation**:
+  - Responsive navbar with mobile menu
+  - Search functionality (UI only)
+  - Product category routing structure
 
 ## How can I deploy this project?
 

@@ -12,6 +12,7 @@ interface CollectionItemProps {
   title: string;
   link: string;
   image: string;
+  featured?: boolean;
 }
 
 // Full list of all collections - with consistent naming, URLs and images
@@ -74,9 +75,16 @@ const allCollections: CollectionItemProps[] = [
 ];
 
 // Show only 4 collections and exclude "Spares" as requested
+// Mark all collections as featured
 const featuredCollections = allCollections
   .filter(collection => collection.title !== "Spares")
-  .slice(0, 4);
+  .slice(0, 4)
+  .map((collection) => {
+    return {
+      ...collection,
+      featured: true // All collections are featured
+    };
+  });
 
 const container = {
   hidden: { opacity: 0 },
@@ -94,7 +102,7 @@ const item = {
   show: { y: 0, opacity: 1, transition: { duration: 0.5 } }
 };
 
-const CollectionItem: React.FC<CollectionItemProps> = ({ title, link, image }) => {
+const CollectionItem: React.FC<CollectionItemProps> = ({ title, link, image, featured = false }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   
@@ -111,6 +119,14 @@ const CollectionItem: React.FC<CollectionItemProps> = ({ title, link, image }) =
           isDark ? "bg-mangla-dark-gray border-gray-800" : "bg-white border-gray-300"
         )}>
           <div className="relative overflow-hidden">
+            {/* Featured badge */}
+            {featured && (
+              <div className="absolute top-2 right-2 z-10">
+                <div className="bg-amber-400 text-black text-xs font-bold py-1 px-3 rounded shadow-md">
+                  FEATURED
+                </div>
+              </div>
+            )}
             <div className="w-full h-[260px] flex items-center justify-center bg-white">
               <div className="p-4 flex items-center justify-center w-full h-full">
                 <img 
@@ -230,6 +246,7 @@ const FeaturedCollections: React.FC = () => {
               title={collection.title}
               link={collection.link}
               image={collection.image}
+              featured={collection.featured}
             />
           ))}
         </motion.div>
