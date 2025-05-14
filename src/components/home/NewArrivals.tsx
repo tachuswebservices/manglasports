@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { useTheme } from '../theme/ThemeProvider';
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -68,16 +67,20 @@ const ProductCard: React.FC<ProductProps> = ({ name, price, image, category }) =
     >
       <div className={`${isDark ? 'bg-mangla-dark-gray' : 'bg-white'} rounded-lg overflow-hidden border ${isDark ? 'border-gray-800' : 'border-gray-200'} h-full`}>
         <div className="relative overflow-hidden">
-          <div className="w-full" style={{ height: "260px" }}>
-            <div className="h-full w-full flex items-center justify-center p-4">
-              <div className="relative w-full h-full flex items-center justify-center">
-                <img 
-                  src={image} 
-                  alt={name} 
-                  className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-110"
-                  style={{ objectFit: "contain", maxHeight: "100%" }}
-                />
-              </div>
+          {/* Standardized image container with fixed dimensions */}
+          <div className="w-full h-[260px] flex items-center justify-center bg-white">
+            <div className="p-4 flex items-center justify-center w-full h-full">
+              <img 
+                src={image} 
+                alt={name} 
+                className="transition-transform duration-500 group-hover:scale-110"
+                style={{ 
+                  maxHeight: "100%", 
+                  maxWidth: "100%", 
+                  objectFit: "contain",
+                  display: "block"
+                }}
+              />
             </div>
           </div>
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
