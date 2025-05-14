@@ -28,7 +28,7 @@ const features: FeatureProps[] = [
     )
   },
   {
-    title: "Curated Elite Selection",
+    title: "Curated Selection",
     description: "Our catalog features a carefully curated selection of the world's finest shooting sports equipment, tailored for Indian enthusiasts.",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -101,7 +101,7 @@ const WhyChooseUs = () => {
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6 }}
         >
-          Why Choose Mangla Sports?
+          Why Choose Mangla Sports & Associates?
         </motion.h2>
         
         <motion.div 

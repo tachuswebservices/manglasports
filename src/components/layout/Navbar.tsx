@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, ChevronRight } from 'lucide-react';
@@ -85,11 +84,11 @@ const Navbar = () => {
           )}
           
           <div className="flex items-center space-x-6 text-sm">
-            <a href="mailto:info@manglasports.com" className="text-mangla-foreground hover:text-mangla-gold flex items-center gap-2">
-              <span>info@manglasports.com</span>
+            <a href="mailto:officialmanglasports@gmail.com" className="text-mangla-foreground hover:text-mangla-gold flex items-center gap-2">
+              <span>officialmanglasports@gmail.com</span>
             </a>
-            <a href="tel:+919999999999" className="text-mangla-foreground hover:text-mangla-gold flex items-center gap-2">
-              <span>+91 99999 99999</span>
+            <a href="tel:+919256930009" className="text-mangla-foreground hover:text-mangla-gold flex items-center gap-2">
+              <span>+91 92569 30009</span>
             </a>
           </div>
         </div>
@@ -112,7 +111,7 @@ const Navbar = () => {
                 className="h-12 md:h-14 mr-3"
               />
               <div className="flex flex-col">
-                <span className="text-white font-montserrat font-bold text-lg md:text-xl">MANGLA SPORTS</span>
+                <span className="text-white font-montserrat font-bold text-lg md:text-xl">MANGLA SPORTS & ASSOCIATES</span>
                 <span className="text-white/80 text-xs tracking-wider">Precision. Performance. Passion.</span>
               </div>
             </motion.div>
@@ -309,7 +308,7 @@ const Navbar = () => {
                   alt="Mangla Sports Logo" 
                   className="h-16 mb-2" 
                 />
-                <h2 className="text-mangla-gold font-montserrat text-xl font-bold">MANGLA SPORTS</h2>
+                <h2 className="text-mangla-gold font-montserrat text-xl font-bold">MANGLA SPORTS & ASSOCIATES</h2>
                 <p className="text-white/80 text-xs mt-1">Precision. Performance. Passion.</p>
               </div>
               
@@ -365,11 +364,11 @@ const Navbar = () => {
               {/* Contact information */}
               <div className="mt-6 pt-6 border-t border-white/10">
                 <div className="grid gap-3">
-                  <a href="tel:+919999999999" className="flex items-center space-x-3 text-white/90 hover:text-mangla-gold transition-colors">
-                    <span>+91 99999 99999</span>
+                  <a href="tel:+919256930009" className="flex items-center space-x-3 text-white/90 hover:text-mangla-gold transition-colors">
+                    <span>+91 92569 30009</span>
                   </a>
-                  <a href="mailto:info@manglasports.com" className="flex items-center space-x-3 text-white/90 hover:text-mangla-gold transition-colors">
-                    <span>info@manglasports.com</span>
+                  <a href="mailto:officialmanglasports@gmail.com" className="flex items-center space-x-3 text-white/90 hover:text-mangla-gold transition-colors">
+                    <span>officialmanglasports@gmail.com</span>
                   </a>
                 </div>
                 
