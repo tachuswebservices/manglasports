@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from "@/components/ui/card";
-import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 interface CollectionItemProps {
   title: string;
@@ -95,14 +94,6 @@ const item = {
   show: { y: 0, opacity: 1, transition: { duration: 0.5 } }
 };
 
-// Enhanced gradient backgrounds with more vibrant colors
-const gradientBackgrounds = [
-  'from-sky-200 to-indigo-200',
-  'from-amber-200 to-orange-200',
-  'from-lime-200 to-emerald-200',
-  'from-rose-200 to-fuchsia-200',
-];
-
 const CollectionItem: React.FC<CollectionItemProps> = ({ title, link, image }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
@@ -110,25 +101,31 @@ const CollectionItem: React.FC<CollectionItemProps> = ({ title, link, image }) =
   return (
     <motion.div 
       variants={item}
-      className="group h-full"
+      className="group"
       whileHover={{ y: -5 }}
       transition={{ type: "spring", stiffness: 400, damping: 17 }}
     >
       <Link to={link}>
         <Card className={cn(
-          "h-full overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300",
+          "h-full overflow-hidden",
           isDark ? "bg-mangla-dark-gray border-gray-800" : "bg-white border-gray-300"
         )}>
           <div className="relative overflow-hidden">
-            <AspectRatio ratio={1} className="w-full">
-              <div className="absolute inset-0 flex items-center justify-center p-6">
+            <div className="w-full h-[260px] flex items-center justify-center bg-white">
+              <div className="p-4 flex items-center justify-center w-full h-full">
                 <img 
                   src={image} 
                   alt={title} 
-                  className="transition-transform duration-500 group-hover:scale-110 max-h-[80%] max-w-[80%] object-contain"
+                  className="transition-transform duration-500 group-hover:scale-110"
+                  style={{ 
+                    maxHeight: "100%", 
+                    maxWidth: "100%", 
+                    objectFit: "contain",
+                    display: "block"
+                  }}
                 />
               </div>
-            </AspectRatio>
+            </div>
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
               <div className="p-4 w-full">
                 <motion.div 
@@ -228,14 +225,12 @@ const FeaturedCollections: React.FC = () => {
           viewport={{ once: true, amount: 0.1 }}
         >
           {featuredCollections.map((collection, index) => (
-            <div key={index} className={`${gradientBackgrounds[index % gradientBackgrounds.length]} bg-gradient-to-br rounded-lg p-[2px]`}>
-              <CollectionItem 
-                key={`item-${index}`}
-                title={collection.title}
-                link={collection.link}
-                image={collection.image}
-              />
-            </div>
+            <CollectionItem 
+              key={index} 
+              title={collection.title}
+              link={collection.link}
+              image={collection.image}
+            />
           ))}
         </motion.div>
       </div>
