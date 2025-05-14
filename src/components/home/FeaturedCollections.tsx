@@ -19,22 +19,22 @@ const allCollections: CollectionItemProps[] = [
   { 
     title: "Air Rifles", 
     link: "/products/air-rifles",
-    image: "/lovable-uploads/44b2615c-e47e-41de-b6c4-97af839d9903.png" 
+    image: "/lovable-uploads/f6511efe-79e5-4cc8-b162-cd6690da117f.png" 
   },
   { 
     title: "Air Pistols", 
     link: "/products/air-pistols",
-    image: "/lovable-uploads/5818a836-9981-47bc-bfb7-4efb566262b6.png" 
+    image: "/lovable-uploads/1a43b533-cd5c-4d93-ad4d-11182e4a80a8.png" 
   },
   { 
     title: "CO2 Pistols", 
     link: "/products/co2-pistols",
-    image: "/lovable-uploads/e3ba1dbe-4b02-480b-bc89-d30ffa1fbc5e.png" 
+    image: "/lovable-uploads/abe30c6a-a8c1-41e2-b747-db6293109e7d.png" 
   },
   { 
     title: "Air Pellets", 
     link: "/products/air-pellets",
-    image: "/lovable-uploads/343e01c8-d47b-4613-9aad-6f7197159da6.png" 
+    image: "/lovable-uploads/ccff352e-0441-4a8a-992b-6d6d4071eab8.png" 
   },
   { 
     title: "Spares", 
@@ -73,8 +73,10 @@ const allCollections: CollectionItemProps[] = [
   }
 ];
 
-// Show only the first 5 collections on the homepage - reduced from 10 to 5 because of larger cards
-const featuredCollections = allCollections.slice(0, 5);
+// Show only 4 collections and exclude "Spares" as requested
+const featuredCollections = allCollections
+  .filter(collection => collection.title !== "Spares")
+  .slice(0, 4);
 
 const container = {
   hidden: { opacity: 0 },
@@ -216,7 +218,7 @@ const FeaturedCollections: React.FC = () => {
         </div>
         
         <motion.div 
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
           variants={container}
           initial="hidden"
           whileInView="show"
