@@ -3,6 +3,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../theme/ThemeProvider';
 import { Card, CardContent } from '@/components/ui/card';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 interface ProductProps {
   name: string;
@@ -54,12 +55,12 @@ const item = {
   show: { y: 0, opacity: 1, transition: { duration: 0.5 } }
 };
 
-// Array of gradient backgrounds to cycle through
+// Enhanced gradient backgrounds with more vibrant colors
 const gradientBackgrounds = [
-  'from-blue-50 to-indigo-100',
-  'from-amber-50 to-yellow-100',
-  'from-rose-50 to-pink-100',
-  'from-emerald-50 to-teal-100',
+  'from-blue-200 to-indigo-300',
+  'from-amber-200 to-yellow-300',
+  'from-rose-200 to-pink-300',
+  'from-emerald-200 to-teal-300',
 ];
 
 const ProductCard: React.FC<ProductProps> = ({ name, price, image, category }) => {
@@ -69,28 +70,21 @@ const ProductCard: React.FC<ProductProps> = ({ name, price, image, category }) =
   return (
     <motion.div 
       variants={item}
-      className="group"
+      className="group h-full"
       whileHover={{ y: -5 }}
       transition={{ type: "spring", stiffness: 400, damping: 17 }}
     >
-      <div className={`${isDark ? 'bg-mangla-dark-gray' : 'bg-white'} rounded-lg overflow-hidden border ${isDark ? 'border-gray-800' : 'border-gray-200'} h-full`}>
+      <Card className={`${isDark ? 'bg-mangla-dark-gray border-gray-800' : 'bg-white border-gray-200'} h-full overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300`}>
         <div className="relative overflow-hidden">
-          {/* Standardized image container with fixed dimensions */}
-          <div className="w-full h-[260px] flex items-center justify-center bg-gradient-to-br shadow-inner">
-            <div className="p-4 flex items-center justify-center w-full h-full">
+          <AspectRatio ratio={1} className="bg-gradient-to-br shadow-inner w-full">
+            <div className="absolute inset-0 flex items-center justify-center p-6">
               <img 
                 src={image} 
                 alt={name} 
-                className="transition-transform duration-500 group-hover:scale-110"
-                style={{ 
-                  maxHeight: "100%", 
-                  maxWidth: "100%", 
-                  objectFit: "contain",
-                  display: "block"
-                }}
+                className="transition-transform duration-500 group-hover:scale-110 max-h-[80%] max-w-[80%] object-contain"
               />
             </div>
-          </div>
+          </AspectRatio>
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
             <div className="p-4 w-full">
               <motion.button 
@@ -103,12 +97,12 @@ const ProductCard: React.FC<ProductProps> = ({ name, price, image, category }) =
             </div>
           </div>
         </div>
-        <div className="p-4">
+        <CardContent className="p-4">
           <p className="text-mangla-gold text-sm mb-2">{category}</p>
-          <h3 className={`${isDark ? 'text-white' : 'text-slate-900'} font-medium mb-1 group-hover:text-mangla-gold transition-colors`}>{name}</h3>
+          <h3 className={`${isDark ? 'text-white' : 'text-slate-900'} font-medium mb-1 group-hover:text-mangla-gold transition-colors line-clamp-2 h-[48px]`}>{name}</h3>
           <p className={`${isDark ? 'text-gray-300' : 'text-slate-700'} font-bold`}>{price}</p>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </motion.div>
   );
 };
