@@ -3,14 +3,14 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../theme/ThemeProvider';
 
-// Real sporting brands logos
+// Updated logos with uploaded images
 const logos = [
-  "https://www.issf-sports.org/img/2010/sponsors/logo_walther.jpg", // Walther
-  "https://www.issf-sports.org/img/2010/sponsors/logo_steyr.gif", // Steyr
-  "https://cdni.comss.net/logo/cl/big/morini-logo_1.png", // Morini
-  "https://pbs.twimg.com/profile_images/1228999122083635201/eMwZHVgb_400x400.jpg", // Pardini
-  "https://www.wftc.org.uk/wp-content/uploads/2022/04/feinwerkbau.jpeg", // Feinwerkbau
-  "https://www.issf-sports.org/img/2010/sponsors/logo_sius.gif" // SIUS
+  "/lovable-uploads/e9aeb95d-c144-45db-b37b-ea803e9eac8e.png", // Pardini
+  "/lovable-uploads/85f832fc-2392-48b5-8aed-ac47b08b590e.png", // Anschutz
+  "/lovable-uploads/e3ba1dbe-4b02-480b-bc89-d30ffa1fbc5e.png", // Walther
+  "/lovable-uploads/017141a0-cde2-4659-a59b-bd25939b3538.png", // MEC
+  "/lovable-uploads/320e28cc-4968-4423-a0ee-4758610432ec.png", // Morini
+  "/lovable-uploads/72ea075f-973b-4f7a-b6f4-2aed1fd7171d.png"  // Pi
 ];
 
 const container = {
@@ -63,11 +63,15 @@ const BrandAssociations = () => {
                 transition: { duration: 0.3 } 
               }}
             >
-              <img 
-                src={logo} 
-                alt={`Partner brand ${index + 1}`} 
-                className="max-h-10 object-contain"
-              />
+              <div className="w-full" style={{ height: "80px" }}>
+                <div className="h-full flex items-center justify-center">
+                  <img 
+                    src={logo} 
+                    alt={`Partner brand ${index + 1}`} 
+                    className="max-h-full max-w-full object-contain"
+                  />
+                </div>
+              </div>
             </motion.div>
           ))}
         </motion.div>
