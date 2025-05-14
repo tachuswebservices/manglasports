@@ -11,25 +11,70 @@ import { Card, CardContent } from "@/components/ui/card";
 interface CollectionItemProps {
   title: string;
   link: string;
+  image: string;
 }
 
-// Full list of all collections - with consistent naming and URLs
+// Full list of all collections - with consistent naming, URLs and images
 const allCollections: CollectionItemProps[] = [
-  { title: "Air Rifles", link: "/products/air-rifles" },
-  { title: "Air Pistols", link: "/products/air-pistols" },
-  { title: "CO2 Pistols", link: "/products/co2-pistols" },
-  { title: "Air Pellets", link: "/products/air-pellets" },
-  { title: "Spares", link: "/products/spares" },
-  { title: "Air Rifle Accessories", link: "/products/air-rifle-accessories" },
-  { title: "Air Pistol Accessories", link: "/products/air-pistol-accessories" },
-  { title: "Manual Target Systems", link: "/products/manual-target-systems" },
-  { title: "Electronic Target Systems", link: "/products/electronic-target-systems" },
-  { title: "Scatt Training Systems", link: "/products/scatt-training-systems" },
-  { title: "Consumables", link: "/products/consumables" }
+  { 
+    title: "Air Rifles", 
+    link: "/products/air-rifles",
+    image: "/lovable-uploads/44b2615c-e47e-41de-b6c4-97af839d9903.png" 
+  },
+  { 
+    title: "Air Pistols", 
+    link: "/products/air-pistols",
+    image: "/lovable-uploads/5818a836-9981-47bc-bfb7-4efb566262b6.png" 
+  },
+  { 
+    title: "CO2 Pistols", 
+    link: "/products/co2-pistols",
+    image: "/lovable-uploads/e3ba1dbe-4b02-480b-bc89-d30ffa1fbc5e.png" 
+  },
+  { 
+    title: "Air Pellets", 
+    link: "/products/air-pellets",
+    image: "/lovable-uploads/343e01c8-d47b-4613-9aad-6f7197159da6.png" 
+  },
+  { 
+    title: "Spares", 
+    link: "/products/spares",
+    image: "/lovable-uploads/bfe6bd77-ba77-4a00-83ae-78679b1bc65b.png" 
+  },
+  { 
+    title: "Air Rifle Accessories", 
+    link: "/products/air-rifle-accessories",
+    image: "/lovable-uploads/9d861ad0-08bd-4f35-9567-bf07dbe5551b.png" 
+  },
+  { 
+    title: "Air Pistol Accessories", 
+    link: "/products/air-pistol-accessories",
+    image: "/lovable-uploads/aa897794-9610-4c04-9c17-d3928750fc0e.png" 
+  },
+  { 
+    title: "Manual Target Systems", 
+    link: "/products/manual-target-systems",
+    image: "/lovable-uploads/85f832fc-2392-48b5-8aed-ac47b08b590e.png" 
+  },
+  { 
+    title: "Electronic Target Systems", 
+    link: "/products/electronic-target-systems",
+    image: "/lovable-uploads/94816e34-750a-420e-b8fc-bde67a9fe267.png" 
+  },
+  { 
+    title: "Scatt Training Systems", 
+    link: "/products/scatt-training-systems",
+    image: "/lovable-uploads/e284a5bc-98e2-45a3-b9b1-11aea9dadfb1.png" 
+  },
+  { 
+    title: "Consumables", 
+    link: "/products/consumables",
+    image: "/lovable-uploads/343e01c8-d47b-4613-9aad-6f7197159da6.png" 
+  }
 ];
 
-// Show only the first 10 collections on the homepage
-const featuredCollections = allCollections.slice(0, 10);
+// Show only the first 5 collections on the homepage - reduced from 10 to 5 because of larger cards
+const featuredCollections = allCollections.slice(0, 5);
 
 const container = {
   hidden: { opacity: 0 },
@@ -47,7 +92,7 @@ const item = {
   show: { y: 0, opacity: 1, transition: { duration: 0.5 } }
 };
 
-const CollectionItem: React.FC<CollectionItemProps> = ({ title, link }) => {
+const CollectionItem: React.FC<CollectionItemProps> = ({ title, link, image }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   
@@ -63,17 +108,41 @@ const CollectionItem: React.FC<CollectionItemProps> = ({ title, link }) => {
           "h-full overflow-hidden",
           isDark ? "bg-mangla-dark-gray border-gray-800" : "bg-white border-gray-300"
         )}>
-          <CardContent className="p-6">
-            <h3 className={cn(
-              "text-xl font-semibold mb-2 group-hover:text-mangla-gold transition-colors",
+          <div className="relative overflow-hidden">
+            <div className="w-full h-[260px] flex items-center justify-center bg-white">
+              <div className="p-4 flex items-center justify-center w-full h-full">
+                <img 
+                  src={image} 
+                  alt={title} 
+                  className="transition-transform duration-500 group-hover:scale-110"
+                  style={{ 
+                    maxHeight: "100%", 
+                    maxWidth: "100%", 
+                    objectFit: "contain",
+                    display: "block"
+                  }}
+                />
+              </div>
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+              <div className="p-4 w-full">
+                <motion.div 
+                  className="w-full py-2 bg-mangla-gold text-mangla-dark-gray font-medium rounded text-center"
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  View Collection
+                </motion.div>
+              </div>
+            </div>
+          </div>
+          <CardContent className="p-4">
+            <p className={cn(
+              "text-lg font-semibold group-hover:text-mangla-gold transition-colors",
               isDark ? "text-white" : "text-slate-900"
             )}>
               {title}
-            </h3>
-            <div className={cn(
-              "mt-3 w-10 h-0.5 transition-all duration-300 group-hover:w-24",
-              isDark ? "bg-mangla-gold" : "bg-amber-400"
-            )}></div>
+            </p>
           </CardContent>
         </Card>
       </Link>
@@ -158,6 +227,7 @@ const FeaturedCollections: React.FC = () => {
               key={index} 
               title={collection.title}
               link={collection.link}
+              image={collection.image}
             />
           ))}
         </motion.div>
