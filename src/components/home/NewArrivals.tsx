@@ -1,7 +1,9 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { useTheme } from '../theme/ThemeProvider';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface ProductProps {
   name: string;
@@ -66,13 +68,16 @@ const ProductCard: React.FC<ProductProps> = ({ name, price, image, category }) =
     >
       <div className={`${isDark ? 'bg-mangla-dark-gray' : 'bg-white'} rounded-lg overflow-hidden border ${isDark ? 'border-gray-800' : 'border-gray-200'} h-full`}>
         <div className="relative overflow-hidden">
-          <AspectRatio ratio={1 / 1}>
-            <img 
-              src={image} 
-              alt={name} 
-              className="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-110"
-            />
-          </AspectRatio>
+          {/* Set a fixed height for the container to ensure consistent aspect ratio */}
+          <div className="w-full" style={{ height: "260px" }}>
+            <div className="h-full flex items-center justify-center p-4">
+              <img 
+                src={image} 
+                alt={name} 
+                className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-110"
+              />
+            </div>
+          </div>
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
             <div className="p-4 w-full">
               <motion.button 
