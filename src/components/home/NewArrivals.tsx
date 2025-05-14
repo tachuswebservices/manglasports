@@ -68,15 +68,16 @@ const ProductCard: React.FC<ProductProps> = ({ name, price, image, category }) =
     >
       <div className={`${isDark ? 'bg-mangla-dark-gray' : 'bg-white'} rounded-lg overflow-hidden border ${isDark ? 'border-gray-800' : 'border-gray-200'} h-full`}>
         <div className="relative overflow-hidden">
-          {/* Set a fixed height for the container to ensure consistent aspect ratio */}
-          <div className="w-full" style={{ height: "260px" }}>
-            <div className="h-full flex items-center justify-center p-4">
-              <img 
-                src={image} 
-                alt={name} 
-                className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-110"
-              />
-            </div>
+          <div className="w-full h-[260px]">
+            <AspectRatio ratio={1/1} className="h-full">
+              <div className="h-full flex items-center justify-center p-4">
+                <img 
+                  src={image} 
+                  alt={name} 
+                  className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-110"
+                />
+              </div>
+            </AspectRatio>
           </div>
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
             <div className="p-4 w-full">
