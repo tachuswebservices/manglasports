@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../theme/ThemeProvider';
@@ -63,6 +64,14 @@ const item = {
   show: { y: 0, opacity: 1, transition: { duration: 0.5 } }
 };
 
+// Array of gradient backgrounds to cycle through
+const gradientBackgrounds = [
+  'from-blue-100 to-violet-100',
+  'from-orange-100 to-amber-100',
+  'from-emerald-100 to-teal-100',
+  'from-rose-100 to-pink-100',
+];
+
 const BestSellerCard: React.FC<BestSellerProps> = ({ name, price, image, category, rating, soldCount }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
@@ -79,7 +88,7 @@ const BestSellerCard: React.FC<BestSellerProps> = ({ name, price, image, categor
           <span className="bg-mangla-gold text-mangla-dark-gray text-xs font-bold px-2 py-1 rounded">FEATURED</span>
         </div>
         <div className="relative overflow-hidden">
-          <div className="w-full h-[260px] flex items-center justify-center bg-white">
+          <div className="w-full h-[260px] flex items-center justify-center bg-gradient-to-r shadow-inner">
             <div className="p-4 flex items-center justify-center w-full h-full">
               <img 
                 src={image} 
@@ -167,15 +176,17 @@ const BestSellers = () => {
           viewport={{ once: true, amount: 0.1 }}
         >
           {products.map((product, index) => (
-            <BestSellerCard 
-              key={index} 
-              name={product.name} 
-              price={product.price} 
-              image={product.image}
-              category={product.category}
-              rating={product.rating}
-              soldCount={product.soldCount}
-            />
+            <div key={index} className={`${gradientBackgrounds[index % gradientBackgrounds.length]} bg-gradient-to-r rounded-lg p-[2px]`}>
+              <BestSellerCard 
+                key={index} 
+                name={product.name} 
+                price={product.price} 
+                image={product.image}
+                category={product.category}
+                rating={product.rating}
+                soldCount={product.soldCount}
+              />
+            </div>
           ))}
         </motion.div>
         

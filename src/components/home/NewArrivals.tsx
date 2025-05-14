@@ -54,6 +54,14 @@ const item = {
   show: { y: 0, opacity: 1, transition: { duration: 0.5 } }
 };
 
+// Array of gradient backgrounds to cycle through
+const gradientBackgrounds = [
+  'from-blue-50 to-indigo-100',
+  'from-amber-50 to-yellow-100',
+  'from-rose-50 to-pink-100',
+  'from-emerald-50 to-teal-100',
+];
+
 const ProductCard: React.FC<ProductProps> = ({ name, price, image, category }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
@@ -68,7 +76,7 @@ const ProductCard: React.FC<ProductProps> = ({ name, price, image, category }) =
       <div className={`${isDark ? 'bg-mangla-dark-gray' : 'bg-white'} rounded-lg overflow-hidden border ${isDark ? 'border-gray-800' : 'border-gray-200'} h-full`}>
         <div className="relative overflow-hidden">
           {/* Standardized image container with fixed dimensions */}
-          <div className="w-full h-[260px] flex items-center justify-center bg-white">
+          <div className="w-full h-[260px] flex items-center justify-center bg-gradient-to-br shadow-inner">
             <div className="p-4 flex items-center justify-center w-full h-full">
               <img 
                 src={image} 
@@ -147,13 +155,15 @@ const NewArrivals = () => {
           viewport={{ once: true, amount: 0.1 }}
         >
           {products.map((product, index) => (
-            <ProductCard 
-              key={index} 
-              name={product.name} 
-              price={product.price} 
-              image={product.image}
-              category={product.category}
-            />
+            <div key={index} className={`${gradientBackgrounds[index % gradientBackgrounds.length]} bg-gradient-to-br rounded-lg p-[2px]`}>
+              <ProductCard 
+                key={index} 
+                name={product.name} 
+                price={product.price} 
+                image={product.image}
+                category={product.category}
+              />
+            </div>
           ))}
         </motion.div>
         

@@ -94,6 +94,14 @@ const item = {
   show: { y: 0, opacity: 1, transition: { duration: 0.5 } }
 };
 
+// Array of gradient backgrounds to cycle through
+const gradientBackgrounds = [
+  'from-sky-100 to-indigo-100',
+  'from-amber-100 to-orange-100',
+  'from-lime-100 to-emerald-100',
+  'from-rose-100 to-fuchsia-100',
+];
+
 const CollectionItem: React.FC<CollectionItemProps> = ({ title, link, image }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
@@ -111,7 +119,7 @@ const CollectionItem: React.FC<CollectionItemProps> = ({ title, link, image }) =
           isDark ? "bg-mangla-dark-gray border-gray-800" : "bg-white border-gray-300"
         )}>
           <div className="relative overflow-hidden">
-            <div className="w-full h-[260px] flex items-center justify-center bg-white">
+            <div className="w-full h-[260px] flex items-center justify-center bg-gradient-to-tl shadow-inner">
               <div className="p-4 flex items-center justify-center w-full h-full">
                 <img 
                   src={image} 
@@ -225,12 +233,14 @@ const FeaturedCollections: React.FC = () => {
           viewport={{ once: true, amount: 0.1 }}
         >
           {featuredCollections.map((collection, index) => (
-            <CollectionItem 
-              key={index} 
-              title={collection.title}
-              link={collection.link}
-              image={collection.image}
-            />
+            <div key={index} className={`${gradientBackgrounds[index % gradientBackgrounds.length]} bg-gradient-to-tl rounded-lg p-[2px]`}>
+              <CollectionItem 
+                key={`item-${index}`}
+                title={collection.title}
+                link={collection.link}
+                image={collection.image}
+              />
+            </div>
           ))}
         </motion.div>
       </div>
