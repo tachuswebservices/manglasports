@@ -101,13 +101,20 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center">
             <motion.div
-              className="flex flex-col"
+              className="flex items-center"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <span className="text-white font-montserrat font-bold text-2xl">MANGLA SPORTS</span>
-              <span className="text-white/80 text-xs tracking-wider mt-0.5">Precision. Performance. Passion.</span>
+              <img 
+                src="/lovable-uploads/59a0133d-7459-463e-8a2f-fd2a578ea3ea.png" 
+                alt="Mangla Sports Logo" 
+                className="h-12 md:h-14 mr-3"
+              />
+              <div className="flex flex-col">
+                <span className="text-white font-montserrat font-bold text-lg md:text-xl">MANGLA SPORTS</span>
+                <span className="text-white/80 text-xs tracking-wider">Precision. Performance. Passion.</span>
+              </div>
             </motion.div>
           </Link>
 
@@ -296,8 +303,13 @@ const Navbar = () => {
           >
             <div className="pt-20 pb-6 px-4 h-full flex flex-col">
               {/* Logo and branding in mobile menu */}
-              <div className="text-center mb-8">
-                <h2 className="text-mangla-gold font-montserrat text-2xl font-bold">MANGLA SPORTS</h2>
+              <div className="flex flex-col items-center justify-center mb-8">
+                <img 
+                  src="/lovable-uploads/59a0133d-7459-463e-8a2f-fd2a578ea3ea.png" 
+                  alt="Mangla Sports Logo" 
+                  className="h-16 mb-2" 
+                />
+                <h2 className="text-mangla-gold font-montserrat text-xl font-bold">MANGLA SPORTS</h2>
                 <p className="text-white/80 text-xs mt-1">Precision. Performance. Passion.</p>
               </div>
               

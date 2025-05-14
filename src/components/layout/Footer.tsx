@@ -14,7 +14,14 @@ const Footer = () => {
           {/* Company Info */}
           <div>
             <Link to="/" className="flex items-center mb-6">
-              <span className="text-mangla-gold font-montserrat font-bold text-2xl">MANGLA SPORTS</span>
+              <div className="flex items-center">
+                <img 
+                  src="/lovable-uploads/59a0133d-7459-463e-8a2f-fd2a578ea3ea.png" 
+                  alt="Mangla Sports Logo" 
+                  className="h-14 mr-3" 
+                />
+                <span className="text-mangla-gold font-montserrat font-bold text-xl">MANGLA SPORTS</span>
+              </div>
             </Link>
             <p className="text-gray-400 mb-6">
               India's premier destination for high-quality shooting sports equipment and expertise.
