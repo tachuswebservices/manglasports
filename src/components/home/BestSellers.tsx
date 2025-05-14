@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
@@ -34,7 +33,7 @@ const products: BestSellerProps[] = [
   {
     name: "Tachus 10 ETS",
     price: "₹45,999",
-    image: "/lovable-uploads/bfe6bd77-ba77-4a00-83ae-78679b1bc65b.png",
+    image: "/lovable-uploads/aa897794-9610-4c04-9c17-d3928750fc0e.png",
     category: "Electronic Target Systems",
     rating: 4.7,
     soldCount: 76
