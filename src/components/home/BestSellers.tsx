@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../theme/ThemeProvider';
@@ -85,14 +84,12 @@ const BestSellerCard: React.FC<BestSellerProps> = ({ name, price, image, categor
               <img 
                 src={image} 
                 alt={name} 
-                className="transition-transform duration-500 group-hover:scale-105"
+                className="transition-transform duration-500 group-hover:scale-110"
                 style={{ 
                   maxHeight: "100%", 
                   maxWidth: "100%", 
                   objectFit: "contain",
-                  objectPosition: "center",
-                  width: "auto",
-                  height: "auto"
+                  display: "block"
                 }}
               />
             </div>
