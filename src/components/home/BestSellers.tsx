@@ -1,6 +1,6 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { useTheme } from '../theme/ThemeProvider';
 import { Button } from '@/components/ui/button';
 
@@ -80,15 +80,21 @@ const BestSellerCard: React.FC<BestSellerProps> = ({ name, price, image, categor
           <span className="bg-mangla-gold text-mangla-dark-gray text-xs font-bold px-2 py-1 rounded">FEATURED</span>
         </div>
         <div className="relative overflow-hidden">
-          <AspectRatio ratio={4 / 3}>
-            <div className="w-full h-full flex items-center justify-center bg-white p-6">
+          <div className="w-full h-[260px] flex items-center justify-center bg-white">
+            <div className="p-4 flex items-center justify-center w-full h-full">
               <img 
                 src={image} 
                 alt={name} 
-                className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                className="transition-transform duration-500 group-hover:scale-105"
+                style={{ 
+                  maxHeight: "100%", 
+                  maxWidth: "100%", 
+                  objectFit: "contain",
+                  display: "block"
+                }}
               />
             </div>
-          </AspectRatio>
+          </div>
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
             <div className="p-4 w-full">
               <motion.button 
