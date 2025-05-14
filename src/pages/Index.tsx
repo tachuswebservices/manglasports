@@ -4,12 +4,12 @@ import { motion } from 'framer-motion';
 import Navbar from '../components/layout/Navbar';
 import HeroSection from '../components/home/HeroSection';
 import FeaturedCollections from '../components/home/FeaturedCollections';
-import ProductCategories from '../components/home/ProductCategories';
 import NewArrivals from '../components/home/NewArrivals';
 import BestSellers from '../components/home/BestSellers';
 import Testimonials from '../components/home/Testimonials';
 import BrandAssociations from '../components/home/BrandAssociations';
 import WhyChooseUs from '../components/home/WhyChooseUs';
+import AboutSnippet from '../components/home/AboutSnippet';
 import Footer from '../components/layout/Footer';
 
 const Index = () => {
@@ -33,6 +33,7 @@ const Index = () => {
         <NewArrivals />
         <BestSellers />
         <WhyChooseUs />
+        <AboutSnippet />
         <BrandAssociations />
         <Testimonials />
       </main>
