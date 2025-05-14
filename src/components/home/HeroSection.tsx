@@ -36,7 +36,7 @@ const HeroSection = () => {
   };
   
   return (
-    <section className="relative min-h-screen overflow-hidden pt-16">
+    <section className="relative min-h-[100svh] overflow-hidden pt-16">
       {/* Loading state */}
       {!imageLoaded && (
         <div className="absolute inset-0 bg-mangla flex items-center justify-center">
@@ -51,7 +51,7 @@ const HeroSection = () => {
           <img 
             src="/lovable-uploads/043df67b-a8e3-4d7b-a886-d29c545973ab.png"
             alt="Professional Shooting Equipment" 
-            className="w-full h-full object-cover object-center md:object-top"
+            className="w-full h-full object-cover object-[45%_40%] md:object-top"
             fetchPriority="high" 
           />
         </div>
@@ -61,17 +61,17 @@ const HeroSection = () => {
           <div className="container mx-auto px-4 flex justify-end">
             {/* Improved positioning for all screen sizes */}
             <div className={cn(
-              "py-6 md:py-8",
+              "py-4 md:py-8",
               isMobile 
-                ? "fixed top-[80%] right-4 -translate-y-1/2 max-w-[280px] z-10" 
+                ? "absolute bottom-16 left-4 right-4 w-auto max-w-none z-10" 
                 : "max-w-[40%] xl:max-w-[35%] mt-64 transform-none"
             )}>
               <motion.div
                 className={cn(
-                  "p-4 md:p-5 backdrop-blur-md rounded-lg border shadow-lg",
+                  "p-4 md:p-5 rounded-lg border shadow-lg",
                   isDark 
-                    ? "bg-black/30 border-mangla-gold/10 shadow-black/20" 
-                    : "bg-white/30 border-amber-500/10 shadow-black/10"
+                    ? "bg-black/80 border-mangla-gold/30 shadow-black/50" 
+                    : "bg-white/90 border-amber-500/30 shadow-black/30"
                 )}
                 initial={{ x: 50, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}

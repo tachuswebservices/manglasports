@@ -4,19 +4,8 @@
 
 Mangla Sports & Associates is a premier shooting sports equipment retailer in India. This website serves as a professional showcase for their products, expertise, and services.
 
-**URL**: https://lovable.dev/projects/f2910313-f739-41e3-bbb9-85c30cfef562
 
 ## How can I edit this code?
-
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/f2910313-f739-41e3-bbb9-85c30cfef562) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
 
 If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
 
@@ -86,18 +75,8 @@ This project is built with:
   - Modern, clean aesthetic
 
 - **Shopping & Navigation**:
-  - Responsive navbar with mobile menu
-  - Search functionality (UI only)
+  - Responsive navbar with modern slide-in mobile menu
+  - Expandable search functionality with icon toggle
+  - Streamlined header with dynamic search experience
   - Product category routing structure
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/f2910313-f739-41e3-bbb9-85c30cfef562) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
