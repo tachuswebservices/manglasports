@@ -20,7 +20,7 @@ const AboutSnippet = () => {
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.6 }}
           >
-            About Mangla Sports
+            About Mangla Sports & Associates
           </motion.h2>
           
           <motion.div 
@@ -39,7 +39,7 @@ const AboutSnippet = () => {
             transition={{ duration: 0.6, delay: 0.4 }}
           >
             Established with a vision to elevate the shooting sports experience in India, 
-            Mangla Sports represents the pinnacle of quality, expertise, and passion. 
+            Mangla Sports & Associates represents the pinnacle of quality, expertise, and passion. 
             We curate only the finest equipment, backed by decades of collective experience 
             and an unwavering commitment to the shooting community.
           </motion.p>
@@ -54,7 +54,7 @@ const AboutSnippet = () => {
             whileHover={{ x: 5 }}
             whileTap={{ scale: 0.98 }}
           >
-            Discover Our Story
+            Read More
           </motion.a>
         </motion.div>
       </div>
