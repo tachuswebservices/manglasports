@@ -1,13 +1,14 @@
 
 import React, { useEffect } from 'react';
-import { useParams, Navigate } from 'react-router-dom';
+import { useParams, Navigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Star } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import { cn } from '@/lib/utils';
 import { useTheme } from '../components/theme/ThemeProvider';
 import { Card, CardContent } from "@/components/ui/card";
-import { Link } from 'react-router-dom';
 
 interface CollectionItemProps {
   title: string;
@@ -84,6 +85,11 @@ const Products: React.FC = () => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   
+  // Scroll to top when category changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [category]);
+  
   // Find if the category exists in our collections
   const validCategories = allCollections.map(c => c.link.replace('/products/', ''));
   const isValidCategory = category ? validCategories.includes(category) : true;
@@ -110,16 +116,136 @@ const Products: React.FC = () => {
         <Navbar />
         
         <main className="py-20 container-custom">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 capitalize">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-10 capitalize">
             {category.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
           </h1>
-          <div className="w-20 h-1 bg-mangla-gold mb-10"></div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {/* Product listings will be added here */}
-            <div className="text-white text-center py-20">
-              Coming soon! Our product catalog is being updated.
-            </div>
+            {[
+              {
+                id: 'air-rifle-1',
+                name: 'Precision Air Rifle Pro X',
+                price: 45999,
+                originalPrice: 52999,
+                image: '/placeholder-rifle-1.jpg',
+                rating: 4.8,
+                reviewCount: 124,
+                inStock: true
+              },
+              {
+                id: 'air-rifle-2',
+                name: 'Olympic Target Air Rifle',
+                price: 68999,
+                originalPrice: 75999,
+                image: '/placeholder-rifle-2.jpg',
+                rating: 4.9,
+                reviewCount: 87,
+                inStock: true
+              },
+              {
+                id: 'air-rifle-3',
+                name: 'Hunting Air Rifle Elite',
+                price: 38999,
+                image: '/placeholder-rifle-3.jpg',
+                rating: 4.6,
+                reviewCount: 203,
+                inStock: true
+              },
+              {
+                id: 'air-rifle-4',
+                name: 'Junior Air Rifle Trainer',
+                price: 28999,
+                originalPrice: 32999,
+                image: '/placeholder-rifle-4.jpg',
+                rating: 4.7,
+                reviewCount: 56,
+                inStock: false
+              }
+            ].map((product, index) => (
+              <motion.div 
+                key={product.id}
+                className={cn(
+                  "group relative overflow-hidden rounded-lg shadow-lg",
+                  isDark ? "bg-mangla-dark-gray" : "bg-white"
+                )}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                whileHover={{ y: -5, boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)' }}
+              >
+                <Link to={`/products/product/${product.id}`} className="block">
+                  <div className="aspect-square bg-gray-100 dark:bg-gray-800 relative overflow-hidden">
+                    <img 
+                      src={product.image} 
+                      alt={product.name}
+                      className="w-full h-full object-contain p-4 transition-transform duration-300 group-hover:scale-105"
+                    />
+                    {!product.inStock && (
+                      <div className="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
+                        Out of Stock
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="p-4">
+                    <h3 className="font-medium text-gray-900 dark:text-white mb-1 line-clamp-2 h-12">
+                      {product.name}
+                    </h3>
+                    
+                    <div className="flex items-center mb-2">
+                      <div className="flex items-center">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star 
+                            key={star}
+                            className={cn(
+                              "w-4 h-4",
+                              star <= Math.floor(product.rating) 
+                                ? "fill-mangla-gold text-mangla-gold" 
+                                : isDark 
+                                  ? "text-gray-700" 
+                                  : "text-gray-300"
+                            )} 
+                          />
+                        ))}
+                        <span className="text-xs text-gray-500 dark:text-gray-400 ml-1">
+                          ({product.reviewCount})
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-baseline">
+                      <span className="text-lg font-bold text-gray-900 dark:text-white">
+                        ₹{product.price.toLocaleString()}
+                      </span>
+                      {product.originalPrice && (
+                        <span className="ml-2 text-sm text-gray-500 line-through">
+                          ₹{product.originalPrice.toLocaleString()}
+                        </span>
+                      )}
+                      {product.originalPrice && (
+                        <span className="ml-2 text-xs font-medium text-green-600 dark:text-green-400">
+                          {Math.round((1 - product.price / product.originalPrice) * 100)}% OFF
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+                
+                <div className="px-4 pb-4">
+                  <Button 
+                    className={cn(
+                      "w-full py-2 text-sm font-medium transition-colors",
+                      product.inStock 
+                        ? "bg-mangla-gold hover:bg-mangla-gold/90 text-mangla"
+                        : "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                    )}
+                    disabled={!product.inStock}
+                  >
+                    {product.inStock ? 'Add to Cart' : 'Out of Stock'}
+                  </Button>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </main>
         
@@ -141,7 +267,7 @@ const Products: React.FC = () => {
     >
       <Navbar />
       
-      <main className="py-20 container-custom">
+      <main className="px-4 sm:px-6 pt-32 pb-16 md:pt-36 md:pb-20 max-w-7xl mx-auto">
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -149,15 +275,11 @@ const Products: React.FC = () => {
           className="mb-10"
         >
           <h1 className={cn(
-            "text-4xl md:text-5xl font-bold mb-6",
+            "text-3xl sm:text-4xl md:text-5xl font-bold mb-6 sm:mb-8",
             isDark ? "text-white" : "text-slate-900"
           )}>
             All Collections
           </h1>
-          <div className={cn(
-            "w-20 h-1 mb-6",
-            isDark ? "bg-mangla-gold" : "bg-amber-500"
-          )}></div>
           <p className={cn(
             "max-w-3xl mb-10",
             isDark ? "text-gray-300" : "text-slate-700"
@@ -167,7 +289,7 @@ const Products: React.FC = () => {
         </motion.div>
         
         <motion.div 
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
           variants={container}
           initial="hidden"
           animate="show"

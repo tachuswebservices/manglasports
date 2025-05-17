@@ -13,9 +13,10 @@ import AboutSnippet from '../components/home/AboutSnippet';
 import Footer from '../components/layout/Footer';
 
 const Index = () => {
-  // Set page title
+  // Set page title and scroll to top
   useEffect(() => {
     document.title = "Mangla Sports - Precision. Performance. Passion";
+    window.scrollTo(0, 0);
   }, []);
 
   return (
@@ -27,7 +28,7 @@ const Index = () => {
     >
       <Navbar />
       
-      <main>
+      <main className="pt-0">
         <HeroSection />
         <FeaturedCollections />
         <NewArrivals />

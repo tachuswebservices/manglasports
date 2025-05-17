@@ -118,11 +118,14 @@ const Navbar = () => {
               <Link to="/products/air-pistols" className={`${isDark ? 'text-gray-300' : 'text-slate-700'} px-3 py-2 text-sm font-medium hover:text-mangla-gold transition-colors`}>
                 Air Pistols
               </Link>
-              <Link to="/products/pellets" className={`${isDark ? 'text-gray-300' : 'text-slate-700'} px-3 py-2 text-sm font-medium hover:text-mangla-gold transition-colors`}>
-                Pellets
+              <Link to="/products/air-pellets" className={`${isDark ? 'text-gray-300' : 'text-slate-700'} px-3 py-2 text-sm font-medium hover:text-mangla-gold transition-colors`}>
+                Air Pellets
               </Link>
-              <Link to="/products/accessories" className={`${isDark ? 'text-gray-300' : 'text-slate-700'} px-3 py-2 text-sm font-medium hover:text-mangla-gold transition-colors`}>
-                Accessories
+              <Link to="/products/air-rifle-accessories" className={`${isDark ? 'text-gray-300' : 'text-slate-700'} px-3 py-2 text-sm font-medium hover:text-mangla-gold transition-colors`}>
+                Air Rifle Accessories
+              </Link>
+              <Link to="/products/air-pistol-accessories" className={`${isDark ? 'text-gray-300' : 'text-slate-700'} px-3 py-2 text-sm font-medium hover:text-mangla-gold transition-colors`}>
+                Air Pistol Accessories
               </Link>
             </div>
             

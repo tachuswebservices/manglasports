@@ -6,6 +6,7 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "../ui/button";
 import { ArrowDown } from "lucide-react";
 import { useIsMobile } from '@/hooks/use-mobile';
+import { Link } from 'react-router-dom';
 
 const HeroSection = () => {
   const { theme } = useTheme();
@@ -107,13 +108,16 @@ const HeroSection = () => {
                     className={`${isDark ? 'bg-mangla-gold hover:bg-mangla-gold/90 text-mangla' : 'bg-amber-500 hover:bg-amber-600 text-white'} px-4 py-2 h-auto text-xs md:text-sm font-medium`}
                     asChild
                   >
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.98 }}
-                      transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                    >
-                      Explore Our Collection
-                    </motion.button>
+                    <Link to="/categories">
+                      <motion.span
+                        className="inline-block w-full h-full"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.98 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                      >
+                        Explore Our Collection
+                      </motion.span>
+                    </Link>
                   </Button>
                 </motion.div>
                 

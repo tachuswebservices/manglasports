@@ -4,6 +4,14 @@
 
 Mangla Sports & Associates is a premier shooting sports equipment retailer in India. This website serves as a professional showcase for their products, expertise, and services.
 
+### Key Features
+
+- **Unified Product Browsing**: Single-page architecture for seamless category navigation
+- **Dynamic Filtering**: Real-time product filtering based on categories and attributes
+- **Responsive Design**: Optimized for all devices from mobile to desktop
+- **Performance Optimized**: Fast loading and smooth transitions between views
+- **Modern UI/UX**: Clean, intuitive interface with smooth animations
+
 
 ## How can I edit this code?
 
