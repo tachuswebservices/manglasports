@@ -108,7 +108,7 @@ const HeroSection = () => {
                     className={`${isDark ? 'bg-mangla-gold hover:bg-mangla-gold/90 text-mangla' : 'bg-amber-500 hover:bg-amber-600 text-white'} px-4 py-2 h-auto text-xs md:text-sm font-medium`}
                     asChild
                   >
-                    <Link to="/categories">
+                    <Link to="/products">
                       <motion.span
                         className="inline-block w-full h-full"
                         whileHover={{ scale: 1.05 }}

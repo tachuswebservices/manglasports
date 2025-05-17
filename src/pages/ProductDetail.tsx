@@ -32,7 +32,7 @@ const fetchProduct = async (id: string): Promise<Product | null> => {
   // Simulate API call
   await new Promise(resolve => setTimeout(resolve, 500));
   
-  // Mock product data
+  // Mock product data for all products
   const mockProducts: { [key: string]: Product } = {
     'air-rifle-1': {
       id: 'air-rifle-1',
@@ -71,10 +71,124 @@ const fetchProduct = async (id: string): Promise<Product | null> => {
       inStock: true,
       sku: 'AR-PRO-X-2023',
       brand: 'Mangla Precision'
+    },
+    'air-rifle-2': {
+      id: 'air-rifle-2',
+      name: 'Olympic Air Rifle Elite',
+      category: 'Air Rifles',
+      price: 38999,
+      originalPrice: 42999,
+      description: 'Competition-ready air rifle designed for Olympic-level precision shooting with advanced features and ergonomic design.',
+      features: [
+        'Precision match barrel for superior accuracy',
+        'Adjustable stock with cheek rest',
+        'Two-stage match trigger',
+        'Integrated accessory rail',
+        'Ergonomic grip for optimal control'
+      ],
+      specifications: {
+        'Caliber': '.177 / 4.5mm',
+        'Velocity': 'Up to 900 FPS',
+        'Action': 'Pre-charged pneumatic',
+        'Overall Length': '43 inches',
+        'Barrel Length': '18.5 inches',
+        'Weight': '8.2 lbs',
+        'Power Source': 'PCP',
+        'Safety': 'Manual',
+        'Sights': 'Diopter sight system',
+        'Trigger': 'Two-stage match grade'
+      },
+      images: [
+        '/placeholder-rifle-2.jpg',
+        '/placeholder-rifle-1.jpg',
+        '/placeholder-rifle-3.jpg'
+      ],
+      rating: 4.7,
+      reviewCount: 89,
+      inStock: true,
+      sku: 'AR-OLY-ELITE-2023',
+      brand: 'Mangla Precision'
+    },
+    'air-pistol-1': {
+      id: 'air-pistol-1',
+      name: 'Precision Air Pistol Pro',
+      category: 'Air Pistols',
+      price: 32999,
+      originalPrice: 36999,
+      description: 'Professional air pistol designed for competitive shooting with exceptional accuracy and ergonomic design.',
+      features: [
+        'Match-grade trigger with adjustable pull',
+        'Ergonomic grip for superior control',
+        'Precision barrel for consistent accuracy',
+        'Adjustable rear sight',
+        'Integrated accessory rail'
+      ],
+      specifications: {
+        'Caliber': '.177 / 4.5mm',
+        'Velocity': 'Up to 600 FPS',
+        'Action': 'Single-stroke pneumatic',
+        'Overall Length': '16 inches',
+        'Barrel Length': '6.5 inches',
+        'Weight': '2.2 lbs',
+        'Power Source': 'Pneumatic',
+        'Safety': 'Automatic',
+        'Sights': 'Adjustable rear, fiber optic front',
+        'Trigger': 'Two-stage adjustable'
+      },
+      images: [
+        '/placeholder-pistol-1.jpg',
+        '/placeholder-pistol-2.jpg'
+      ],
+      rating: 4.6,
+      reviewCount: 76,
+      inStock: true,
+      sku: 'AP-PRO-2023',
+      brand: 'Mangla Precision'
     }
   };
 
-  return mockProducts[id] || null;
+  // If product not found, check if it's a valid ID pattern and return a generic product
+  if (!mockProducts[id]) {
+    const category = id.split('-')[0];
+    const productName = id.split('-').map(word => 
+      word.charAt(0).toUpperCase() + word.slice(1)
+    ).join(' ');
+    
+    return {
+      id,
+      name: productName,
+      category: category === 'air' ? 'Air Rifles' : 'Air Pistols',
+      price: Math.floor(Math.random() * 30000) + 20000, // Random price between 20000-50000
+      description: `High-quality ${category.replace('-', ' ')} designed for precision shooting.`,
+      features: [
+        'Precision barrel for consistent accuracy',
+        'Ergonomic design for comfortable shooting',
+        'Adjustable sights',
+        'Durable construction',
+        'Includes basic accessories'
+      ],
+      specifications: {
+        'Caliber': '.177 / 4.5mm',
+        'Velocity': 'Up to 850 FPS',
+        'Action': 'Break barrel',
+        'Overall Length': '42 inches',
+        'Barrel Length': '18 inches',
+        'Weight': '7.5 lbs',
+        'Power Source': 'Spring piston',
+        'Safety': 'Automatic',
+        'Sights': 'Fiber optic',
+        'Trigger': 'Two-stage'
+      },
+      images: ['/placeholder-rifle-1.jpg'],
+      rating: 4.5,
+      reviewCount: 50,
+      inStock: true,
+      sku: id.toUpperCase(),
+      brand: 'Mangla Precision'
+    };
+  }
+
+  return mockProducts[id];
 };
 
 const ProductDetail: React.FC = () => {

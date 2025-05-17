@@ -4,8 +4,6 @@ import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useTheme } from '../components/theme/ThemeProvider';
 import { Card, CardContent } from "@/components/ui/card";
-import Navbar from '../components/layout/Navbar';
-import Footer from '../components/layout/Footer';
 
 interface CollectionItemProps {
   title: string;
@@ -101,35 +99,66 @@ const CollectionItem: React.FC<CollectionItemProps> = ({ title, link, image }) =
     >
       <Link to={link}>
         <Card className={cn(
-          "h-full overflow-hidden",
-          isDark ? "bg-mangla-dark-gray border-gray-800" : "bg-white border-gray-300"
+          "h-full overflow-hidden shadow-lg",
+          isDark 
+            ? "bg-mangla-dark-gray border-gray-800 hover:border-mangla-gold/70" 
+            : "bg-white border-gray-200 hover:border-amber-500/70"
         )}>
           <div className="relative overflow-hidden">
             <div className="w-full h-40 sm:h-48 md:h-56 lg:h-64 flex items-center justify-center bg-white overflow-hidden">
-              <div className="p-4 flex items-center justify-center w-full h-full">
-                <img 
+              <div className="p-4 flex items-center justify-center w-full h-full relative">
+                {/* Background pattern */}
+                <div className={cn(
+                  "absolute inset-0 opacity-5",
+                  isDark ? "bg-grid-white/10" : "bg-grid-black/10"
+                )}></div>
+                
+                {/* Category image with enhanced animation */}
+                <motion.img 
                   src={image} 
                   alt={title} 
-                  className="transition-transform duration-500 group-hover:scale-110"
+                  className="z-10 transition-all duration-500 group-hover:scale-110"
                   style={{ 
                     maxHeight: "100%", 
                     maxWidth: "100%", 
                     objectFit: "contain",
                     display: "block"
                   }}
+                  whileHover={{ rotate: [0, -1, 1, -1, 0] }}
+                  transition={{ duration: 0.5 }}
                 />
               </div>
             </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
               <div className="p-4 w-full">
                 <motion.div 
-                  className="w-full py-2 bg-mangla-gold text-mangla-dark-gray font-medium rounded text-center"
+                  className={cn(
+                    "w-full py-2.5 font-medium rounded-md text-center flex items-center justify-center space-x-2",
+                    isDark 
+                      ? "bg-mangla-gold text-mangla-dark-gray" 
+                      : "bg-amber-600 text-white"
+                  )}
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                 >
-                  View Collection
+                  <span>View Collection</span>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                  </svg>
                 </motion.div>
               </div>
+            </div>
+            
+            {/* Category badge */}
+            <div className="absolute top-3 right-3 z-10">
+              <span className={cn(
+                "px-2 py-1 text-xs font-medium rounded-full",
+                isDark 
+                  ? "bg-mangla-gold/90 text-mangla-dark-gray" 
+                  : "bg-amber-600/90 text-white"
+              )}>
+                Category
+              </span>
             </div>
           </div>
           <CardContent className="p-4">
@@ -157,44 +186,103 @@ const Categories: React.FC = () => {
   }, []);
 
   return (
-    <motion.div 
-      className={cn(
-        "min-h-screen",
-        isDark ? "bg-mangla" : "bg-slate-50"
-      )}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-    >
-      <Navbar />
-      
-      <main className="px-4 sm:px-6 pt-32 pb-16 md:pt-36 md:pb-20 max-w-7xl mx-auto">
+    <div className={cn(
+      "min-h-screen flex flex-col",
+      isDark ? "bg-slate-900 text-white" : "bg-white text-slate-900"
+    )}>
+      <div className="container mx-auto px-4 pt-24 pb-12">
+        {/* Breadcrumb Navigation */}
+        <motion.nav 
+          className="flex mb-6 mt-6" 
+          aria-label="Breadcrumb"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <ol className="inline-flex items-center space-x-1 md:space-x-2">
+            <li className="inline-flex items-center">
+              <Link to="/" className={cn(
+                "inline-flex items-center text-sm font-medium", 
+                isDark ? "text-gray-300 hover:text-mangla-gold" : "text-gray-600 hover:text-amber-600"
+              )}>
+                <svg className="w-3 h-3 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L4 10.414V17a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-6.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
+                </svg>
+                Home
+              </Link>
+            </li>
+            <li aria-current="page">
+              <div className="flex items-center">
+                <svg className="w-3 h-3 mx-1 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 9 4-4-4-4"/>
+                </svg>
+                <span className={cn(
+                  "ml-1 text-sm font-medium md:ml-2",
+                  isDark ? "text-mangla-gold" : "text-amber-600"
+                )}>
+                  Categories
+                </span>
+              </div>
+            </li>
+          </ol>
+        </motion.nav>
+        
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6 }}
-          className="mb-10 text-center"
+          className="mb-12 text-center"
         >
           <h1 className={cn(
             "text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6",
             isDark ? "text-white" : "text-slate-900"
           )}>
-            All Categories
+            Browse Our Categories
           </h1>
           <div className={cn(
-            "w-16 sm:w-20 h-1 mx-auto mb-4 sm:mb-6",
+            "w-16 sm:w-24 h-1 mx-auto mb-4 sm:mb-6",
             isDark ? "bg-mangla-gold" : "bg-amber-500"
           )}></div>
           <p className={cn(
-            "max-w-3xl mx-auto",
+            "max-w-3xl mx-auto text-base md:text-lg",
             isDark ? "text-gray-300" : "text-slate-700"
           )}>
-            Explore our complete range of shooting sports equipment and accessories
+            Explore our premium collection of shooting sports equipment and accessories
           </p>
+          <div className="mt-6 flex justify-center">
+            <Link 
+              to="/products"
+              className={cn(
+                "inline-flex items-center px-5 py-2.5 rounded-md font-medium text-sm",
+                isDark 
+                  ? "bg-mangla-gold text-mangla-dark-gray hover:bg-mangla-gold/90" 
+                  : "bg-amber-600 text-white hover:bg-amber-700"
+              )}
+            >
+              View All Products
+              <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+              </svg>
+            </Link>
+          </div>
+        </motion.div>
+        
+        {/* Category count indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className={cn(
+            "mb-6 text-sm py-1.5 px-3 rounded-full inline-flex items-center",
+            isDark ? "bg-gray-800 text-gray-200" : "bg-gray-100 text-gray-700"
+          )}
+        >
+          <span className="font-medium mr-1">{allCollections.length}</span>
+          <span>categories available</span>
         </motion.div>
         
         <motion.div 
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8"
           variants={container}
           initial="hidden"
           animate="show"
@@ -208,11 +296,17 @@ const Categories: React.FC = () => {
             />
           ))}
         </motion.div>
-      </main>
-      
-      <Footer />
-    </motion.div>
+      </div>
+    </div>
   );
 };
 
-export default Categories;
+import PageLayout from '../components/layout/PageLayout';
+
+const CategoriesPage = () => (
+  <PageLayout>
+    <Categories />
+  </PageLayout>
+);
+
+export default CategoriesPage;
