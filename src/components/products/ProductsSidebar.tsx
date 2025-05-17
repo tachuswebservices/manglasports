@@ -18,6 +18,8 @@ interface ProductsSidebarProps {
   onFilterChange: (filters: ProductFilters) => void;
   onClearFilters: () => void;
   allCategories: { slug: string; title: string }[];
+  slug: string; // The current category slug from the URL
+  title: string;
   allBrands: string[];
   maxPrice: number;
   hideCategories?: boolean; // Flag to hide the categories section
@@ -28,10 +30,13 @@ const ProductsSidebar: React.FC<ProductsSidebarProps> = ({
   onFilterChange,
   onClearFilters,
   allCategories = [],
+  slug = '', // Current category slug from the URL
   allBrands = [],
   maxPrice = 100000,
   hideCategories = false
 }) => {
+  // Convert slug to category format for matching with filters
+  const categorySlug = slug.replace(/\//g, '');
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   
@@ -204,23 +209,26 @@ const ProductsSidebar: React.FC<ProductsSidebarProps> = ({
               </div>
             ) : null}
             
-            {filters.categories.map(category => (
-              <div 
-                key={`filter-cat-${category}`}
-                className={cn(
-                  "text-xs px-2 py-1 rounded-full flex items-center gap-1",
-                  isDark ? "bg-slate-700" : "bg-gray-200"
-                )}
-              >
-                {category}
-                <button 
-                  onClick={() => handleCategoryChange(category, false)}
-                  className="ml-1 text-gray-500 hover:text-red-500"
+            {/* Don't show category filter if it matches the current page category */
+            filters.categories
+              .filter(category => !hideCategories || category !== categorySlug)
+              .map(category => (
+                <div 
+                  key={`filter-cat-${category}`}
+                  className={cn(
+                    "text-xs px-2 py-1 rounded-full flex items-center gap-1",
+                    isDark ? "bg-slate-700" : "bg-gray-200"
+                  )}
                 >
-                  <X className="w-3 h-3" />
-                </button>
-              </div>
-            ))}
+                  {category}
+                  <button 
+                    onClick={() => handleCategoryChange(category, false)}
+                    className="ml-1 text-gray-500 hover:text-red-500"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ))}
             
             {/* Display other active filters similarly */}
           </div>

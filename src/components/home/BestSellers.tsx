@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { useTheme } from '../theme/ThemeProvider';
 import { Button } from '@/components/ui/button';
 
@@ -96,13 +97,15 @@ const BestSellerCard: React.FC<BestSellerProps> = ({ name, price, image, categor
           </div>
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
             <div className="p-4 w-full">
-              <motion.button 
-                className="w-full py-2 bg-mangla-gold text-mangla-dark-gray font-medium rounded hover:bg-yellow-500 transition-colors"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-              >
-                View Details
-              </motion.button>
+              <Link to={`/products/product/${name.toLowerCase().replace(/\s+/g, '-')}`}>
+                <motion.button 
+                  className="w-full py-2 bg-mangla-gold text-mangla-dark-gray font-medium rounded hover:bg-yellow-500 transition-colors"
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  View Details
+                </motion.button>
+              </Link>
             </div>
           </div>
         </div>
@@ -112,12 +115,14 @@ const BestSellerCard: React.FC<BestSellerProps> = ({ name, price, image, categor
           <p className={`${isDark ? 'text-gray-300' : 'text-slate-700'} font-bold`}>{price}</p>
           
           <div className={`flex justify-center items-center mt-3 pt-3 border-t ${isDark ? 'border-gray-700' : 'border-gray-300'}`}>
-            <Button 
-              className={`w-full ${isDark ? 'bg-mangla-dark-gray hover:bg-gray-700 text-mangla-gold border border-mangla-gold' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
-              size="sm"
-            >
-              View Details
-            </Button>
+            <Link to={`/products/product/${name.toLowerCase().replace(/\s+/g, '-')}`} className="w-full">
+              <Button 
+                className={`w-full ${isDark ? 'bg-mangla-dark-gray hover:bg-gray-700 text-mangla-gold border border-mangla-gold' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
+                size="sm"
+              >
+                View Details
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
@@ -150,13 +155,21 @@ const BestSellers = () => {
             ></motion.div>
             <p className={`${isDark ? 'text-gray-400' : 'text-slate-600'}`}>Our most popular premium shooting equipment</p>
           </div>
-          <motion.button 
-            className={`hidden md:block ${isDark ? 'text-mangla-gold hover:text-white border border-mangla-gold hover:border-white' : 'text-blue-600 hover:text-white border border-blue-600 hover:border-white hover:bg-blue-600'} px-6 py-2 rounded-md transition-colors`}
-            whileHover={{ scale: 1.05, backgroundColor: isDark ? "rgba(212, 175, 55, 0.1)" : undefined }}
+          <motion.div
+            initial={{ opacity: 1 }}
+            whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            View All
-          </motion.button>
+            <Button
+              variant="outline"
+              className={`hidden md:block ${isDark ? 'border-mangla-gold text-mangla-gold hover:bg-mangla-gold/10 hover:text-white' : 'border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white'} px-6 py-2 h-auto`}
+              asChild
+            >
+              <Link to="/products">
+                View All
+              </Link>
+            </Button>
+          </motion.div>
         </motion.div>
         
         <motion.div 
@@ -186,13 +199,21 @@ const BestSellers = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
-          <motion.button 
-            className={`${isDark ? 'text-mangla-gold hover:text-white border border-mangla-gold hover:border-white' : 'text-blue-600 hover:text-white border border-blue-600 hover:border-white hover:bg-blue-600'} px-6 py-2 rounded-md transition-colors`}
-            whileHover={{ scale: 1.05 }}
+          <motion.div
+            initial={{ opacity: 1 }}
+            whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            View All
-          </motion.button>
+            <Button
+              variant="outline"
+              className={`${isDark ? 'border-mangla-gold text-mangla-gold hover:bg-mangla-gold/10 hover:text-white' : 'border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white'} px-6 py-2 h-auto`}
+              asChild
+            >
+              <Link to="/products">
+                View All
+              </Link>
+            </Button>
+          </motion.div>
         </motion.div>
       </div>
     </section>

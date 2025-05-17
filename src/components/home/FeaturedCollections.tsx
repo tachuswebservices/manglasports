@@ -211,10 +211,9 @@ const FeaturedCollections: React.FC = () => {
           </motion.div>
           
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.8 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+            initial={{ opacity: 1 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
             <Button 
               variant={isDark ? "outline" : "default"}
@@ -226,8 +225,7 @@ const FeaturedCollections: React.FC = () => {
               asChild
             >
               <Link to="/products">
-                View All Collections 
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                View All Collections
               </Link>
             </Button>
           </motion.div>

@@ -8,187 +8,60 @@ import { cn } from '@/lib/utils';
 import { useTheme } from '@/components/theme/ThemeProvider';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import { Product as BaseProduct, products } from '@/data/products';
 
-// Mock product data - replace with actual API call
-interface Product {
-  id: string;
-  name: string;
-  category: string;
-  price: number;
-  originalPrice?: number;
+// Extended Product interface with additional detail fields
+interface DetailedProduct extends BaseProduct {
   description: string;
   features: string[];
   specifications: { [key: string]: string };
   images: string[];
-  rating: number;
-  reviewCount: number;
-  inStock: boolean;
   sku: string;
-  brand: string;
 }
 
-// Mock function to fetch product data - replace with actual API call
-const fetchProduct = async (id: string): Promise<Product | null> => {
+// Function to fetch product data from centralized data source
+const fetchProduct = async (productId: string): Promise<DetailedProduct | null> => {
   // Simulate API call
   await new Promise(resolve => setTimeout(resolve, 500));
   
-  // Mock product data for all products
-  const mockProducts: { [key: string]: Product } = {
-    'air-rifle-1': {
-      id: 'air-rifle-1',
-      name: 'Precision Air Rifle Pro X',
-      category: 'Air Rifles',
-      price: 45999,
-      originalPrice: 52999,
-      description: 'Professional-grade air rifle designed for competitive shooting with exceptional accuracy and precision. Features an adjustable stock, match-grade trigger, and advanced recoil absorption system.',
-      features: [
-        'Match-grade trigger with adjustable pull weight',
-        'Advanced recoil absorption system',
-        'Precision-rifled barrel for superior accuracy',
-        'Adjustable cheek rest and butt pad',
-        'Integrated accessory rail for scopes and sights'
-      ],
-      specifications: {
-        'Caliber': '.177 / 4.5mm',
-        'Velocity': 'Up to 1000 FPS',
-        'Action': 'Break barrel',
-        'Overall Length': '44 inches',
-        'Barrel Length': '19.5 inches',
-        'Weight': '7.7 lbs',
-        'Power Source': 'Spring piston',
-        'Safety': 'Automatic',
-        'Sights': 'Fiber optic front and rear',
-        'Trigger': 'Two-stage adjustable'
-      },
-      images: [
-        '/placeholder-rifle-1.jpg',
-        '/placeholder-rifle-2.jpg',
-        '/placeholder-rifle-3.jpg',
-        '/placeholder-rifle-4.jpg'
-      ],
-      rating: 4.8,
-      reviewCount: 124,
-      inStock: true,
-      sku: 'AR-PRO-X-2023',
-      brand: 'Mangla Precision'
+  // Find the product in our centralized data source
+  const product = products.find(p => p.id === productId || p.name.toLowerCase().replace(/\s+/g, '-') === productId);
+  
+  if (!product) return null;
+  
+  // Enhance the product with additional details
+  // In a real app, these would come from an API, but here we'll generate some mock details
+  return {
+    ...product,
+    description: `Professional-grade ${product.category.toLowerCase()} designed for competitive shooting with exceptional accuracy and precision. Features an adjustable stock, match-grade trigger, and advanced recoil absorption system.`,
+    features: [
+      'Match-grade trigger with adjustable pull weight',
+      'Advanced recoil absorption system',
+      'Precision-rifled barrel for superior accuracy',
+      'Adjustable cheek rest and butt pad',
+      'Integrated accessory rail for scopes and sights'
+    ],
+    specifications: {
+      'Brand': product.brand,
+      'Category': product.category,
+      'Caliber': '.177 / 4.5mm',
+      'Velocity': 'Up to 1000 FPS',
+      'Action': product.category.includes('Pistol') ? 'Semi-automatic' : 'Break barrel',
+      'Overall Length': product.category.includes('Pistol') ? '11 inches' : '44 inches',
+      'Barrel Length': product.category.includes('Pistol') ? '5.5 inches' : '19.5 inches',
+      'Weight': product.category.includes('Pistol') ? '2.5 lbs' : '7.7 lbs',
+      'Power Source': product.category.includes('CO2') ? 'CO2' : 'Spring piston',
+      'Safety': 'Automatic',
+      'Trigger': 'Two-stage adjustable'
     },
-    'air-rifle-2': {
-      id: 'air-rifle-2',
-      name: 'Olympic Air Rifle Elite',
-      category: 'Air Rifles',
-      price: 38999,
-      originalPrice: 42999,
-      description: 'Competition-ready air rifle designed for Olympic-level precision shooting with advanced features and ergonomic design.',
-      features: [
-        'Precision match barrel for superior accuracy',
-        'Adjustable stock with cheek rest',
-        'Two-stage match trigger',
-        'Integrated accessory rail',
-        'Ergonomic grip for optimal control'
-      ],
-      specifications: {
-        'Caliber': '.177 / 4.5mm',
-        'Velocity': 'Up to 900 FPS',
-        'Action': 'Pre-charged pneumatic',
-        'Overall Length': '43 inches',
-        'Barrel Length': '18.5 inches',
-        'Weight': '8.2 lbs',
-        'Power Source': 'PCP',
-        'Safety': 'Manual',
-        'Sights': 'Diopter sight system',
-        'Trigger': 'Two-stage match grade'
-      },
-      images: [
-        '/placeholder-rifle-2.jpg',
-        '/placeholder-rifle-1.jpg',
-        '/placeholder-rifle-3.jpg'
-      ],
-      rating: 4.7,
-      reviewCount: 89,
-      inStock: true,
-      sku: 'AR-OLY-ELITE-2023',
-      brand: 'Mangla Precision'
-    },
-    'air-pistol-1': {
-      id: 'air-pistol-1',
-      name: 'Precision Air Pistol Pro',
-      category: 'Air Pistols',
-      price: 32999,
-      originalPrice: 36999,
-      description: 'Professional air pistol designed for competitive shooting with exceptional accuracy and ergonomic design.',
-      features: [
-        'Match-grade trigger with adjustable pull',
-        'Ergonomic grip for superior control',
-        'Precision barrel for consistent accuracy',
-        'Adjustable rear sight',
-        'Integrated accessory rail'
-      ],
-      specifications: {
-        'Caliber': '.177 / 4.5mm',
-        'Velocity': 'Up to 600 FPS',
-        'Action': 'Single-stroke pneumatic',
-        'Overall Length': '16 inches',
-        'Barrel Length': '6.5 inches',
-        'Weight': '2.2 lbs',
-        'Power Source': 'Pneumatic',
-        'Safety': 'Automatic',
-        'Sights': 'Adjustable rear, fiber optic front',
-        'Trigger': 'Two-stage adjustable'
-      },
-      images: [
-        '/placeholder-pistol-1.jpg',
-        '/placeholder-pistol-2.jpg'
-      ],
-      rating: 4.6,
-      reviewCount: 76,
-      inStock: true,
-      sku: 'AP-PRO-2023',
-      brand: 'Mangla Precision'
-    }
+    images: [
+      product.image,
+      '/placeholder-rifle-2.jpg',
+      '/placeholder-rifle-3.jpg',
+      '/placeholder-rifle-4.jpg'
+    ],
+    sku: `MS-${product.id.toUpperCase()}-2024`,
   };
-
-  // If product not found, check if it's a valid ID pattern and return a generic product
-  if (!mockProducts[id]) {
-    const category = id.split('-')[0];
-    const productName = id.split('-').map(word => 
-      word.charAt(0).toUpperCase() + word.slice(1)
-    ).join(' ');
-    
-    return {
-      id,
-      name: productName,
-      category: category === 'air' ? 'Air Rifles' : 'Air Pistols',
-      price: Math.floor(Math.random() * 30000) + 20000, // Random price between 20000-50000
-      description: `High-quality ${category.replace('-', ' ')} designed for precision shooting.`,
-      features: [
-        'Precision barrel for consistent accuracy',
-        'Ergonomic design for comfortable shooting',
-        'Adjustable sights',
-        'Durable construction',
-        'Includes basic accessories'
-      ],
-      specifications: {
-        'Caliber': '.177 / 4.5mm',
-        'Velocity': 'Up to 850 FPS',
-        'Action': 'Break barrel',
-        'Overall Length': '42 inches',
-        'Barrel Length': '18 inches',
-        'Weight': '7.5 lbs',
-        'Power Source': 'Spring piston',
-        'Safety': 'Automatic',
-        'Sights': 'Fiber optic',
-        'Trigger': 'Two-stage'
-      },
-      images: ['/placeholder-rifle-1.jpg'],
-      rating: 4.5,
-      reviewCount: 50,
-      inStock: true,
-      sku: id.toUpperCase(),
-      brand: 'Mangla Precision'
-    };
-  }
-
-  return mockProducts[id];
 };
 
 const ProductDetail: React.FC = () => {
@@ -197,7 +70,7 @@ const ProductDetail: React.FC = () => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   
-  const [product, setProduct] = useState<Product | null>(null);
+  const [product, setProduct] = useState<DetailedProduct | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -376,20 +249,18 @@ const ProductDetail: React.FC = () => {
             {/* Product Info */}
             <div className={cn("py-2", isDark ? "text-gray-200" : "text-gray-800")}>
               {/* Category and Brand */}
-              <div className="flex items-center space-x-4 mb-2">
+              <div className="flex flex-col lg:flex-row gap-4 items-center mb-6">
+                <h1 className="text-3xl md:text-4xl font-bold">{product.name}</h1>
                 <span className={cn(
-                  "text-sm font-medium px-2 py-1 rounded",
-                  isDark ? "bg-mangla-gold/20 text-mangla-gold" : "bg-amber-100 text-amber-800"
+                  "px-3 py-1 text-sm font-medium rounded-full",
+                  product.inStock 
+                    ? "bg-green-50 text-green-700 dark:bg-green-900 dark:text-green-300"
+                    : "bg-red-50 text-red-700 dark:bg-red-900 dark:text-red-300"
                 )}>
-                  {product.category}
+                  {product.inStock ? 'In Stock' : 'Out of Stock'}
                 </span>
-                <span className="text-sm opacity-75">SKU: {product.sku}</span>
               </div>
-              
-              {/* Title */}
-              <h1 className="text-3xl md:text-4xl font-bold mb-3">
-                {product.name}
-              </h1>
+              <span className="text-sm opacity-75">SKU: {product.sku}</span>
               
               {/* Rating */}
               <div className="flex items-center mb-4">
@@ -416,20 +287,21 @@ const ProductDetail: React.FC = () => {
               {/* Price */}
               <div className="mb-6">
                 <div className="flex items-baseline space-x-3">
-                  <span className="text-3xl font-bold">
-                    ₹{product.price.toLocaleString()}
-                  </span>
-                  {product.originalPrice && (
-                    <span className="text-lg line-through opacity-60">
-                      ₹{product.originalPrice.toLocaleString()}
+                  <p className="text-xl md:text-2xl font-bold mb-2">{product.price}</p>
+                {product.originalPrice && (
+                  <div className="flex items-center gap-2 mb-4">
+                    <p className="text-gray-500 line-through">₹{product.originalPrice.toLocaleString()}</p>
+                    <span className="bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-red-900 dark:text-red-300">
+                      Save ₹{(product.originalPrice - product.numericPrice).toLocaleString()}
                     </span>
-                  )}
-                  {product.originalPrice && (
+                  </div>
+                )}  {product.originalPrice && (
                     <span className="text-sm font-medium bg-red-600 text-white px-2 py-0.5 rounded">
-                      {Math.round((1 - product.price / product.originalPrice) * 100)}% OFF
+                      {Math.round((1 - product.numericPrice / product.originalPrice) * 100)}% OFF
                     </span>
                   )}
                 </div>
+                
                 <p className={cn("text-sm mt-1", isDark ? "text-green-400" : "text-green-700")}>
                   {product.inStock ? 'In Stock' : 'Out of Stock'}
                 </p>
@@ -620,17 +492,6 @@ const ProductDetail: React.FC = () => {
                 </TabsContent>
               </div>
             </Tabs>
-          </div>
-          
-          {/* Related Products - To be implemented */}
-          <div className="mt-16">
-            <h2 className="text-2xl font-bold mb-6">You May Also Like</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {/* Placeholder for related products */}
-              <div className="text-center py-12 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                <p className="text-gray-500 dark:text-gray-400">Related products coming soon</p>
-              </div>
-            </div>
           </div>
         </div>
       </main>

@@ -94,10 +94,17 @@ const Products: React.FC = () => {
   const validCategories = allCollections.map(c => c.link.replace('/products/', ''));
   const isValidCategory = category ? validCategories.includes(category) : true;
   
+  // Format category name for display (e.g., 'air-rifles' -> 'Air Rifles')
+  const formatCategoryName = (cat: string) => {
+    return cat.split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
   useEffect(() => {
     document.title = category 
-      ? `Mangla Sports - ${category.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}`
-      : "Mangla Sports - All Collections";
+      ? `${formatCategoryName(category)} - Mangla Sports`
+      : "All Collections - Mangla Sports";
   }, [category]);
 
   // If category is not valid, redirect to the products page
@@ -116,9 +123,19 @@ const Products: React.FC = () => {
         <Navbar />
         
         <main className="py-20 container-custom">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-10 capitalize">
-            {category.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
-          </h1>
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6 }}
+            className="mb-10"
+          >
+            <h1 className={cn(
+              "text-3xl sm:text-4xl md:text-5xl font-bold mb-6",
+              isDark ? "text-white" : "text-slate-900"
+            )}>
+              {formatCategoryName(category)}
+            </h1>
+          </motion.div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {[

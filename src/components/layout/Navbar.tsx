@@ -37,13 +37,18 @@ const Navbar = () => {
     setIsSearchOpen(false);
   };
 
+  // Function to scroll to the top of the page
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const menuItems = [
     { title: 'Air Rifles', link: '/products/air-rifles' },
     { title: 'Air Pistols', link: '/products/air-pistols' },
-    { title: 'Pellets', link: '/products/pellets' },
-    { title: 'Gloves', link: '/products/gloves' },
-    { title: 'Shoes', link: '/products/shoes' },
-    { title: 'Glasses', link: '/products/glasses' }
+    { title: 'CO2 Pistols', link: '/products/co2-pistols' },
+    { title: 'Air Pellets', link: '/products/air-pellets' },
+    { title: 'Scatt Training Systems', link: '/products/scatt-training-systems' },
+    { title: 'Consumables', link: '/products/consumables' }
   ];
 
   const infoItems = [
@@ -98,7 +103,7 @@ const Navbar = () => {
       <div className={`${isDark ? 'bg-slate-900' : 'bg-white'} px-4 md:px-6 lg:px-8 py-4 shadow-sm`}>
         <div className="container-custom flex justify-between items-center relative">
           {/* Logo and tagline */}
-          <Link to="/" className="flex flex-col">
+          <Link to="/" className="flex flex-col" onClick={scrollToTop}>
             <div className="flex items-center gap-2">
               <img src="/lovable-uploads/59a0133d-7459-463e-8a2f-fd2a578ea3ea.png" alt="Mangla Sports Logo" className="h-14 w-auto" />
               <div>

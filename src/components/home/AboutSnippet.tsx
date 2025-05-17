@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { useTheme } from '../theme/ThemeProvider';
 import { cn } from '@/lib/utils';
 
@@ -60,23 +61,24 @@ const AboutSnippet = () => {
             and an unwavering commitment to the shooting community.
           </motion.p>
           
-          <motion.a 
-            href="#" 
-            className={cn(
-              "inline-block border-b text-lg font-medium transition-colors duration-300",
-              isDark 
-                ? "text-mangla-gold hover:text-white border-mangla-gold hover:border-white" 
-                : "text-amber-600 hover:text-amber-800 border-amber-500 hover:border-amber-800"
-            )}
-            initial={{ y: 20, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            whileHover={{ x: 5 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            Read More
-          </motion.a>
+          <Link to="/about">
+            <motion.span 
+              className={cn(
+                "inline-block border-b text-lg font-medium transition-colors duration-300",
+                isDark 
+                  ? "text-mangla-gold hover:text-white border-mangla-gold hover:border-white" 
+                  : "text-amber-600 hover:text-amber-800 border-amber-500 hover:border-amber-800"
+              )}
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              whileHover={{ x: 5 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              Read More
+            </motion.span>
+          </Link>
         </motion.div>
       </div>
     </section>
