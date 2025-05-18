@@ -132,7 +132,40 @@ reviews: [
 ]
 ```
 
-## 7. Stock Status Management
+## 7. Managing Responsive Hero Images
+
+The hero section uses different images for mobile and desktop views to ensure optimal display on all devices.
+
+### 7.1 Image Requirements
+- **Desktop Image**: Should be high-resolution (minimum 2000px width recommended)
+- **Mobile Image**: Should be optimized for mobile (1200px width recommended)
+- Both images should be in WebP format for better performance
+- Maintain aspect ratio of 16:9 for best results
+
+### 7.2 Updating Hero Images
+1. Upload new images to the `/public/lovable-uploads/` directory
+2. Update the image paths in `src/components/home/HeroSection.tsx`:
+   ```tsx
+   {/* Mobile Image */}
+   <img 
+     src="/lovable-uploads/mobile.png"
+     className="w-full h-full object-cover object-center md:hidden"
+   />
+   
+   {/* Desktop Image */}
+   <img 
+     src="/lovable-uploads/desktop-hero.jpg"
+     className="hidden md:block w-full h-full object-cover object-top"
+   />
+   ```
+
+### 7.3 Best Practices
+- Optimize images before uploading (use tools like ImageOptim or Squoosh)
+- Keep file names descriptive and consistent
+- Ensure proper contrast with overlaid text
+- Test on various screen sizes and devices
+
+## 8. Stock Status Management
 
 ### Stock Indicators:
 - `inStock: true/false` - Simple in/out of stock

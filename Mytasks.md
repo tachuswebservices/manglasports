@@ -68,6 +68,7 @@ This document tracks all completed and pending tasks for the Mangla Sports & Ass
 - [x] Shopping cart functionality
 - [x] Activate search functionality
 - [x] Resolve Scroll from bottom to top after navigation
+- [x] Responsive hero section with mobile-optimized image
 - [x] UI Improvements (Ongoing)
 
 ### 3.2 Performance & Optimization

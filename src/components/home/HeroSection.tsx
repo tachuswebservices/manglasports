@@ -47,13 +47,22 @@ const HeroSection = () => {
       
       {/* Main hero container */}
       <div className={`relative min-h-[calc(100vh-64px)] w-full ${!imageLoaded ? 'opacity-0' : 'opacity-100 transition-opacity duration-500'}`}>
-        {/* Background image that covers the entire section with adjusted positioning to show shooter's head */}
+        {/* Background images with responsive switching */}
         <div className="absolute inset-0 w-full h-full">
+          {/* Mobile Image */}
+          <img 
+            src="/lovable-uploads/mobile.png"
+            alt="Professional Shooting Equipment" 
+            className="w-full h-full object-cover object-center md:hidden"
+            fetchPriority="high"
+          />
+          
+          {/* Desktop Image */}
           <img 
             src="/lovable-uploads/043df67b-a8e3-4d7b-a886-d29c545973ab.png"
             alt="Professional Shooting Equipment" 
-            className="w-full h-full object-cover object-[45%_40%] md:object-top"
-            fetchPriority="high" 
+            className="hidden md:block w-full h-full object-cover object-top"
+            fetchPriority="high"
           />
         </div>
         

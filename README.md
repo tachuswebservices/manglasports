@@ -27,6 +27,7 @@ Mangla Sports & Associates is India's leading destination for premium shooting s
 
 - **Enhanced User Experience**
   - Responsive design for all devices (mobile, tablet, desktop)
+  - Optimized hero section with different images for mobile and desktop
   - Dark/Light theme with system preference detection
   - Smooth animations and transitions with Framer Motion
   - Accessible and keyboard-navigable interface

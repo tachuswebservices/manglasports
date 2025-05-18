@@ -31,7 +31,7 @@ The Mangla Sports & Associates website is a professional e-commerce platform for
   - Product variants and stock status
   - Recently viewed products tracking
 - **Home Page Sections**:
-  - Hero section with call-to-action
+  - Responsive hero section with different images for mobile and desktop views
   - Featured product collections
   - New arrivals showcase
   - Best sellers section
