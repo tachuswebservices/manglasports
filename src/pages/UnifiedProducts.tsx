@@ -1,10 +1,13 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, Navigate, Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Star, ShoppingCart, Heart, SlidersHorizontal } from 'lucide-react';
+import { Star, ShoppingCart, Heart, SlidersHorizontal, HeartOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { useTheme } from '../components/theme/ThemeProvider';
+import { useTheme } from '@/components/theme/ThemeProvider';
+import { useWishlist } from '@/contexts/WishlistContext';
+import { useCart } from '@/contexts/CartContext';
+import { toast } from 'sonner';
 import ProductsSidebar, { ProductFilters } from '../components/products/ProductsSidebar';
 import StockIndicator from '../components/products/StockIndicator';
 import PageLayout from '../components/layout/PageLayout';
@@ -36,37 +39,25 @@ const allCollections: Collection[] = [
     title: "CO2 Pistols", 
     slug: "co2-pistols",
     description: "Reliable CO2-powered pistols for training and recreational shooting.",
-    emoji: "🎯"
+    emoji: "🔫"
   },
   { 
-    title: "Air Pellets", 
-    slug: "air-pellets",
+    title: "Pellets", 
+    slug: "pellets",
     description: "High-quality pellets for optimal accuracy and performance.",
-    emoji: "🔴"
-  },
-  { 
-    title: "Spares", 
-    slug: "spares",
-    description: "Essential spare parts for maintenance and upgrades.",
-    emoji: "🔧"
+    emoji: "⚪"
   },
   { 
     title: "Air Rifle Accessories", 
     slug: "air-rifle-accessories",
     description: "Specialized accessories to enhance your air rifle experience.",
-    emoji: "🎖️"
+    emoji: "🎯"
   },
   { 
     title: "Air Pistol Accessories", 
     slug: "air-pistol-accessories",
     description: "Professional accessories for air pistol shooting.",
-    emoji: "🎖️"
-  },
-  { 
-    title: "Manual Target Systems", 
-    slug: "manual-target-systems",
-    description: "Reliable manual target systems for practice and competition.",
-    emoji: "🎯"
+    emoji: "🔫"
   },
   { 
     title: "Electronic Target Systems", 
@@ -75,10 +66,10 @@ const allCollections: Collection[] = [
     emoji: "🎯"
   },
   { 
-    title: "Scatt Training Systems", 
-    slug: "scatt-training-systems",
+    title: "Scatt", 
+    slug: "scatt",
     description: "Professional Scatt training systems for competitive shooters.",
-    emoji: "📊"
+    emoji: "🎯"
   },
   { 
     title: "Consumables", 
@@ -165,33 +156,109 @@ const ProductsPage: React.FC = () => {
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const { addToCart } = useCart();
+  const [isWishlisted, setIsWishlisted] = useState(false);
   
   // Format price to display properly
-  const formattedPrice = product.price;
+  const formattedPrice = `₹${product.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+  
+  // Check if product is in wishlist
+  useEffect(() => {
+    setIsWishlisted(isInWishlist(product.id));
+  }, [isInWishlist, product.id]);
+  
+  const toggleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (isWishlisted) {
+      removeFromWishlist(product.id);
+      toast.success('Removed from wishlist');
+    } else {
+      // The product is already in the correct format for the wishlist
+      addToWishlist(product);
+      toast.success('Added to wishlist');
+    }
+    
+    setIsWishlisted(!isWishlisted);
+  };
+  
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!product.inStock) return;
+    
+    const added = addToCart(product, 1);
+    if (added) {
+      toast.success(`${product.name} added to cart`);
+    }
+  };
   
   return (
     <motion.div
-      className="h-full"
+      className="h-full group"
       whileHover={{ y: -5 }}
       transition={{ type: "spring", stiffness: 400, damping: 17 }}
     >
       <div className={cn(
-        "h-full rounded-lg overflow-hidden border transition-all",
+        "h-full rounded-lg overflow-hidden border transition-all hover:shadow-lg relative",
         isDark ? "bg-mangla-dark-gray border-gray-800" : "bg-white border-gray-200"
       )}>
-        <Link to={`/products/product/${product.id}`} className="block">
-          {/* Product badges */}
-          <div className="absolute top-2 right-2 flex flex-col gap-1 z-10">
+        <Link to={`/products/product/${product.id}`} className="block h-full">
+          {/* Always visible tags */}
+          <div className="absolute top-3 left-3 z-20 flex flex-col items-start gap-2">
             {product.isNew && (
-              <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded font-semibold shadow-md">
+              <motion.span 
+                className="bg-blue-500 text-white text-xs px-2 py-1 rounded font-semibold shadow-md"
+                initial={{ opacity: 1 }}
+                whileHover={{ scale: 1.05 }}
+              >
                 NEW
-              </span>
+              </motion.span>
             )}
             {product.isHot && (
-              <span className="bg-red-500 text-white text-xs px-2 py-1 rounded font-semibold shadow-md">
+              <motion.span 
+                className="bg-red-500 text-white text-xs px-2 py-1 rounded font-semibold shadow-md"
+                initial={{ opacity: 1 }}
+                whileHover={{ scale: 1.05 }}
+              >
                 HOT
-              </span>
+              </motion.span>
             )}
+            {product.numericPrice && product.numericPrice > 100000 && (
+              <motion.span 
+                className="bg-purple-500 text-white text-xs px-2 py-1 rounded font-semibold shadow-md"
+                initial={{ opacity: 1 }}
+                whileHover={{ scale: 1.05 }}
+              >
+                PREMIUM
+              </motion.span>
+            )}
+          </div>
+          
+          {/* Wishlist button - always visible */}
+          <div className="absolute top-3 right-3 z-20">
+            <motion.button
+              onClick={toggleWishlist}
+              className={cn(
+                'p-2 rounded-full backdrop-blur-sm transition-colors',
+                'flex items-center justify-center',
+                'shadow-md',
+                isDark ? 'bg-gray-800/90 hover:bg-gray-700/90' : 'bg-white/90 hover:bg-white',
+                isWishlisted ? 'text-rose-500' : 'text-gray-600 dark:text-gray-300'
+              )}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+            >
+              {isWishlisted ? (
+                <Heart className="w-5 h-5 fill-current" />
+              ) : (
+                <Heart className="w-5 h-5" />
+              )}
+            </motion.button>
           </div>
           
           {/* Image container with fixed aspect ratio */}
@@ -274,6 +341,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
         {/* Action buttons */}
         <div className="px-4 pb-4">
           <Button
+            onClick={handleAddToCart}
             className={cn(
               "w-full py-2 text-sm font-medium transition-colors",
               product.inStock
@@ -295,6 +363,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
 const ProductsContent: React.FC = () => {
   const { category } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
+  const searchQuery = searchParams.get('q') || '';
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const [isLoading, setIsLoading] = useState(true);
@@ -353,8 +422,18 @@ const ProductsContent: React.FC = () => {
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
     
-    // Apply category filter if provided
-    if (category) {
+    // Apply search query filter if provided
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(p => 
+        p.name.toLowerCase().includes(query) || 
+        p.shortDescription?.toLowerCase().includes(query) ||
+        p.brand.toLowerCase().includes(query) ||
+        p.category.toLowerCase().includes(query)
+      );
+    }
+    // Apply category filter if provided (only if no search query)
+    else if (category) {
       // Get category title from slug
       const categoryTitle = currentCategory?.title || '';
       filtered = filtered.filter(p => p.category === categoryTitle);
@@ -620,15 +699,23 @@ const ProductsContent: React.FC = () => {
             "text-3xl font-bold mb-2",
             isDark ? "text-white" : "text-slate-900"
           )}>
-            {currentCategory ? currentCategory.title : "All Products"}
+            {searchQuery ? (
+              `Search Results for "${searchQuery}"`
+            ) : currentCategory ? (
+              <>
+                <span className="text-3xl mr-2">{currentCategory.emoji}</span>
+                {currentCategory.title}
+              </>
+            ) : 'All Products'}
           </h1>
           
           <p className={cn(
             isDark ? "text-gray-400" : "text-gray-600"
           )}>
-            {currentCategory 
-              ? currentCategory.description 
-              : "Browse our complete selection of premium shooting sports equipment"}
+            {searchQuery 
+              ? `Found ${filteredProducts.length} product${filteredProducts.length !== 1 ? 's' : ''} matching "${searchQuery}"`
+              : currentCategory?.description || 'Browse our wide range of premium shooting sports equipment and accessories.'
+            }
           </p>
         </motion.div>
         

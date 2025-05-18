@@ -84,7 +84,7 @@ export const products: Product[] = [
     price: "₹249,999",
     numericPrice: 249999,
     image: "/lovable-uploads/94816e34-750a-420e-b8fc-bde67a9fe267.png",
-    category: "Competition Air Rifles",
+    category: "Air Rifles",
     rating: 5.0,
     soldCount: 89,
     inStock: true,
@@ -98,13 +98,13 @@ export const products: Product[] = [
     price: "₹89,999",
     numericPrice: 89999,
     image: "/lovable-uploads/81cbd973-5303-4c06-bfdf-36f0555888f8.png",
-    category: "Air Pistols",
+    category: "CO2 Pistols",
     rating: 4.8,
     soldCount: 132,
     inStock: true,
     isHot: true,
     brand: "Beretta",
-    shortDescription: "Reliable air pistol with innovative rotating barrel system."
+    shortDescription: "Reliable CO2 pistol with innovative rotating barrel system."
   },
   {
     id: "tachus-10-ets",
@@ -126,13 +126,13 @@ export const products: Product[] = [
     price: "₹189,999",
     numericPrice: 189999,
     image: "/lovable-uploads/9d861ad0-08bd-4f35-9567-bf07dbe5551b.png",
-    category: "Competition Air Pistols",
+    category: "Air Pistols",
     rating: 4.9,
     soldCount: 105,
     inStock: true,
     isHot: true,
     brand: "Pardini",
-    shortDescription: "Top-tier competition air pistol with advanced recoil absorption system."
+    shortDescription: "Top-tier air pistol with advanced recoil absorption system."
   }
 ];
 

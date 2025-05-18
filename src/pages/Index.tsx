@@ -34,9 +34,9 @@ const Index = () => {
         <NewArrivals />
         <BestSellers />
         <WhyChooseUs />
+        <Testimonials />
         <AboutSnippet />
         <BrandAssociations />
-        <Testimonials />
       </main>
       
       <Footer />

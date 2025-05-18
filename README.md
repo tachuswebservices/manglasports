@@ -1,90 +1,223 @@
-# Mangla Sports & Associates Website
+<div align="center">
+  <img src="/public/lovable-uploads/59a0133d-7459-463e-8a2f-fd2a578ea3ea.png" alt="Mangla Sports Logo" width="200"/>
+  
+  # Mangla Sports & Associates
+  
+  **India's Premier Shooting Sports Equipment Retailer**
+  
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+  [![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react)](https://reactjs.org/)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+  [![Vite](https://img.shields.io/badge/Vite-5.0-646CFF?logo=vite)](https://vitejs.dev/)
+  [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-06B6D4?logo=tailwind-css)](https://tailwindcss.com/)
 
-## Project Overview
+  ---
+</div>
 
-Mangla Sports & Associates is a premier shooting sports equipment retailer in India. This website serves as a professional showcase for their products, expertise, and services.
+## 🎯 Project Overview
 
-### Key Features
+Mangla Sports & Associates is India's leading destination for premium shooting sports equipment. Our e-commerce platform showcases an extensive collection of air rifles, air pistols, and accessories from top international brands, providing shooting enthusiasts with high-quality gear and expert guidance.
 
-- **Unified Product Browsing**: Single-page architecture for seamless category navigation
-- **Dynamic Filtering**: Real-time product filtering based on categories and attributes
-- **Responsive Design**: Optimized for all devices from mobile to desktop
-- **Performance Optimized**: Fast loading and smooth transitions between views
-- **Modern UI/UX**: Clean, intuitive interface with smooth animations
+## ✨ Key Features
 
+- **Comprehensive Product Catalog**
+  - Detailed product listings with specifications
+  - Advanced filtering and sorting options
+  - High-quality product imagery with zoom functionality
 
-## How can I edit this code?
+- **Enhanced User Experience**
+  - Responsive design for all devices (mobile, tablet, desktop)
+  - Dark/Light theme with system preference detection
+  - Smooth animations and transitions with Framer Motion
+  - Accessible and keyboard-navigable interface
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- **Informational Content**
+  - About Us with company history and leadership
+  - FAQ section with expandable questions
+  - Blog/Articles for shooting tips and news
+  - Events calendar for competitions and workshops
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- **E-commerce Features**
+  - Product categories and subcategories
+  - Detailed product pages with specifications
+  - Shopping cart functionality (coming soon)
+  - Secure checkout (coming soon)
 
-Follow these steps:
+## 🚀 Getting Started
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Prerequisites
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+- Node.js 18+ and npm 9+
+- Git for version control
 
-# Step 3: Install the necessary dependencies.
-npm i
+### Installation
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/manglasportswebsite.git
+   cd manglasportswebsite
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+4. **Open in your browser**
+   ```
+   http://localhost:5173
+   ```
+
+### Building for Production
+
+```bash
+# Build the application
+npm run build
+
+# Preview the production build
+npm run preview
 ```
 
-**Edit a file directly in GitHub**
+## 🛠️ Built With
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- **Frontend Framework**: [React 18.3](https://reactjs.org/)
+- **Build Tool**: [Vite 5.4](https://vitejs.dev/)
+- **Styling**: [Tailwind CSS 3.4](https://tailwindcss.com/) with [shadcn/ui](https://ui.shadcn.com/)
+- **Type Safety**: [TypeScript 5.0](https://www.typescriptlang.org/)
+- **Routing**: [React Router 6.26](https://reactrouter.com/)
+- **Animations**: [Framer Motion 12.11](https://www.framer.com/motion/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Form Handling**: [React Hook Form](https://react-hook-form.com/)
 
-**Use GitHub Codespaces**
+## 📱 Browser Support
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- Chrome (latest 2 versions)
+- Firefox (latest 2 versions)
+- Safari (latest 2 versions)
+- Edge (latest 2 versions)
+- Mobile Safari (iOS 13+)
+- Chrome for Android (latest 2 versions)
 
-## What technologies are used for this project?
+## 📝 License
 
-This project is built with:
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-- Vite - Fast build tool and development server
-- TypeScript - For type-safe code
-- React - UI component library
-- shadcn-ui - High-quality component system
-- Tailwind CSS - Utility-first CSS framework
-- Framer Motion - Animation library
-- React Router - Client-side routing
-- React Query - Data fetching and state management
+## 🤝 Contributing
 
-## Key Features
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-- **Professional Home Page with Sections**:
-  - Hero section with shooting sports imagery
-  - Featured collections with "FEATURED" badges
-  - New arrivals with "JUST ARRIVED" badges
-  - Best sellers with "HOT" badges
-  - Company values showcase
-  - Customer testimonials
-  - Brand associations/partners
-  - About snippet with theme-aware styling
+## 📧 Contact
 
-- **UI/UX Features**:
-  - Dark/Light theme with persistent preference
-  - Responsive design for all devices
-  - Smooth animations and transitions
-  - Consistent product display cards
-  - Product badging system with visual hierarchy
-  - Modern, clean aesthetic
+For any inquiries, please contact us at [officialmanglasports@gmail.com](mailto:officialmanglasports@gmail.com) or call us at [+91 92569 30009](tel:+919256930009).
 
-- **Shopping & Navigation**:
-  - Responsive navbar with modern slide-in mobile menu
-  - Expandable search functionality with icon toggle
-  - Streamlined header with dynamic search experience
-  - Product category routing structure
+## 🌐 Connect With Us
+
+- [Facebook](#)
+- [Instagram](#)
+- [Twitter](#)
+- [YouTube](#)
+
+---
+
+<div align="center">
+  Made with ❤️ by Mangla Sports & Associates Team
+</div>
+
+
+## 📁 Project Structure
+
+```
+src/
+├── components/         # Reusable UI components
+│   ├── home/          # Home page components
+│   ├── layout/        # Layout components (Navbar, Footer, etc.)
+│   ├── products/      # Product-related components
+│   └── ui/            # shadcn/ui components
+├── hooks/             # Custom React hooks
+├── lib/               # Utility functions and configurations
+├── pages/             # Page components
+│   ├── About.tsx
+│   ├── Contact.tsx
+│   ├── Products.tsx
+│   └── ...
+├── styles/           # Global styles and Tailwind config
+└── types/             # TypeScript type definitions
+```
+
+## 🌟 Features in Detail
+
+### 🎨 Theming System
+- System preference detection for light/dark mode
+- Smooth theme transitions
+- Consistent color scheme across components
+
+### 🛍️ Product Experience
+- Category-based product browsing
+- Advanced filtering and sorting
+- Product detail pages with specifications
+- Image gallery with zoom functionality
+
+### 📱 Responsive Design
+- Mobile-first approach
+- Adaptive layouts for all screen sizes
+- Touch-friendly interfaces
+- Optimized performance on all devices
+
+### ⚡ Performance Optimizations
+- Code splitting with React.lazy
+- Image optimization and lazy loading
+- Efficient state management
+- Minimal bundle size
+
+## 🧪 Testing
+
+Run tests with the following commands:
+
+```bash
+# Run unit tests
+npm test
+
+# Run tests in watch mode
+npm test:watch
+
+# Generate test coverage report
+npm run test:coverage
+```
+
+## 🚀 Deployment
+
+The application can be deployed to any static hosting service. A few examples:
+
+### Vercel
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyour-username%2Fmanglasportswebsite)
+
+### Netlify
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/your-username/manglasportswebsite)
+
+## 🤖 Development Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build locally
+- `npm run lint` - Run ESLint
+- `npm run format` - Format code with Prettier
+- `npm run type-check` - Check TypeScript types
+
+## 📚 Documentation
+
+- [Project Documentation](./docs/README.md)
+- [Component API](./docs/COMPONENTS.md)
+- [Deployment Guide](./docs/DEPLOYMENT.md)
+
+## 🙏 Acknowledgments
+
+- [shadcn/ui](https://ui.shadcn.com/) for amazing components
+- [Tailwind CSS](https://tailwindcss.com/) for utility-first CSS
+- [Framer Motion](https://www.framer.com/motion/) for animations
+- [React Icons](https://react-icons.github.io/react-icons/) for icons
 

@@ -52,10 +52,66 @@ const Footer = () => {
           <div>
             <h3 className="text-white font-bold text-lg mb-6">Quick Links</h3>
             <ul className="space-y-3">
-              <li><Link to="/" className="text-gray-400 hover:text-mangla-gold transition-colors">Home</Link></li>
-              <li><Link to="/products" className="text-gray-400 hover:text-mangla-gold transition-colors">Products</Link></li>
-              <li><Link to="/about" className="text-gray-400 hover:text-mangla-gold transition-colors">About Us</Link></li>
-              <li><Link to="/contact" className="text-gray-400 hover:text-mangla-gold transition-colors">Contact</Link></li>
+              <li>
+                <Link 
+                  to="/" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.scrollTo(0, 0);
+                    setTimeout(() => {
+                      window.location.href = '/';
+                    }, 0);
+                  }}
+                  className="text-gray-400 hover:text-mangla-gold transition-colors"
+                >
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/products" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.scrollTo(0, 0);
+                    setTimeout(() => {
+                      window.location.href = '/products';
+                    }, 0);
+                  }}
+                  className="text-gray-400 hover:text-mangla-gold transition-colors"
+                >
+                  Products
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/about" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.scrollTo(0, 0);
+                    setTimeout(() => {
+                      window.location.href = '/about';
+                    }, 0);
+                  }}
+                  className="text-gray-400 hover:text-mangla-gold transition-colors"
+                >
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/contact" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.scrollTo(0, 0);
+                    setTimeout(() => {
+                      window.location.href = '/contact';
+                    }, 0);
+                  }}
+                  className="text-gray-400 hover:text-mangla-gold transition-colors"
+                >
+                  Contact
+                </Link>
+              </li>
             </ul>
           </div>
           
@@ -91,8 +147,32 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-sm mb-4 md:mb-0">© 2025 Mangla Sports & Associates. All Rights Reserved.</p>
             <div className="flex space-x-6">
-              <Link to="#" className="text-gray-500 hover:text-mangla-gold transition-colors text-sm">Privacy Policy</Link>
-              <Link to="#" className="text-gray-500 hover:text-mangla-gold transition-colors text-sm">Terms of Service</Link>
+              <Link 
+                to="/privacy-policy" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.scrollTo(0, 0);
+                  setTimeout(() => {
+                    window.location.href = '/privacy-policy';
+                  }, 0);
+                }}
+                className="text-gray-500 hover:text-mangla-gold transition-colors text-sm"
+              >
+                Privacy Policy
+              </Link>
+              <Link 
+                to="/terms-of-service" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.scrollTo(0, 0);
+                  setTimeout(() => {
+                    window.location.href = '/terms-of-service';
+                  }, 0);
+                }}
+                className="text-gray-500 hover:text-mangla-gold transition-colors text-sm"
+              >
+                Terms of Service
+              </Link>
             </div>
           </div>
         </div>

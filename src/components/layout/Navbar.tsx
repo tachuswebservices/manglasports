@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, ChevronRight } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Input } from '@/components/ui/input';
 import ThemeToggle from '../theme/ThemeToggle';
 import { useTheme } from '../theme/ThemeProvider';
 import { useIsMobile } from '@/hooks/use-mobile';
+import TopBar from './TopBar';
+import WishlistIcon from './WishlistIcon';
+import CartIcon from './CartIcon';
+import SearchBar from '../search/SearchBar';
 
 const Navbar = () => {
   const { theme } = useTheme();
@@ -13,7 +16,6 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -29,12 +31,8 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Searching for:', searchQuery);
-    // Future implementation will handle actual search logic
-    setSearchQuery('');
-    setIsSearchOpen(false);
+  const toggleSearch = () => {
+    setIsSearchOpen(!isSearchOpen);
   };
 
   // Function to scroll to the top of the page
@@ -58,63 +56,29 @@ const Navbar = () => {
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${isScrolled ? 'shadow-md' : ''}`}>
-      {/* Top contact bar - visible on both mobile and desktop */}
-      <div className={`${isDark ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-800'} py-2`}>
-        <div className="container-custom flex justify-between items-center">
-          <div className="flex items-center space-x-6 text-sm">
-            <a href="mailto:officialmanglasports@gmail.com" className={`flex items-center gap-1 ${isDark ? 'text-white' : 'text-slate-700'} text-xs md:text-sm`}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-              <span className="hidden md:inline">officialmanglasports@gmail.com</span>
-              <span className="md:hidden">Email Us</span>
-            </a>
-            <div className="hidden md:block px-1 text-slate-400">|</div>
-            <a href="tel:+919256930009" className={`flex items-center gap-1 ${isDark ? 'text-white' : 'text-slate-700'} text-xs md:text-sm`}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-              </svg>
-              <span>+91 92569 30009</span>
-            </a>
-          </div>
-          
-          {/* Social media icons */}
-          <div className="flex items-center space-x-4">
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className={`${isDark ? 'text-white' : 'text-slate-700'} hover:text-mangla-gold transition-colors`}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
-              </svg>
-            </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className={`${isDark ? 'text-white' : 'text-slate-700'} hover:text-mangla-gold transition-colors`}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-              </svg>
-            </a>
-            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className={`${isDark ? 'text-white' : 'text-slate-700'} hover:text-mangla-gold transition-colors`}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
-              </svg>
-            </a>
-          </div>
-        </div>
-      </div>
+      {/* Top bar with contact info, FAQ, Blog, and social links */}
+      <TopBar />
 
       {/* Main navigation with logo and search */}
-      <div className={`${isDark ? 'bg-slate-900' : 'bg-white'} px-4 md:px-6 lg:px-8 py-4 shadow-sm`}>
+      <div className={`${isDark ? 'bg-slate-900' : 'bg-white'} px-4 md:px-6 lg:px-8 py-3 md:py-4 shadow-sm`}>
         <div className="container-custom flex justify-between items-center relative">
           {/* Logo and tagline */}
-          <Link to="/" className="flex flex-col" onClick={scrollToTop}>
+          <Link to="/" className="flex-shrink-0 mr-2" onClick={scrollToTop}>
             <div className="flex items-center gap-2">
-              <img src="/lovable-uploads/59a0133d-7459-463e-8a2f-fd2a578ea3ea.png" alt="Mangla Sports Logo" className="h-14 w-auto" />
-              <div>
-                <div className={`font-montserrat text-base md:text-lg font-bold ${isDark ? 'text-white' : 'text-slate-800'} leading-tight hidden md:block`}>MANGLA SPORTS</div>
+              <img 
+                src="/lovable-uploads/59a0133d-7459-463e-8a2f-fd2a578ea3ea.png" 
+                alt="Mangla Sports Logo" 
+                className="h-10 w-auto md:h-14" 
+              />
+              <div className="hidden md:block">
+                <div className={`font-montserrat text-base md:text-lg font-bold ${isDark ? 'text-white' : 'text-slate-800'} leading-tight`}>MANGLA SPORTS</div>
                 <div className={`text-[10px] md:text-xs ${isDark ? 'text-gray-400' : 'text-slate-600'} uppercase tracking-wider`}>PREMIUM SHOOTING EQUIPMENT</div>
               </div>
             </div>
           </Link>
 
           {/* Navigation icons for desktop and mobile */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 md:space-x-4">
             {/* Desktop navigation - horizontal menu */}
             <div className="hidden md:flex items-center space-x-4">
               <Link to="/products/air-rifles" className={`${isDark ? 'text-gray-300' : 'text-slate-700'} px-3 py-2 text-sm font-medium hover:text-mangla-gold transition-colors`}>
@@ -136,75 +100,94 @@ const Navbar = () => {
             
             {/* Mobile and desktop navigation icons */}
             <div className="flex items-center space-x-3">
-              {/* Search icon for desktop - expands on click */}
-              <div className="relative hidden md:block">
-                <button
-                  onClick={() => setIsSearchOpen(!isSearchOpen)}
-                  className={`${isDark ? 'text-gray-300' : 'text-slate-700'} transition-colors p-1`}
-                  aria-label="Search"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </button>
-                
-                {/* Expandable search overlay for desktop - appears inline with header */}
+              {/* Search bar for desktop */}
+              <div className="hidden md:block relative">
                 <AnimatePresence>
-                  {isSearchOpen && (
-                    <motion.div 
-                      className="absolute right-0 top-1/2 -translate-y-1/2 bg-transparent z-50"
+                  {isSearchOpen ? (
+                    <motion.div
                       initial={{ opacity: 0, width: 0 }}
-                      animate={{ opacity: 1, width: 250 }}
+                      animate={{ opacity: 1, width: 300 }}
                       exit={{ opacity: 0, width: 0 }}
                       transition={{ duration: 0.2 }}
+                      className="overflow-hidden relative"
                     >
-                      <form onSubmit={handleSearch} className="flex items-center">
-                        <Input
-                          type="text"
-                          placeholder="Search products..."
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          className={`w-full border ${isDark ? 'bg-slate-700 text-white border-slate-600 placeholder:text-gray-300' : 'bg-white text-slate-700 border-slate-300'} h-9 text-sm rounded-l-md focus:ring-0`}
-                          autoFocus
-                        />
-                        <button 
-                          type="submit"
-                          className={`${isDark ? 'bg-slate-900' : 'bg-slate-800'} text-white h-9 px-3 rounded-r-md hover:bg-slate-700 transition-colors flex items-center justify-center`}
-                          aria-label="Search"
-                        >
-                          <Search className="w-4 h-4" />
-                        </button>
-                      </form>
+                      <SearchBar 
+                        onClose={() => setIsSearchOpen(false)}
+                        className="w-[300px] pr-8"
+                      />
+                      <button
+                        onClick={toggleSearch}
+                        className={`absolute right-0 top-1/2 -translate-y-1/2 p-2 ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-700'}`}
+                        aria-label="Close search"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
                     </motion.div>
+                  ) : (
+                    <button
+                      onClick={toggleSearch}
+                      className={`${isDark ? 'text-gray-300 hover:text-white' : 'text-slate-700 hover:text-slate-900'} p-1 transition-colors`}
+                      aria-label="Search"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                    </button>
                   )}
                 </AnimatePresence>
               </div>
               
-              {/* Wishlist icon removed as requested */}
+              {/* Icons container - hidden on mobile */}
+              <div className="hidden md:flex items-center space-x-2">
+                {/* Wishlist icon */}
+                <div className="relative">
+                  <WishlistIcon />
+                </div>
+                
+                {/* Cart icon */}
+                <div className="relative">
+                  <CartIcon />
+                </div>
+              </div>
               
-              {/* Search icon for mobile */}
-              <button
-                onClick={() => setIsSearchOpen(!isSearchOpen)}
-                className={`${isDark ? 'text-gray-300' : 'text-slate-700'} transition-colors p-1 md:hidden`}
-                aria-label="Search"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </button>
+              {/* Mobile Icons - only visible on mobile */}
+              <div className="flex items-center space-x-3 md:hidden">
+                {/* Search icon for mobile */}
+                <button
+                  onClick={toggleSearch}
+                  className={`${isDark ? 'text-gray-300 hover:text-white' : 'text-slate-700 hover:text-slate-900'} p-1 transition-colors`}
+                  aria-label="Search"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </button>
+                
+                {/* Cart icon for mobile */}
+                <div className="relative">
+                  <CartIcon />
+                </div>
+                
+                <ThemeToggle />
+                
+                {/* Mobile menu button */}
+                <button 
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
+                  className={`${isDark ? 'text-gray-300' : 'text-slate-700'} p-1`}
+                  aria-label="Toggle menu"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+                  </svg>
+                </button>
+              </div>
               
-              <ThemeToggle />
-              
-              {/* Mobile menu button */}
-              <button 
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
-                className={`${isDark ? 'text-gray-300' : 'text-slate-700'} p-1 transition-all duration-300 relative z-20`}
-                aria-label="Toggle menu"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
+              {/* Desktop Icons - only visible on desktop */}
+              <div className="hidden md:flex items-center space-x-2">
+                <ThemeToggle />
+              </div>
             </div>
           </div>
         </div>
@@ -213,31 +196,30 @@ const Navbar = () => {
       {/* Full-width search bar on mobile - shown only when search icon is clicked */}
       <AnimatePresence>
         {isSearchOpen && isMobile && (
-          <motion.div 
-            className={`${isDark ? 'bg-slate-800' : 'bg-gray-100'} px-4 py-3 md:hidden`}
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
+            className={`fixed top-16 left-0 right-0 z-50 p-4 shadow-md ${
+              isDark ? 'bg-slate-800' : 'bg-white'
+            }`}
           >
-            <div className="container-custom">
-              <form onSubmit={handleSearch} className="flex items-center w-full">
-                <Input
-                  type="text"
-                  placeholder="Search Products..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className={`w-full h-10 ${isDark ? 'bg-slate-700 text-white border-slate-600 placeholder:text-gray-300' : 'text-slate-700 border-gray-300'} text-xs border border-r-0 rounded-l-md focus:ring-0 focus:border-slate-400`}
-                  autoFocus
-                />
-                <button 
-                  type="submit"
-                  className="bg-slate-800 text-white h-10 px-3 rounded-r-md hover:bg-slate-700 transition-colors flex items-center justify-center"
-                  aria-label="Search"
-                >
-                  <Search className="w-4 h-4" />
-                </button>
-              </form>
+            <div className="flex items-center">
+              <SearchBar 
+                isMobile 
+                onClose={() => setIsSearchOpen(false)}
+                className="flex-1"
+              />
+              <button
+                type="button"
+                onClick={() => setIsSearchOpen(false)}
+                className={`ml-2 px-3 py-2 rounded-md ${
+                  isDark ? 'text-gray-300 hover:bg-slate-700' : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                Cancel
+              </button>
             </div>
           </motion.div>
         )}
@@ -285,21 +267,11 @@ const Navbar = () => {
               
               {/* Search input */}
               <div className="px-6 py-4">
-                <form onSubmit={handleSearch} className="flex items-center w-full">
-                  <Input
-                    type="text"
-                    placeholder="Search products..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className={`w-full h-10 ${isDark ? 'bg-slate-800 text-white border-slate-700' : 'bg-white text-slate-800 border-gray-300'} text-sm border rounded-l-md focus:ring-0 focus:border-mangla-gold`}
-                  />
-                  <button 
-                    type="submit"
-                    className="bg-mangla h-10 px-3 rounded-r-md text-white hover:bg-mangla-dark transition-colors flex items-center justify-center"
-                  >
-                    <Search className="w-4 h-4" />
-                  </button>
-                </form>
+                <SearchBar 
+                  isMobile 
+                  onClose={() => setIsMobileMenuOpen(false)}
+                  className="w-full"
+                />
               </div>
               
               {/* Main menu content */}
@@ -400,6 +372,7 @@ const Navbar = () => {
                   <div className="flex items-center">
                     <span className="text-xs font-medium mr-2">Theme:</span>
                     <ThemeToggle />
+                    <WishlistIcon />
                   </div>
                 </div>
               </div>

@@ -26,29 +26,8 @@ const About = () => {
     >
       <Navbar />
       
-      <main className="flex-grow pt-32 pb-20">
-        <div className="container-custom">
-          {/* Hero Section */}
-          <motion.div 
-            className="mb-16"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h1 className={cn(
-              "text-4xl md:text-5xl font-bold mb-6",
-              isDark ? "text-white" : "text-slate-900"
-            )}>
-              About Mangla Sports & Associates
-            </h1>
-            <p className={cn(
-              "text-lg max-w-3xl",
-              isDark ? "text-gray-300" : "text-slate-700"
-            )}>
-              India's premier destination for high-quality shooting sports equipment and expertise since 2005.
-            </p>
-          </motion.div>
-          
+      <main className="flex-grow pt-32 md:pt-36">
+        <div className="container-custom py-4">
           {/* Our Story Section */}
           <motion.section 
             className="mb-20"
@@ -56,8 +35,8 @@ const About = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-              <div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+              <div className="pt-2">
                 <h2 className={cn(
                   "text-3xl font-bold mb-6",
                   isDark ? "text-white" : "text-slate-900"
@@ -70,7 +49,7 @@ const About = () => {
                     Mangla Sports & Associates was founded with a vision to bring world-class shooting sports equipment to India's passionate shooting community.
                   </p>
                   <p>
-                    Our journey began in 2005 when our founder, Mr. Rajinder Singh Mangla, a former national-level shooter, recognized the need for high-quality equipment and professional expertise in India's growing shooting sports sector.
+                    Our journey began when our founder, Mr. Rohit Mangla, a former national-level shooter, recognized the need for high-quality equipment and professional expertise in India's growing shooting sports sector.
                   </p>
                   <p>
                     What started as a small specialized store in Patiala has now grown into one of India's most trusted names in shooting sports equipment, serving amateur enthusiasts, professional athletes, and Olympic champions alike.
@@ -184,72 +163,60 @@ const About = () => {
             </div>
           </motion.section>
           
-          {/* Our Team Section */}
+          {/* Leadership Section */}
           <motion.section
+            className="max-w-4xl mx-auto"
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <h2 className={cn(
-              "text-3xl font-bold mb-10 text-center",
-              isDark ? "text-white" : "text-slate-900"
-            )}>Our Leadership</h2>
+            <div className="text-center mb-12">
+              <h2 className={cn(
+                "text-2xl md:text-3xl font-bold mb-4",
+                isDark ? "text-white" : "text-slate-900"
+              )}>
+                Our Leadership
+              </h2>
+              <div className={cn(
+                "w-16 h-1 mx-auto mb-8",
+                isDark ? "bg-mangla-gold" : "bg-amber-600"
+              )} />
+            </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[
-                {
-                  name: "Rajinder Singh Mangla",
-                  position: "Founder & CEO",
-                  bio: "Former national-level shooter with over 30 years of experience in the shooting sports industry.",
-                  image: "/team-1.jpg"
-                },
-                {
-                  name: "Harjinder Kaur",
-                  position: "Technical Director",
-                  bio: "International-level coach with expertise in equipment optimization and technical training.",
-                  image: "/team-2.jpg"
-                },
-                {
-                  name: "Gurpreet Singh",
-                  position: "Sales Manager",
-                  bio: "10+ years of experience in helping athletes find the perfect equipment for their needs.",
-                  image: "/team-3.jpg"
-                }
-              ].map((member, index) => (
-                <motion.div 
-                  key={index}
-                  className={cn(
-                    "p-6 rounded-lg text-center",
-                    isDark ? "bg-slate-800" : "bg-white shadow-md"
-                  )}
-                  whileHover={{ y: -5, boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)' }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <div className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden">
-                    <img 
-                      src={member.image} 
-                      alt={member.name} 
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = `https://placehold.co/200x200/222/fff?text=${member.name.split(' ')[0][0]}${member.name.split(' ')[1][0]}`;
-                      }}
-                    />
-                  </div>
-                  <h3 className={cn(
-                    "text-xl font-bold",
-                    isDark ? "text-white" : "text-slate-900"
-                  )}>
-                    {member.name}
-                  </h3>
-                  <p className="text-mangla-gold font-medium mb-2">{member.position}</p>
-                  <p className={cn(
-                    isDark ? "text-gray-400" : "text-slate-600"
-                  )}>
-                    {member.bio}
-                  </p>
-                </motion.div>
-              ))}
+            <div className="flex justify-center">
+              <motion.div 
+                className={cn(
+                  "p-8 rounded-lg max-w-md w-full text-center",
+                  isDark ? "bg-slate-800" : "bg-white shadow-md"
+                )}
+                whileHover={{ y: -5, boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)' }}
+                transition={{ duration: 0.2 }}
+              >
+                <div className="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden border-4 border-mangla-gold/20">
+                  <img 
+                    src="/rohit-mangla.jpg" 
+                    alt="Rohit Mangla" 
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = 'https://placehold.co/200x200/222/fff?text=RM';
+                    }}
+                  />
+                </div>
+                <h3 className={cn(
+                  "text-xl font-bold mb-1",
+                  isDark ? "text-white" : "text-slate-900"
+                )}>
+                  Rohit Mangla
+                </h3>
+                <p className="text-mangla-gold font-medium mb-4">Former National-Level Shooter</p>
+                <p className={cn(
+                  "text-sm md:text-base",
+                  isDark ? "text-gray-400" : "text-slate-600"
+                )}>
+                  With over 15 years of experience in the shooting sports industry, Rohit brings a wealth of knowledge and expertise to Mangla Sports. His competitive background and technical understanding make him an invaluable asset to our team.
+                </p>
+              </motion.div>
             </div>
           </motion.section>
         </div>

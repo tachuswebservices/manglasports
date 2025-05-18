@@ -3,42 +3,16 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../theme/ThemeProvider';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { products as allProducts } from '@/data/products';
+import { WishlistButton } from '@/components/common/WishlistButton';
+import { useCart } from '@/contexts/CartContext';
+import { toast } from 'sonner';
+import { Star } from 'lucide-react';
 
-interface ProductProps {
-  name: string;
-  price: string;
-  image: string;
-  category: string;
-}
-
-const products: ProductProps[] = [
-  {
-    name: "Walther LG500 ITEC Triple Edition",
-    price: "₹199,999",
-    image: "/lovable-uploads/44b2615c-e47e-41de-b6c4-97af839d9903.png",
-    category: "Air Rifles"
-  },
-  {
-    name: "Pardini K12 J Short",
-    price: "₹185,999",
-    image: "/lovable-uploads/5818a836-9981-47bc-bfb7-4efb566262b6.png",
-    category: "Air Pistols"
-  },
-  {
-    name: "Umarex 12g CO2 Cartridges (Capsules)",
-    price: "₹1,499",
-    image: "/lovable-uploads/343e01c8-d47b-4613-9aad-6f7197159da6.png",
-    category: "Consumables"
-  },
-  {
-    name: "SCATT MX-W2 WI-FI",
-    price: "₹89,999",
-    image: "/lovable-uploads/e284a5bc-98e2-45a3-b9b1-11aea9dadfb1.png",
-    category: "Scatt Training Systems"
-  }
-];
+// Get new arrivals from the main products list (products marked as isNew)
+const products = allProducts.filter(product => product.isNew);
 
 const container = {
   hidden: { opacity: 0 },
@@ -56,59 +30,112 @@ const item = {
   show: { y: 0, opacity: 1, transition: { duration: 0.5 } }
 };
 
-const ProductCard: React.FC<ProductProps> = ({ name, price, image, category }) => {
+interface ProductCardProps {
+  product: typeof allProducts[0];
+}
+
+  const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const { name, price, image, category, inStock, rating, reviewCount, soldCount } = product;
   const { theme } = useTheme();
+  const { addToCart } = useCart();
   const isDark = theme === 'dark';
+  
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!inStock) return;
+    
+    const added = addToCart(product, 1);
+    if (added) {
+      toast.success(`${name} added to cart`);
+    }
+  };
   
   return (
     <motion.div 
       variants={item}
-      className="group"
+      className="group h-full"
       whileHover={{ y: -5 }}
       transition={{ type: "spring", stiffness: 400, damping: 17 }}
     >
-      <div className={`${isDark ? 'bg-mangla-dark-gray' : 'bg-white'} rounded-lg overflow-hidden border ${isDark ? 'border-gray-800' : 'border-gray-200'} h-full`}>
-        <div className="relative overflow-hidden">
-          {/* Just Arrived badge */}
-          <div className="absolute top-2 right-2 z-10">
-            <div className="bg-blue-500 text-white text-xs font-bold py-1 px-3 rounded shadow-md">
-              JUST ARRIVED
-            </div>
+      <div className={`h-full rounded-lg overflow-hidden border transition-all hover:shadow-lg ${isDark ? 'bg-mangla-dark-gray border-gray-800' : 'bg-white border-gray-200'}`}>
+        <div className="relative h-64 overflow-hidden">
+          <img 
+            src={image} 
+            alt={name} 
+            className="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-110"
+          />
+          <div className="absolute top-4 left-4 z-10">
+            <span className="bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-md shadow-md">NEW</span>
           </div>
-          {/* Standardized image container with fixed dimensions */}
-          <div className="w-full h-[260px] flex items-center justify-center bg-white">
-            <div className="p-4 flex items-center justify-center w-full h-full">
-              <img 
-                src={image} 
-                alt={name} 
-                className="transition-transform duration-500 group-hover:scale-110"
-                style={{ 
-                  maxHeight: "100%", 
-                  maxWidth: "100%", 
-                  objectFit: "contain",
-                  display: "block"
-                }}
-              />
-            </div>
-          </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
-            <div className="p-4 w-full">
-              <Link to={`/products/product/${name.toLowerCase().replace(/\s+/g, '-')}`}>
-                <motion.button 
-                  className="w-full py-2 bg-mangla-gold text-mangla-dark-gray font-medium rounded hover:bg-yellow-500 transition-colors"
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  View Details
-                </motion.button>
-              </Link>
-            </div>
+          {/* Wishlist button */}
+          <div className="absolute top-3 right-3 z-10">
+            <WishlistButton 
+              product={product} 
+              className="bg-white/80 hover:bg-white dark:bg-gray-800/80 dark:hover:bg-gray-700/80"
+              size="md"
+              showTooltip={true}
+            />
           </div>
         </div>
         <div className="p-4">
-          <p className="text-mangla-gold text-sm mb-2">{category}</p>
-          <h3 className={`${isDark ? 'text-white' : 'text-slate-900'} font-medium mb-1 group-hover:text-mangla-gold transition-colors`}>{name}</h3>
-          <p className={`${isDark ? 'text-gray-300' : 'text-slate-700'} font-bold`}>{price}</p>
+          <p className="text-mangla-gold text-sm mb-1">{category}</p>
+          <h3 className={`${isDark ? 'text-white' : 'text-slate-900'} font-medium mb-1 group-hover:text-mangla-gold transition-colors line-clamp-2 h-12`}>
+            {name}
+          </h3>
+          
+          {/* Ratings */}
+          <div className="flex items-center mt-1 mb-2">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <Star
+                key={star}
+                size={14}
+                className={cn(
+                  "mr-0.5",
+                  star <= (rating || 0)
+                    ? "fill-mangla-gold text-mangla-gold" 
+                    : isDark 
+                      ? "text-gray-700" 
+                      : "text-gray-300"
+                )}
+              />
+            ))}
+            <span className={cn(
+              "text-xs ml-1",
+              isDark ? "text-gray-400" : "text-gray-500"
+            )}>
+              ({reviewCount || soldCount || 0})
+            </span>
+          </div>
+          
+          <p className={`${isDark ? 'text-white' : 'text-slate-900'} font-bold mb-3`}>{price}</p>
+          
+          <div className="space-y-2">
+            <Button
+              onClick={handleAddToCart}
+              className={cn(
+                "w-full py-2 text-sm font-medium transition-colors",
+                inStock
+                  ? isDark 
+                    ? "bg-mangla-gold hover:bg-mangla-gold/90 text-mangla-dark-gray"
+                    : "bg-blue-600 hover:bg-blue-700 text-white"
+                  : "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+              )}
+              disabled={!inStock}
+            >
+              {inStock ? 'Add to Cart' : 'Out of Stock'}
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full py-2 text-sm font-medium bg-transparent border-mangla-gold/30 text-mangla-gold hover:bg-mangla-gold/10 hover:text-mangla-gold"
+              asChild
+            >
+              <Link to={`/products/product/${product.id}`}>
+                View Details
+              </Link>
+            </Button>
+          </div>
         </div>
       </div>
     </motion.div>
@@ -150,7 +177,16 @@ const NewArrivals = () => {
               className={`hidden md:block ${isDark ? 'border-mangla-gold text-mangla-gold hover:bg-mangla-gold/10 hover:text-white' : 'border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white'} px-6 py-2 h-auto`}
               asChild
             >
-              <Link to="/products">
+              <Link 
+                to="/products"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.scrollTo(0, 0);
+                  setTimeout(() => {
+                    window.location.href = '/products';
+                  }, 0);
+                }}
+              >
                 View All
               </Link>
             </Button>
@@ -164,13 +200,10 @@ const NewArrivals = () => {
           whileInView="show"
           viewport={{ once: true, amount: 0.1 }}
         >
-          {products.map((product, index) => (
+          {products.map((product) => (
             <ProductCard 
-              key={index} 
-              name={product.name} 
-              price={product.price} 
-              image={product.image}
-              category={product.category}
+              key={product.id}
+              product={product}
             />
           ))}
         </motion.div>
@@ -192,7 +225,16 @@ const NewArrivals = () => {
               className={`${isDark ? 'border-mangla-gold text-mangla-gold hover:bg-mangla-gold/10 hover:text-white' : 'border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white'} px-6 py-2 h-auto`}
               asChild
             >
-              <Link to="/products">
+              <Link 
+                to="/products"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.scrollTo(0, 0);
+                  setTimeout(() => {
+                    window.location.href = '/products';
+                  }, 0);
+                }}
+              >
                 View All
               </Link>
             </Button>

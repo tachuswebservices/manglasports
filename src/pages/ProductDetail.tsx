@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, ShoppingCart, Heart, Share2, Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Share2, Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { toast } from 'sonner';
+import { WishlistButton } from '@/components/common/WishlistButton';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
@@ -9,6 +11,7 @@ import { useTheme } from '@/components/theme/ThemeProvider';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Product as BaseProduct, products } from '@/data/products';
+import { useCart } from '@/contexts/CartContext';
 
 // Extended Product interface with additional detail fields
 interface DetailedProduct extends BaseProduct {
@@ -74,7 +77,44 @@ const ProductDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  // Handle share functionality
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: product?.name || 'Check out this product',
+          text: `${product?.name} - ${product?.shortDescription || 'Amazing product from Mangla Sports'}`,
+          url: window.location.href,
+        });
+      } else {
+        // Fallback for browsers that don't support Web Share API
+        await navigator.clipboard.writeText(window.location.href);
+        alert('Link copied to clipboard!');
+      }
+    } catch (error) {
+      console.error('Error sharing:', error);
+      // Fallback to copying to clipboard if sharing fails
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        alert('Link copied to clipboard!');
+      } catch (err) {
+        console.error('Error copying to clipboard:', err);
+        alert('Failed to share. Please copy the URL manually.');
+      }
+    }
+  };
   const [quantity, setQuantity] = useState(1);
+  const { addToCart } = useCart();
+  
+  const handleAddToCart = () => {
+    if (!product) return;
+    
+    const added = addToCart(product, quantity);
+    if (added) {
+      toast.success(`${quantity > 1 ? quantity + ' items' : 'Item'} added to cart`);
+    }
+  };
 
   useEffect(() => {
     const loadProduct = async () => {
@@ -358,25 +398,26 @@ const ProductDetail: React.FC = () => {
                   </div>
                   
                   <Button 
-                    className="flex-1 bg-mangla-gold hover:bg-mangla-gold/90 text-mangla font-medium py-6"
-                    disabled={!product.inStock}
+                    className={cn("flex-1 py-6 bg-mangla-gold hover:bg-mangla-gold/90 text-white")}
+                    size="lg"
+                    onClick={handleAddToCart}
+                    disabled={!product?.inStock}
                   >
-                    <ShoppingCart className="w-5 h-5 mr-2" />
-                    Add to Cart
+                    {product?.inStock ? 'Add to Cart' : 'Out of Stock'}
                   </Button>
                 </div>
                 
                 <div className="flex space-x-3">
+                  <WishlistButton 
+                    product={product} 
+                    className={cn("flex-1 py-6 h-auto hover:bg-transparent hover:text-mangla-gold", isDark ? "border-gray-700 hover:bg-gray-800" : "")}
+                    size="lg"
+                  />
                   <Button 
                     variant="outline" 
-                    className={cn("flex-1 py-6", isDark ? "border-gray-700 hover:bg-gray-800" : "")}
-                  >
-                    <Heart className="w-5 h-5 mr-2" />
-                    Add to Wishlist
-                  </Button>
-                  <Button 
-                    variant="outline" 
+                    onClick={handleShare}
                     className={cn("py-6", isDark ? "border-gray-700 hover:bg-gray-800" : "")}
+                    aria-label="Share this product"
                   >
                     <Share2 className="w-5 h-5" />
                   </Button>

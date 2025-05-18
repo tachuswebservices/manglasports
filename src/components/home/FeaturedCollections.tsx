@@ -224,7 +224,18 @@ const FeaturedCollections: React.FC = () => {
               )}
               asChild
             >
-              <Link to="/products">
+              <Link 
+                to="/products" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  // Scroll to top first
+                  window.scrollTo(0, 0);
+                  // Then navigate
+                  setTimeout(() => {
+                    window.location.href = '/products';
+                  }, 0);
+                }}
+              >
                 View All Collections
               </Link>
             </Button>

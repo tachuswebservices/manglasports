@@ -2,51 +2,26 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../theme/ThemeProvider';
+import { Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { WishlistButton } from '@/components/common/WishlistButton';
+import { useCart } from '@/contexts/CartContext';
+import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
+import { products as allProducts } from '@/data/products';
 
-interface BestSellerProps {
-  name: string;
-  price: string;
-  image: string;
-  category: string;
-  rating: number;
+// Extend the Product interface to include soldCount
+interface BestSellerProduct extends Omit<typeof allProducts[0], 'inWishlist'> {
   soldCount: number;
 }
 
-const products: BestSellerProps[] = [
-  {
-    name: "Walther LG500",
-    price: "₹249,999",
-    image: "/lovable-uploads/94816e34-750a-420e-b8fc-bde67a9fe267.png",
-    category: "Competition Air Rifles",
-    rating: 5.0,
-    soldCount: 89
-  },
-  {
-    name: "Pietro Beretta Px4 Storm",
-    price: "₹89,999",
-    image: "/lovable-uploads/81cbd973-5303-4c06-bfdf-36f0555888f8.png",
-    category: "Air Pistols",
-    rating: 4.8,
-    soldCount: 132
-  },
-  {
-    name: "Tachus 10 ETS",
-    price: "₹45,999",
-    image: "/lovable-uploads/aa897794-9610-4c04-9c17-d3928750fc0e.png",
-    category: "Electronic Target Systems",
-    rating: 4.7,
-    soldCount: 76
-  },
-  {
-    name: "Pardini K12 Absorber Pistol",
-    price: "₹189,999",
-    image: "/lovable-uploads/9d861ad0-08bd-4f35-9567-bf07dbe5551b.png",
-    category: "Competition Air Pistols",
-    rating: 4.9,
-    soldCount: 105
-  }
-];
+// Get best sellers from the main products list
+const products: BestSellerProduct[] = allProducts
+  .filter(product => product.isHot)
+  .map(product => ({
+    ...product,
+    soldCount: (product as any).soldCount || 0
+  }));
 
 const container = {
   hidden: { opacity: 0 },
@@ -64,9 +39,23 @@ const item = {
   show: { y: 0, opacity: 1, transition: { duration: 0.5 } }
 };
 
-const BestSellerCard: React.FC<BestSellerProps> = ({ name, price, image, category, rating, soldCount }) => {
+const BestSellerCard: React.FC<BestSellerProduct> = (product) => {
+  const { name, price, image, category, rating, soldCount, inStock } = product;
   const { theme } = useTheme();
+  const { addToCart } = useCart();
   const isDark = theme === 'dark';
+  
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!inStock) return;
+    
+    const added = addToCart(product, 1);
+    if (added) {
+      toast.success(`${name} added to cart`);
+    }
+  };
   
   return (
     <motion.div 
@@ -75,10 +64,28 @@ const BestSellerCard: React.FC<BestSellerProps> = ({ name, price, image, categor
       whileHover={{ y: -5 }}
       transition={{ type: "spring", stiffness: 400, damping: 17 }}
     >
-      <div className={`${isDark ? 'bg-mangla-dark-gray' : 'bg-white'} rounded-lg overflow-hidden border ${isDark ? 'border-gray-800' : 'border-gray-300'} h-full relative`}>
-        <div className="absolute top-4 left-4 z-10">
+      <div className={`${isDark ? 'bg-mangla-dark-gray' : 'bg-white'} rounded-lg overflow-hidden border ${isDark ? 'border-gray-800' : 'border-gray-300'} h-full relative transition-all duration-300 hover:shadow-lg`}>
+        {/* Always visible tags */}
+        <div className="absolute top-4 left-4 z-10 flex flex-col items-start gap-2">
           <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md shadow-md">HOT</span>
+          {soldCount > 100 && (
+            <span className="bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-md shadow-md">BESTSELLER</span>
+          )}
+          {product.numericPrice && product.numericPrice > 100000 && (
+            <span className="bg-purple-500 text-white text-xs font-bold px-2 py-1 rounded-md shadow-md">PREMIUM</span>
+          )}
         </div>
+        
+        {/* Wishlist button - always visible */}
+        <div className="absolute top-3 right-3 z-10">
+          <WishlistButton 
+            product={product} 
+            className="bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-700/80"
+            size="md"
+            showTooltip={true}
+          />
+        </div>
+        
         <div className="relative overflow-hidden">
           <div className="w-full h-[260px] flex items-center justify-center bg-white">
             <div className="p-4 flex items-center justify-center w-full h-full">
@@ -95,34 +102,57 @@ const BestSellerCard: React.FC<BestSellerProps> = ({ name, price, image, categor
               />
             </div>
           </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
-            <div className="p-4 w-full">
-              <Link to={`/products/product/${name.toLowerCase().replace(/\s+/g, '-')}`}>
-                <motion.button 
-                  className="w-full py-2 bg-mangla-gold text-mangla-dark-gray font-medium rounded hover:bg-yellow-500 transition-colors"
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  View Details
-                </motion.button>
-              </Link>
-            </div>
-          </div>
+          
+          {/* Hover overlay with subtle effect */}
+          <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </div>
         <div className="p-4">
-          <p className="text-mangla-gold text-sm mb-2">{category}</p>
-          <h3 className={`${isDark ? 'text-white' : 'text-slate-900'} font-medium mb-1 group-hover:text-mangla-gold transition-colors truncate`}>{name}</h3>
-          <p className={`${isDark ? 'text-gray-300' : 'text-slate-700'} font-bold`}>{price}</p>
-          
-          <div className={`flex justify-center items-center mt-3 pt-3 border-t ${isDark ? 'border-gray-700' : 'border-gray-300'}`}>
-            <Link to={`/products/product/${name.toLowerCase().replace(/\s+/g, '-')}`} className="w-full">
-              <Button 
-                className={`w-full ${isDark ? 'bg-mangla-dark-gray hover:bg-gray-700 text-mangla-gold border border-mangla-gold' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
-                size="sm"
+          <div>
+            <h3 className={`${isDark ? 'text-white' : 'text-slate-900'} font-medium mb-1 group-hover:text-mangla-gold transition-colors line-clamp-2 h-12`}>
+              {name}
+            </h3>
+            <p className={`${isDark ? 'text-gray-400' : 'text-slate-600'} text-sm mb-2`}>{category}</p>
+            <div className="flex items-center justify-between mb-2">
+              <p className={`${isDark ? 'text-white' : 'text-slate-900'} font-bold`}>{price}</p>
+              <div className="flex items-center bg-amber-500/20 px-2 py-0.5 rounded">
+                <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400 mr-1" />
+                <span className="text-xs font-medium text-amber-600 dark:text-amber-400">{rating}</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-3">
+              <span>{soldCount}+ sold</span>
+              <span className={cn("text-xs font-medium px-2 py-0.5 rounded", 
+                inStock ? "text-green-600 bg-green-100 dark:bg-green-900/30" : "text-red-600 bg-red-100 dark:bg-red-900/30"
+              )}>
+                {inStock ? 'In Stock' : 'Out of Stock'}
+              </span>
+            </div>
+            
+            <div className="space-y-2">
+              <Button
+                onClick={handleAddToCart}
+                className={cn(
+                  "w-full py-2 text-sm font-medium transition-colors",
+                  inStock
+                    ? isDark 
+                      ? "bg-mangla-gold hover:bg-mangla-gold/90 text-mangla-dark-gray"
+                      : "bg-blue-600 hover:bg-blue-700 text-white"
+                    : "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                )}
+                disabled={!inStock}
               >
-                View Details
+                {inStock ? 'Add to Cart' : 'Out of Stock'}
               </Button>
-            </Link>
+              <Button
+                variant="outline"
+                className="w-full py-2 text-sm font-medium bg-transparent border-mangla-gold/30 text-mangla-gold hover:bg-mangla-gold/10 hover:text-mangla-gold"
+                asChild
+              >
+                <Link to={`/products/product/${product.id}`}>
+                  View Details
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -165,7 +195,16 @@ const BestSellers = () => {
               className={`hidden md:block ${isDark ? 'border-mangla-gold text-mangla-gold hover:bg-mangla-gold/10 hover:text-white' : 'border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white'} px-6 py-2 h-auto`}
               asChild
             >
-              <Link to="/products">
+              <Link 
+                to="/products"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.scrollTo(0, 0);
+                  setTimeout(() => {
+                    window.location.href = '/products';
+                  }, 0);
+                }}
+              >
                 View All
               </Link>
             </Button>
@@ -179,15 +218,10 @@ const BestSellers = () => {
           whileInView="show"
           viewport={{ once: true, amount: 0.1 }}
         >
-          {products.map((product, index) => (
+          {products.map((product) => (
             <BestSellerCard 
-              key={index} 
-              name={product.name} 
-              price={product.price} 
-              image={product.image}
-              category={product.category}
-              rating={product.rating}
-              soldCount={product.soldCount}
+              key={product.id}
+              {...product}
             />
           ))}
         </motion.div>
@@ -209,7 +243,16 @@ const BestSellers = () => {
               className={`${isDark ? 'border-mangla-gold text-mangla-gold hover:bg-mangla-gold/10 hover:text-white' : 'border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white'} px-6 py-2 h-auto`}
               asChild
             >
-              <Link to="/products">
+              <Link 
+                to="/products"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.scrollTo(0, 0);
+                  setTimeout(() => {
+                    window.location.href = '/products';
+                  }, 0);
+                }}
+              >
                 View All
               </Link>
             </Button>

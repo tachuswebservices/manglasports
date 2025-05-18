@@ -61,7 +61,16 @@ const AboutSnippet = () => {
             and an unwavering commitment to the shooting community.
           </motion.p>
           
-          <Link to="/about">
+          <Link 
+            to="/about"
+            onClick={(e) => {
+              e.preventDefault();
+              window.scrollTo(0, 0);
+              setTimeout(() => {
+                window.location.href = '/about';
+              }, 0);
+            }}
+          >
             <motion.span 
               className={cn(
                 "inline-block border-b text-lg font-medium transition-colors duration-300",

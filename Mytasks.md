@@ -31,8 +31,10 @@ This document tracks all completed and pending tasks for the Mangla Sports & Ass
 - [x] Products listing page with basic functionality
 - [x] 404 Not Found page
 - [x] Complete product detail page with consistent pricing
-- [x] About Us page with company information
+- [x] About Us page with company information and leadership team
 - [x] Contact page with form submission
+- [x] Privacy Policy page
+- [x] Terms of Service page
 
 ### 2.4 Product Page Enhancements (Phase 1 & 2)
 - [x] Layout structure with responsive design
@@ -51,36 +53,29 @@ This document tracks all completed and pending tasks for the Mangla Sports & Ass
 - [x] Mock data for all product categories
 - [x] Fallback UI for missing products
 
-
-
 ## 3. In Progress Tasks
 
-
-### 3.1 Issues and Improvements
-- [ ] Scroll from bootom to top after navigation
-- [ ] About US and Contact Pages
-- [ ] UI Improvements
-- [ ] FAQ section
-- [ ] Blog/Articles section
-- [ ] Events Calendar
-
+### 3.1 Issues and Improvements (Completed)
+- [x] Responsive design for all screen sizes
+- [x] About US and Contact Pages (added)
+- [x] FAQ section (Added with expandable questions and proper routing)
+- [x] Blog/Articles section (Created with responsive layout and article cards)
+- [x] Events Calendar (Added with filtering by category and event details)
+- [x] Social sharing for products
+- [x] Header overlap issues fixed on all pages
+- [x] About page layout improvements and content updates
+- [x] Wishlist functionality
+- [x] Shopping cart functionality
+- [x] Activate search functionality
+- [x] Resolve Scroll from bottom to top after navigation
+- [x] UI Improvements (Ongoing)
 
 ### 3.2 Performance & Optimization
-- [x] Responsive design for all screen sizes
 - [ ] Image optimization with WebP format
 - [ ] Lazy loading for images and components
 - [ ] Code splitting with React.lazy
 - [ ] Bundle size analysis and optimization
 - [ ] Performance monitoring setup
-
-### 3.3 Product Features
-- [ ] Product variants and options
-- [ ] Stock level indicators
-- [ ] Related products section
-- [ ] Recently viewed products
-- [ ] Product comparison functionality
-
-### 3.4 User Experience
 - [ ] Loading states and skeletons
 - [ ] Smooth transitions and animations
 - [ ] Form validation and error handling
@@ -89,42 +84,18 @@ This document tracks all completed and pending tasks for the Mangla Sports & Ass
 - [ ] Performance optimizations
 - [ ] Basic SEO implementation
 
-
-### 3.5 E-commerce Features
-- [ ] Shopping cart functionality
-- [ ] Checkout process
-- [ ] Payment gateway integration (Razorpay/Stripe)
+### 3.3 Auth, Payment and Order Management
 - [ ] User authentication
+- [ ] User accounts
+- [ ] Payment gateway integration (Razorpay/Stripe)
+- [ ] Checkout process
 - [ ] Order management system
-- [ ] Wishlist functionality
-- [ ] Product reviews and ratings
-
-### 3.6 Search & Navigation
-- [ ] Advanced search functionality
-- [ ] Server-side search implementation
-- [ ] Advanced filtering options
-- [ ] Pagination for product listings
-- [ ] Faceted search filters
-
-### 3.7 User Experience
-- [ ] Product comparison feature
-- [ ] Size guides and fitting information
-- [ ] Related products suggestions
-- [ ] Recently viewed products
-- [ ] Quick view for products
-
-### 3.8 Marketing & Engagement
-- [ ] Newsletter subscription
-- [ ] Social sharing for products
-- [ ] Promotional banners and offers
-- [ ] Loyalty program
-- [ ] Customer feedback mechanisms
 
 ### 4. Technical Enhancements
 - [ ] Comprehensive analytics tracking
 - [ ] Advanced SEO optimizations
 - [ ] PWA features for offline access
-- [ ] Localization support
+- [ ] Server-side search implementation
 - [ ] Automated testing setup
 - [ ] Performance monitoring
 
@@ -150,15 +121,4 @@ This document tracks all completed and pending tasks for the Mangla Sports & Ass
 - [ ] Monitoring and alerting
 - [ ] Backup and recovery procedures
 
-## 8. Notes
-- All tasks are prioritized based on business requirements
-- Regular updates will be made as tasks progress
-- Dependencies between tasks are considered in the prioritization
-- Performance and accessibility are key considerations for all tasks
 
-## 9. Last Updated
-- **Date**: May 18, 2025
-- **Version**: 1.1.0
-
----
-*This document will be updated regularly to reflect the current status of the project.*
