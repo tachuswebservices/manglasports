@@ -336,6 +336,67 @@ const Navbar = () => {
                     ))}
                   </div>
                 </div>
+                
+                {/* Additional Links section */}
+                <div className="mb-6">
+                  <div className={`${isDark ? 'text-gray-300' : 'text-gray-500'} text-xs font-semibold uppercase tracking-wider px-4 py-2`}>
+                    More
+                  </div>
+                  <div className="mt-1">
+                    {[
+                      {
+                        title: 'FAQs',
+                        link: '/faq',
+                        icon: (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 1.24-2.098 2.04-2.868.85-.804 1.721-1.21 2.732-1.21 1.42 0 2.418.74 2.418 1.782 0 .93-.62 1.635-1.624 2.08-.9.39-1.209.68-1.209 1.29v.5m0 3.5c0 .818-.7 1.5-1.5 1.5s-1.5-.682-1.5-1.5.7-1.5 1.5-1.5 1.5.682 1.5 1.5zM3 12a9 9 0 1118 0 9 9 0 01-18 0z" />
+                          </svg>
+                        )
+                      },
+                      {
+                        title: 'Blog',
+                        link: '/blog',
+                        icon: (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                          </svg>
+                        )
+                      },
+                      {
+                        title: 'Events',
+                        link: '/events',
+                        icon: (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                        )
+                      }
+                    ].map((item, index) => (
+                      <motion.div
+                        key={item.title}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.5 + (index * 0.05) }}
+                      >
+                        <Link 
+                          to={item.link} 
+                          className={`flex items-center w-full px-4 py-3 rounded-md ${isDark ? 'text-white hover:bg-slate-800' : 'text-slate-700 hover:bg-gray-100'} transition-colors`}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          <div className="flex items-center w-full">
+                            <span className={`${isDark ? 'text-mangla' : 'text-mangla-dark'} mr-3`}>
+                              {item.icon}
+                            </span>
+                            <span className="font-medium flex-grow">{item.title}</span>
+                          </div>
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-mangla flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </Link>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
               </div>
               
               {/* Footer with contact info */}
