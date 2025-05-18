@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Heart, X, Heart as HeartFilled, ShoppingCart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useWishlist } from '@/contexts/WishlistContext';
@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useTheme } from '@/components/theme/ThemeProvider';
 import { cn } from '@/lib/utils';
 import { Product } from '@/data/products';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface WishlistItemProps {
   product: Product;
@@ -59,22 +60,37 @@ const WishlistIcon = () => {
   const { wishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const [isOpen, setIsOpen] = React.useState(false);
   const { theme } = useTheme();
+  const isMobile = useIsMobile();
   const isDark = theme === 'dark';
   const itemCount = wishlist.length;
 
-  const dropdownRef = React.useRef<HTMLDivElement>(null);
+  // Prevent body scroll when wishlist is open on mobile
+  useEffect(() => {
+    if (isOpen && isMobile) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen, isMobile]);
 
-  // Close dropdown when clicking outside
-  React.useEffect(() => {
+  // Close wishlist when clicking outside
+  const wishlistRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (wishlistRef.current && !wishlistRef.current.contains(event.target as Node) && isOpen) {
         setIsOpen(false);
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
 
   const handleRemove = (productId: string) => {
     removeFromWishlist(productId);
@@ -86,14 +102,17 @@ const WishlistIcon = () => {
   };
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative" ref={wishlistRef}>
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsOpen(!isOpen);
+        }}
         className={cn(
           "relative p-2 rounded-full transition-colors",
           isDark ? "hover:bg-slate-700" : "hover:bg-gray-100"
         )}
-        aria-label="Wishlist"
+        aria-label={`Wishlist (${itemCount} items)`}
         aria-expanded={isOpen}
       >
         {isInWishlist ? (
@@ -122,23 +141,35 @@ const WishlistIcon = () => {
             exit={{ opacity: 0, y: 10 }}
             transition={{ duration: 0.2 }}
             className={cn(
-              "absolute right-0 mt-2 w-80 rounded-md shadow-lg py-1 z-50",
-              isDark ? "bg-slate-800 border border-slate-700" : "bg-white border border-gray-200"
+              "fixed sm:absolute top-0 sm:top-auto right-0 sm:right-0 mt-0 sm:mt-2 w-full sm:w-80 h-screen sm:h-auto sm:max-h-[80vh] bg-white dark:bg-slate-800 rounded-none sm:rounded-lg shadow-xl sm:shadow-lg overflow-y-auto z-50 border-0 sm:border border-gray-200 dark:border-gray-700 transition-all duration-300 transform",
+              isMobile ? 'translate-x-0' : 'translate-y-0'
             )}
           >
-            <div className="px-4 py-2 border-b border-gray-200 dark:border-slate-700 flex justify-between items-center">
-              <h3 className="font-medium text-gray-900 dark:text-white">My Wishlist</h3>
-              <Link 
-                to="/wishlist" 
-                className="text-xs text-mangla-gold hover:underline"
+            <div className={`p-4 flex justify-between items-center border-b border-gray-200 dark:border-gray-700 sm:hidden`}>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">My Wishlist</h3>
+              <button
                 onClick={() => setIsOpen(false)}
+                className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 p-2 -mr-2"
+                aria-label="Close wishlist"
               >
-                View All
-              </Link>
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="hidden sm:block px-4 py-2 border-b border-gray-200 dark:border-slate-700">
+              <div className="flex justify-between items-center">
+                <h3 className="font-medium text-gray-900 dark:text-white">My Wishlist</h3>
+                <Link 
+                  to="/wishlist" 
+                  className="text-xs text-mangla-gold hover:underline"
+                  onClick={() => setIsOpen(false)}
+                >
+                  View All
+                </Link>
+              </div>
             </div>
             
             {itemCount > 0 ? (
-              <div className="max-h-96 overflow-y-auto">
+              <div className="max-h-[calc(100vh-200px)] sm:max-h-96 overflow-y-auto">
                 {wishlist.map((product) => (
                   <WishlistItem
                     key={product.id}

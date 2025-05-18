@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ShoppingCart, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '@/contexts/CartContext';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface CartItemProps {
   product: {
@@ -67,15 +68,47 @@ const CartItem = ({ product, onRemove, onUpdateQuantity }: CartItemProps) => {
 const CartIcon = () => {
   const { cart, removeFromCart, updateQuantity, getCartTotal, getCartItemCount } = useCart();
   const [isOpen, setIsOpen] = React.useState(false);
+  const isMobile = useIsMobile();
   const hasItems = cart.length > 0;
   const totalItems = getCartItemCount();
   const totalPrice = getCartTotal();
 
+  // Prevent body scroll when cart is open on mobile
+  useEffect(() => {
+    if (isOpen && isMobile) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen, isMobile]);
+
+  // Close cart when clicking outside
+  const cartRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (cartRef.current && !cartRef.current.contains(event.target as Node) && isOpen) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
   return (
-    <div className="relative">
+    <div className="relative" ref={cartRef}>
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="relative p-1 text-gray-700 dark:text-gray-300 hover:text-mangla-gold transition-colors"
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsOpen(!isOpen);
+        }}
+        className="relative p-2 text-gray-700 dark:text-gray-300 hover:text-mangla-gold transition-colors"
         aria-label={`Cart (${totalItems} items)`}
       >
         <ShoppingCart className="w-6 h-6" />
@@ -93,7 +126,7 @@ const CartIcon = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
             transition={{ duration: 0.2 }}
-            className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-800 rounded-lg shadow-lg overflow-hidden z-50 border border-gray-200 dark:border-gray-700"
+            className={`fixed sm:absolute top-0 sm:top-auto right-0 sm:right-0 mt-0 sm:mt-2 w-full sm:w-80 h-screen sm:h-auto sm:max-h-[80vh] bg-white dark:bg-slate-800 rounded-none sm:rounded-lg shadow-xl sm:shadow-lg overflow-y-auto z-50 border-0 sm:border border-gray-200 dark:border-gray-700 transition-all duration-300 transform ${isMobile ? 'translate-x-0' : 'translate-y-0'}`}
           >
             <div className="p-4 border-b border-gray-200 dark:border-gray-700">
               <div className="flex justify-between items-center">
@@ -108,7 +141,17 @@ const CartIcon = () => {
               </div>
             </div>
 
-            <div className="max-h-96 overflow-y-auto">
+            <div className={`p-4 flex justify-between items-center border-b border-gray-200 dark:border-gray-700 sm:hidden`}>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">Your Cart</h3>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 p-2 -mr-2"
+                  aria-label="Close cart"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            <div className="max-h-[calc(100vh-200px)] sm:max-h-96 overflow-y-auto">
               {hasItems ? (
                 <>
                   <div className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -142,8 +185,7 @@ const CartIcon = () => {
                   <p className="text-gray-500 dark:text-gray-400">Your cart is empty</p>
                   <Button
                     asChild
-                    variant="outline"
-                    className="mt-4 border-mangla-gold text-mangla-gold hover:bg-mangla-gold/10"
+                    className="mt-4 border-mangla-gold text-mangla-gold hover:bg-mangla-gold/10 w-full"
                   >
                     <Link to="/products" onClick={() => setIsOpen(false)}>
                       Continue Shopping

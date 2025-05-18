@@ -165,6 +165,11 @@ const Navbar = () => {
                   </svg>
                 </button>
                 
+                {/* Wishlist icon for mobile */}
+                <div className="relative">
+                  <WishlistIcon />
+                </div>
+                
                 {/* Cart icon for mobile */}
                 <div className="relative">
                   <CartIcon />
