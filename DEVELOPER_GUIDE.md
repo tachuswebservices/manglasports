@@ -8,6 +8,7 @@
 5. [Product Tags and Badges](#5-product-tags-and-badges)
 6. [Product Ratings and Reviews](#6-product-ratings-and-reviews)
 7. [Stock Status Management](#7-stock-status-management)
+8. [Mobile UI Best Practices](#8-mobile-ui-best-practices)
 
 ## 1. Creating a New Category
 
@@ -144,6 +145,31 @@ The hero section uses different images for mobile and desktop views to ensure op
 
 ### 7.2 Updating Hero Images
 1. Upload new images to the `/public/lovable-uploads/` directory
+## 8. Mobile UI Best Practices
+
+### 8.1 Navigation and Layout
+- The mobile navigation is now optimized for touch with larger tap targets
+- Navigation items are properly spaced and aligned in the mobile menu
+- The search functionality has been improved with better mobile suggestions
+
+### 8.2 Spacing and Alignment
+- Consistent spacing is maintained between header and content
+- All interactive elements have proper touch targets (minimum 48x48px)
+- Text remains readable without zooming on mobile devices
+
+### 8.3 Performance
+- Images are optimized for mobile devices
+- Mobile-specific styles are loaded conditionally
+- Smooth scrolling behavior is implemented for better mobile UX
+
+### 8.4 Testing
+- Test on various mobile devices and screen sizes
+- Verify touch targets are easily tappable
+- Ensure text remains readable without horizontal scrolling
+
+## 9. Image Optimization
+
+### 9.1 Hero Section Images
 2. Update the image paths in `src/components/home/HeroSection.tsx`:
    ```tsx
    {/* Mobile Image */}
