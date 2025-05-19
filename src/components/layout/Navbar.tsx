@@ -66,7 +66,7 @@ const Navbar = () => {
           <Link to="/" className="flex-shrink-0 mr-2" onClick={scrollToTop}>
             <div className="flex items-center gap-2">
               <img 
-                src="/lovable-uploads/59a0133d-7459-463e-8a2f-fd2a578ea3ea.png" 
+                src="/lovable-uploads/msa-logo.png" 
                 alt="Mangla Sports Logo" 
                 className="h-10 w-auto md:h-14" 
               />
