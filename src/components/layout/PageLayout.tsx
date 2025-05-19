@@ -18,7 +18,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
       isDark ? "bg-slate-900 text-white" : "bg-white text-slate-900"
     )}>
       <Navbar />
-      <main className="flex-1 pt-16">
+      <main className="flex-grow pt-0 md:pt-24 pb-16 px-4 sm:px-6">
         {children}
       </main>
       <Footer />

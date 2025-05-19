@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Search, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ThemeToggle from '../theme/ThemeToggle';
 import { useTheme } from '../theme/ThemeProvider';
@@ -44,8 +44,8 @@ const Navbar = () => {
     { title: 'Air Rifles', link: '/products/air-rifles' },
     { title: 'Air Pistols', link: '/products/air-pistols' },
     { title: 'CO2 Pistols', link: '/products/co2-pistols' },
-    { title: 'Air Pellets', link: '/products/air-pellets' },
-    { title: 'Scatt Training Systems', link: '/products/scatt-training-systems' },
+    { title: 'Pellets', link: '/products/pellets' },
+    { title: 'Scatt Training Systems', link: '/products/scatt' },
     { title: 'Consumables', link: '/products/consumables' }
   ];
 
@@ -87,8 +87,8 @@ const Navbar = () => {
               <Link to="/products/air-pistols" className={`${isDark ? 'text-gray-300' : 'text-slate-700'} px-3 py-2 text-sm font-medium hover:text-mangla-gold transition-colors`}>
                 Air Pistols
               </Link>
-              <Link to="/products/air-pellets" className={`${isDark ? 'text-gray-300' : 'text-slate-700'} px-3 py-2 text-sm font-medium hover:text-mangla-gold transition-colors`}>
-                Air Pellets
+              <Link to="/products/pellets" className={`${isDark ? 'text-gray-300' : 'text-slate-700'} px-3 py-2 text-sm font-medium hover:text-mangla-gold transition-colors`}>
+                Pellets
               </Link>
               <Link to="/products/air-rifle-accessories" className={`${isDark ? 'text-gray-300' : 'text-slate-700'} px-3 py-2 text-sm font-medium hover:text-mangla-gold transition-colors`}>
                 Air Rifle Accessories
@@ -102,41 +102,47 @@ const Navbar = () => {
             <div className="flex items-center space-x-3">
               {/* Search bar for desktop */}
               <div className="hidden md:block relative">
-                <AnimatePresence>
-                  {isSearchOpen ? (
+                {isSearchOpen ? (
+                  <div className="relative">
                     <motion.div
-                      initial={{ opacity: 0, width: 0 }}
-                      animate={{ opacity: 1, width: 300 }}
-                      exit={{ opacity: 0, width: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="overflow-hidden relative"
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -10 }}
+                      transition={{ duration: 0.15 }}
+                      className="relative w-[300px]"
                     >
                       <SearchBar 
-                        onClose={() => setIsSearchOpen(false)}
-                        className="w-[300px] pr-8"
+                        onClose={() => {
+                          setIsSearchOpen(false);
+                        }}
+                        className="w-full pr-8"
                       />
-                      <button
-                        onClick={toggleSearch}
-                        className={`absolute right-0 top-1/2 -translate-y-1/2 p-2 ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-700'}`}
-                        aria-label="Close search"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
                     </motion.div>
-                  ) : (
                     <button
-                      onClick={toggleSearch}
-                      className={`${isDark ? 'text-gray-300 hover:text-white' : 'text-slate-700 hover:text-slate-900'} p-1 transition-colors`}
-                      aria-label="Search"
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsSearchOpen(false);
+                      }}
+                      className={`absolute right-0 top-1/2 -translate-y-1/2 p-2 ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-700'}`}
+                      aria-label="Close search"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                      </svg>
+                      <X className="h-5 w-5" />
                     </button>
-                  )}
-                </AnimatePresence>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsSearchOpen(true);
+                    }}
+                    className={`${isDark ? 'text-gray-300 hover:text-white' : 'text-slate-700 hover:text-slate-900'} p-1 transition-colors`}
+                    aria-label="Search"
+                  >
+                    <Search className="h-6 w-6" />
+                  </button>
+                )}
               </div>
               
               {/* Icons container - hidden on mobile */}
@@ -210,21 +216,25 @@ const Navbar = () => {
               isDark ? 'bg-slate-800' : 'bg-white'
             }`}
           >
-            <div className="flex items-center">
-              <SearchBar 
-                isMobile 
-                onClose={() => setIsSearchOpen(false)}
-                className="flex-1"
-              />
-              <button
-                type="button"
-                onClick={() => setIsSearchOpen(false)}
-                className={`ml-2 px-3 py-2 rounded-md ${
-                  isDark ? 'text-gray-300 hover:bg-slate-700' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                Cancel
-              </button>
+            <div className="relative w-full max-w-2xl mx-auto">
+              <div className="flex items-center w-full">
+                <div className="flex-1">
+                  <SearchBar 
+                    isMobile 
+                    onClose={() => setIsSearchOpen(false)}
+                    className="w-full"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsSearchOpen(false)}
+                  className={`ml-2 px-3 py-2 rounded-md whitespace-nowrap ${
+                    isDark ? 'text-gray-300 hover:bg-slate-700' : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </motion.div>
         )}
@@ -380,16 +390,11 @@ const Navbar = () => {
                       >
                         <Link 
                           to={item.link} 
-                          className={`flex items-center w-full px-4 py-3 rounded-md ${isDark ? 'text-white hover:bg-slate-800' : 'text-slate-700 hover:bg-gray-100'} transition-colors`}
+                          className={`flex items-center justify-between w-full px-4 py-3 rounded-md ${isDark ? 'text-white hover:bg-slate-800' : 'text-slate-700 hover:bg-gray-100'} transition-colors`}
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
-                          <div className="flex items-center w-full">
-                            <span className={`${isDark ? 'text-mangla' : 'text-mangla-dark'} mr-3`}>
-                              {item.icon}
-                            </span>
-                            <span className="font-medium flex-grow">{item.title}</span>
-                          </div>
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-mangla flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <span className="font-medium">{item.title}</span>
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-mangla" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         </Link>
@@ -438,7 +443,6 @@ const Navbar = () => {
                   <div className="flex items-center">
                     <span className="text-xs font-medium mr-2">Theme:</span>
                     <ThemeToggle />
-                    <WishlistIcon />
                   </div>
                 </div>
               </div>

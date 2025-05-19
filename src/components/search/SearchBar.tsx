@@ -86,19 +86,27 @@ const SearchBar: React.FC<SearchBarProps> = ({ isMobile = false, onClose, classN
   };
 
   return (
-    <div className={`relative ${className}`} ref={searchRef}>
-      <form onSubmit={handleSearch} className="relative">
-        <div className="relative">
+    <div className={`relative w-full ${className}`} ref={searchRef}>
+      <form 
+        onSubmit={handleSearch} 
+        className="relative w-full"
+        onClick={(e) => e.stopPropagation()} // Prevent click from closing suggestions
+      >
+        <div className="relative w-full">
           <Input
             ref={inputRef}
             type="text"
             placeholder="Search products..."
             value={searchQuery}
             onChange={(e) => {
-              setSearchQuery(e.target.value);
-              updateSuggestions(e.target.value);
+              const value = e.target.value;
+              setSearchQuery(value);
+              updateSuggestions(value);
+              setIsFocused(true);
             }}
-            onFocus={() => setIsFocused(true)}
+            onFocus={() => {
+              setIsFocused(true);
+            }}
             className={`w-full ${isMobile ? 'pl-3 pr-10' : 'pl-10 pr-10'} h-10 text-sm rounded-md ${
               isDark
                 ? 'bg-slate-700 text-white border-slate-600 placeholder:text-gray-300 focus:border-mangla-gold focus:ring-1 focus:ring-mangla-gold'
@@ -114,7 +122,10 @@ const SearchBar: React.FC<SearchBarProps> = ({ isMobile = false, onClose, classN
           {searchQuery && (
             <button
               type="button"
-              onClick={clearSearch}
+              onClick={(e) => {
+                e.stopPropagation();
+                clearSearch();
+              }}
               className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
               aria-label="Clear search"
             >
@@ -128,13 +139,21 @@ const SearchBar: React.FC<SearchBarProps> = ({ isMobile = false, onClose, classN
       <AnimatePresence>
         {isFocused && suggestions.length > 0 && (
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            transition={{ duration: 0.2 }}
+            exit={{ opacity: 0, y: 5 }}
+            transition={{ duration: 0.15 }}
             className={`absolute z-50 mt-1 w-full rounded-md shadow-lg ${
               isDark ? 'bg-slate-800' : 'bg-white'
-            } ring-1 ring-black ring-opacity-5`}
+            } ring-1 ring-black ring-opacity-5 overflow-hidden`}
+            style={{
+              width: isMobile ? 'calc(100vw - 2rem)' : '100%',
+              left: '0',
+              transform: 'none',
+              maxWidth: '500px',
+              maxHeight: '400px',
+              overflowY: 'auto',
+            }}
           >
             <div className="py-1">
               {suggestions.map((product) => (
@@ -149,7 +168,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isMobile = false, onClose, classN
                   }`}
                 >
                   <div className="font-medium">{product.name}</div>
-                  <div className="text-xs text-gray-400">
+                  <div className="text-xs text-gray-400 truncate">
                     {product.brand} • {product.category}
                   </div>
                 </button>

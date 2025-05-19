@@ -122,20 +122,52 @@ const Products: React.FC = () => {
       >
         <Navbar />
         
-        <main className="py-20 container-custom">
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.6 }}
-            className="mb-10"
-          >
-            <h1 className={cn(
-              "text-3xl sm:text-4xl md:text-5xl font-bold mb-6",
-              isDark ? "text-white" : "text-slate-900"
-            )}>
-              {formatCategoryName(category)}
-            </h1>
-          </motion.div>
+        <main className="flex-grow pt-0 md:pt-24 pb-16 px-4 sm:px-6 container-custom">
+          <div className="max-w-7xl mx-auto">
+            {/* Breadcrumb */}
+            <nav className="flex items-center text-sm mb-6" aria-label="Breadcrumb">
+              <ol className="flex items-center space-x-2">
+                <li>
+                  <Link 
+                    to="/" 
+                    className={cn(
+                      "hover:underline",
+                      isDark ? "text-gray-300 hover:text-white" : "text-gray-600 hover:text-gray-900"
+                    )}
+                  >
+                    Home
+                  </Link>
+                </li>
+                <li className="text-gray-500">/</li>
+                <li>
+                  <Link 
+                    to="/products" 
+                    className={cn(
+                      "hover:underline",
+                      isDark ? "text-gray-300 hover:text-white" : "text-gray-600 hover:text-gray-900"
+                    )}
+                  >
+                    Products
+                  </Link>
+                </li>
+                <li className="text-gray-500">/</li>
+                <li className="text-mangla-gold font-medium">{formatCategoryName(category)}</li>
+              </ol>
+            </nav>
+            
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+              className="mb-6"
+            >
+              <h1 className={cn(
+                "text-2xl sm:text-3xl font-bold",
+                isDark ? "text-white" : "text-slate-900"
+              )}>
+                {formatCategoryName(category)}
+              </h1>
+            </motion.div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {[
@@ -264,6 +296,7 @@ const Products: React.FC = () => {
               </motion.div>
             ))}
           </div>
+          </div>
         </main>
         
         <Footer />
@@ -284,7 +317,7 @@ const Products: React.FC = () => {
     >
       <Navbar />
       
-      <main className="px-4 sm:px-6 pt-32 pb-16 md:pt-36 md:pb-20 max-w-7xl mx-auto">
+      <main className="flex-grow pt-0 md:pt-24 pb-16 px-4 sm:px-6 max-w-7xl mx-auto">
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
