@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ShoppingCart, X } from 'lucide-react';
+import { ShoppingCart, Trash } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '@/contexts/CartContext';
 import { Link } from 'react-router-dom';
@@ -56,10 +56,10 @@ const CartItem = ({ product, onRemove, onUpdateQuantity }: CartItemProps) => {
       </div>
       <button 
         onClick={() => onRemove(product.id)}
-        className="text-gray-400 hover:text-rose-500 transition-colors p-1"
+        className="text-gray-400 hover:text-rose-500 transition-colors p-1 rounded-full"
         aria-label="Remove from cart"
       >
-        <X className="w-4 h-4" />
+        <Trash className="w-4 h-4" />
       </button>
     </div>
   );
@@ -131,25 +131,11 @@ const CartIcon = () => {
             <div className="p-4 border-b border-gray-200 dark:border-gray-700">
               <div className="flex justify-between items-center">
                 <h3 className="font-medium text-gray-900 dark:text-white">Shopping Cart</h3>
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"
-                  aria-label="Close cart"
-                >
-                  <X className="w-5 h-5" />
-                </button>
               </div>
             </div>
 
             <div className={`p-4 flex justify-between items-center border-b border-gray-200 dark:border-gray-700 sm:hidden`}>
                 <h3 className="text-lg font-medium text-gray-900 dark:text-white">Your Cart</h3>
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 p-2 -mr-2"
-                  aria-label="Close cart"
-                >
-                  <X className="w-5 h-5" />
-                </button>
               </div>
             <div className="max-h-[calc(100vh-200px)] sm:max-h-96 overflow-y-auto">
               {hasItems ? (
@@ -185,7 +171,8 @@ const CartIcon = () => {
                   <p className="text-gray-500 dark:text-gray-400">Your cart is empty</p>
                   <Button
                     asChild
-                    className="mt-4 border-mangla-gold text-mangla-gold hover:bg-mangla-gold/10 w-full"
+                    variant="outline"
+                    className="mt-4 w-full bg-transparent border-mangla-gold text-mangla-gold hover:bg-mangla-gold hover:text-mangla-dark-gray dark:hover:text-mangla-dark-gray transition-colors"
                   >
                     <Link to="/products" onClick={() => setIsOpen(false)}>
                       Continue Shopping

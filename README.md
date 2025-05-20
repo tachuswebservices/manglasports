@@ -87,6 +87,7 @@ The Mangla Sports & Associates website is a professional e-commerce platform for
   - CSS variables for theming
 - **State Management**: 
   - React Context (Theme, UI state)
+  - React Query for data fetching and caching
   - URL-based state for filters
   - Local state management
 - **Routing & Navigation**: 
@@ -98,6 +99,59 @@ The Mangla Sports & Associates website is a professional e-commerce platform for
   - Lucide React icons
   - Custom components
   - Responsive design patterns
+- **Development Tools**:
+
+### Backend (Planned Implementation)
+- **Platform**: Supabase (PostgreSQL-based backend-as-a-service)
+- **Database**:
+  - PostgreSQL for structured data
+  - Relational data model for products, categories, orders, etc.
+  - Transaction support for order processing
+- **Authentication**:
+  - Email/password authentication
+  - JWT token-based session management
+  - Role-based access control (customers, administrators)
+- **Storage**:
+  - Cloud storage for product images and media
+  - CDN delivery for optimized assets
+- **API Services**:
+  - RESTful API endpoints
+  - Real-time listeners for inventory updates
+  - Edge functions for specialized processing
+- **Security**:
+  - Row-level security policies
+  - Secure API access
+  - HTTPS enforcement
+
+### E-commerce Features (Planned)
+- **Inventory Management**:
+  - Real-time stock tracking for online/offline sales
+  - Automated stock updates when orders are placed
+  - Low stock alerts and notifications
+  - Simple admin interface for updating stock levels
+  - Inventory change logging for auditability
+
+- **User Accounts**:
+  - Secure authentication and authorization
+  - User profiles with order history
+  - Address book for shipping information
+  - Wishlist synchronization across devices
+  - Role-based access for admins and customers
+
+- **Order Processing**:
+  - Cart to order conversion with inventory verification
+  - Order status tracking and updates
+  - Order history and details view
+  - Razorpay payment gateway integration
+  - Email notifications for order confirmations
+
+- **Admin Dashboard**:
+  - Product management interface
+  - Order management and fulfillment
+  - Inventory control for both online and offline sales
+  - Simple reports and analytics
+  - Customer management tools
+
 - **Development Tools**:
   - TypeScript for type safety
   - ESLint for code quality

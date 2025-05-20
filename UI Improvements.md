@@ -43,7 +43,19 @@
 - Fixed price formatting inconsistencies across the application
 - Resolved issues with filter state management
 
+### 6. Cart & Wishlist Improvements
+#### Cart UI Enhancements
+- Removed redundant close buttons from cart drawer (using hamburger menu instead)
+- Changed item remove button to use trash can icon for better clarity
+- Improved "Continue Shopping" button styling:
+  - Added transparent background
+  - Enhanced hover states with mangla-gold background
+  - Fixed text contrast in both light and dark modes
+  - Added smooth color transitions
 
-
+#### Wishlist UI Enhancements
+- Removed redundant close button from wishlist drawer
+- Changed item remove button to use trash can icon (consistent with cart)
+- Added rounded corners to remove buttons for consistent styling
 
 

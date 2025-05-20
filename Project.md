@@ -185,9 +185,38 @@ src/
 ### State Management
 - **Local Component State**: useState for component-specific state
 - **Global Theme State**: Context API for theme preferences
-- **Query State**: React Query for data fetching (prepared for future implementation)
+- **Query State**: React Query for data fetching and cache management
 - **Centralized Product Data**: Single source of truth for product information to maintain consistency
 
+### Backend & Database (Planned Implementation)
+- **Supabase Integration**: PostgreSQL database, authentication, storage, and more
+- **Data Storage**:
+  - Product catalog with categories and specifications
+  - User accounts and profiles
+  - Order history and processing
+  - Inventory management for online/offline stock tracking
+- **Authentication**:
+  - Email/password authentication
+  - Role-based access control (customers, admins)
+  - Profile management
+- **API Services**:
+  - RESTful endpoints for product data
+  - Real-time updates for inventory management
+  - Edge functions for specialized processing
+- **Storage**:
+  - Product images and media
+  - Optimized assets with CDN delivery
 
-
-
+### E-commerce Features (Planned)
+- **Inventory Management**:
+  - Real-time stock tracking
+  - Integration for both online and offline sales
+  - Stock alerts and notifications
+- **User Accounts**:
+  - Order history and tracking
+  - Wishlist synchronization across devices
+  - Saved shipping and payment information
+- **Order Processing**:
+  - Cart to order conversion
+  - Payment integration with Razorpay
+  - Order status tracking

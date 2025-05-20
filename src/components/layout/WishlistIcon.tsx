@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Heart, X, Heart as HeartFilled, ShoppingCart } from 'lucide-react';
+import { Heart, Heart as HeartFilled, ShoppingCart, Trash } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { toast } from 'sonner';
@@ -59,10 +59,10 @@ const WishlistItem = ({ product, onRemove, onMoveToCart }: WishlistItemProps) =>
       </div>
       <button 
         onClick={() => onRemove(product.id)}
-        className="text-gray-400 hover:text-rose-500 transition-colors p-1"
+        className="text-gray-400 hover:text-rose-500 transition-colors p-1 rounded-full"
         aria-label="Remove from wishlist"
       >
-        <X className="w-4 h-4" />
+        <Trash className="w-4 h-4" />
       </button>
     </div>
   );
@@ -168,13 +168,6 @@ const WishlistIcon = () => {
           >
             <div className={`p-4 flex justify-between items-center border-b border-gray-200 dark:border-gray-700 sm:hidden`}>
               <h3 className="text-lg font-medium text-gray-900 dark:text-white">My Wishlist</h3>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 p-2 -mr-2"
-                aria-label="Close wishlist"
-              >
-                <X className="w-5 h-5" />
-              </button>
             </div>
             <div className="hidden sm:block px-4 py-2 border-b border-gray-200 dark:border-slate-700">
               <div className="flex justify-between items-center">
