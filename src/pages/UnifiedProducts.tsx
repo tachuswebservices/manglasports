@@ -160,8 +160,8 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   const { addToCart } = useCart();
   const [isWishlisted, setIsWishlisted] = useState(false);
   
-  // Format price to display properly
-  const formattedPrice = `₹${product.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+  // Use the price string directly as it already contains the formatted price with currency symbol
+  const displayPrice = product.price;
   
   // Check if product is in wishlist
   useEffect(() => {
@@ -317,7 +317,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
                 "text-lg font-bold",
                 isDark ? "text-white" : "text-slate-900"
               )}>
-                {formattedPrice}
+                {displayPrice}
               </p>
               
               {/* Placeholder for original price if we want to show discount */}

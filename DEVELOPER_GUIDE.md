@@ -1,14 +1,79 @@
 # Mangla Sports - Developer Guide
 
 ## Table of Contents
-1. [Creating a New Category](#1-creating-a-new-category)
-2. [Adding New Products](#2-adding-new-products)
-3. [Managing New Arrivals](#3-managing-new-arrivals)
-4. [Managing Best Sellers](#4-managing-best-sellers)
-5. [Product Tags and Badges](#5-product-tags-and-badges)
-6. [Product Ratings and Reviews](#6-product-ratings-and-reviews)
-7. [Stock Status Management](#7-stock-status-management)
-8. [Mobile UI Best Practices](#8-mobile-ui-best-practices)
+1. [Product Catalog](#product-catalog)
+2. [Creating a New Category](#1-creating-a-new-category)
+3. [Adding New Products](#2-adding-new-products)
+4. [Managing New Arrivals](#3-managing-new-arrivals)
+5. [Managing Best Sellers](#4-managing-best-sellers)
+6. [Product Tags and Badges](#5-product-tags-and-badges)
+7. [Product Ratings and Reviews](#6-product-ratings-and-reviews)
+8. [Stock Status Management](#7-stock-status-management)
+9. [Mobile UI Best Practices](#8-mobile-ui-best-practices)
+
+## Product Catalog
+
+### Categories and Products
+
+#### 1. Air Rifles
+- **Walther LG500 ITEC Triple Edition** (₹249,999)
+  - Competition air rifle with triple ITEC system
+  - Rating: 4.9 (42 reviews)
+  - Status: New Arrival, In Stock
+  - Brand: Walther
+
+- **Walther LG500** (₹249,999)
+  - Premium competition air rifle
+  - Rating: 5.0 (89+ sold)
+  - Status: Best Seller, In Stock
+  - Brand: Walther
+
+#### 2. Air Pistols
+- **Pardini K12 J Short** (₹189,999)
+  - Competition air pistol with short grip
+  - Rating: 4.8 (36 reviews)
+  - Status: New Arrival, In Stock
+  - Brand: Pardini
+
+- **Pardini K12 Absorber Pistol** (₹189,999)
+  - Advanced recoil absorption system
+  - Rating: 4.9 (105+ sold)
+  - Status: Best Seller, In Stock
+  - Brand: Pardini
+
+#### 3. CO2 Pistols
+- **Pietro Beretta Px4 Storm** (₹89,999)
+  - CO2 pistol with rotating barrel
+  - Rating: 4.8 (132+ sold)
+  - Status: Best Seller, In Stock
+  - Brand: Beretta
+
+#### 4. Consumables
+- **Umarex 12g CO2 Cartridges (Capsules)** (₹1,499)
+  - High-quality CO2 cartridges
+  - Rating: 4.7 (128 reviews)
+  - Status: New Arrival, In Stock
+  - Brand: Umarex
+
+#### 5. Scatt Training Systems
+- **SCATT MX-W2 WI-FI** (₹90,000)
+  - Advanced training system with WiFi
+  - Rating: 4.9 (17 reviews)
+  - Status: New Arrival, In Stock
+  - Brand: SCATT
+
+#### 6. Electronic Target Systems
+- **Tachus 10 ETS** (₹45,999)
+  - Precision electronic target system
+  - Rating: 4.7 (76+ sold)
+  - Status: Best Seller, In Stock
+  - Brand: Tachus
+
+### Summary
+- **Total Categories:** 6
+- **Total Products:** 8
+- **New Arrivals:** 3
+- **Best Sellers:** 4
 
 ## 1. Creating a New Category
 

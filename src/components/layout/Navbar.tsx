@@ -266,7 +266,7 @@ const Navbar = () => {
               {/* Header area with logo and close button */}
               <div className={`${isDark ? 'bg-slate-800' : 'bg-gray-100'} py-4 px-6 flex items-center justify-between`}>
                 <img 
-                  src="/lovable-uploads/59a0133d-7459-463e-8a2f-fd2a578ea3ea.png" 
+                  src="/lovable-uploads/msa-logo.png" 
                   alt="Mangla Sports Logo" 
                   className="h-12 w-auto" 
                 />

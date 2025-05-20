@@ -1,227 +1,191 @@
-<div align="center">
-  <img src="/public/lovable-uploads/59a0133d-7459-463e-8a2f-fd2a578ea3ea.png" alt="Mangla Sports Logo" width="200"/>
-  
-  # Mangla Sports & Associates
-  
-  **India's Premier Shooting Sports Equipment Retailer**
-  
-  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-  [![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react)](https://reactjs.org/)
-  [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript)](https://www.typescriptlang.org/)
-  [![Vite](https://img.shields.io/badge/Vite-5.0-646CFF?logo=vite)](https://vitejs.dev/)
-  [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-06B6D4?logo=tailwind-css)](https://tailwindcss.com/)
+# Mangla Sports & Associates Website Project
 
-  ---
-</div>
+## 1. Objective of the Project
 
-## 🎯 Project Overview
+The Mangla Sports & Associates website is a professional e-commerce platform for India's premier shooting sports equipment retailer. The primary objectives are:
 
-Mangla Sports & Associates is India's leading destination for premium shooting sports equipment. Our e-commerce platform showcases an extensive collection of air rifles, air pistols, and accessories from top international brands, providing shooting enthusiasts with high-quality gear and expert guidance.
+- Showcase premium shooting sports equipment with a focus on quality and precision
+- Present a professional brand image that appeals to shooting enthusiasts and professionals
+- Provide an intuitive browsing experience across different product categories
+- Highlight the company's expertise and commitment to the shooting sports community
+- Deliver a responsive platform that works seamlessly across all devices
+- Implement a robust foundation for current and future e-commerce functionality
+- Ensure fast, accessible, and engaging user experience with smooth animations and transitions
+- Maintain consistent UI/UX across all pages with reusable layout components
+- Implement search functionality with filters
+- Integrate user authentication and authorization
+- Develop a streamlined checkout process
+- Integrate payment gateway
 
-## ✨ Key Features
+## 2. Core Features
 
-- **Comprehensive Product Catalog**
-  - Detailed product listings with specifications
-  - Advanced filtering and sorting options
-  - High-quality product imagery with zoom functionality
-
-- **Enhanced User Experience**
-  - Fully responsive design optimized for all devices (mobile, tablet, desktop)
+### Implemented Features
+- **Responsive Design**: Fully responsive layout that adapts to mobile, tablet, and desktop screens
+- **Dark/Light Mode**: Theme toggle with persistent user preference via localStorage and system preference detection
+- **Improved Navigation**: Logo click scrolls to top of page for better user experience
+- **Product Browsing**:
+  - Category-based product listings with dynamic routing
+  - Comprehensive product detail pages with specifications and consistent pricing
+  - Dynamic filtering and sorting with persistent URL state
+  - Responsive grid layout with smooth transitions
+  - Product variants and stock status
+  - Recently viewed products tracking
+- **Home Page Sections**:
+  - Responsive hero section with different images for mobile and desktop views
+  - Featured product collections
+  - New arrivals showcase
+  - Best sellers section
+  - Why choose us section
+  - Customer testimonials
+  - Brand associations
+  - About snippet
+- **Navigation**:
+  - Responsive navbar with mobile menu
+  - Optimized mobile header with contact info and social media
+  - Breadcrumb navigation with dynamic trail
+  - Category-based filtering with URL synchronization
+  - Quick view product modal
+  - Persistent shopping cart
+  - Enhanced search functionality with properly aligned suggestions
+  - Logo click scrolls to page top
+  - Functional footer quick links
+  - Privacy Policy and Terms of Service pages
+  - FAQ section with expandable questions
+  - Blog/Articles section
+  - Events Calendar with category filtering
   - Optimized mobile navigation with improved touch targets
   - Consistent spacing and alignment across all screen sizes
-  - Dark/Light theme with system preference detection
-  - Smooth animations and transitions with Framer Motion
-  - Accessible and keyboard-navigable interface
-  - Optimized search experience with properly aligned suggestions
-  - Improved mobile panel layout and organization
+- **UI Components**:
+  - Reusable button components with variants
+  - Interactive product cards with hover effects
+  - Loading states and skeleton loaders
+  - Toast notifications system
+  - Accessible modal dialogs
+  - Responsive image handling with lazy loading
+  - Form controls with validation
+  - Custom dropdowns and selectors
+  - Back-to-top button
+  - Social sharing components
+  - Event cards for calendar view
+  - Article cards for blog section
+- **Layout System**:
+  - PageLayout component for consistent structure
+  - Responsive grid system
+  - Flexible container components
+  - Proper spacing and typography scale
 
-- **Informational Content**
-  - About Us with company history and leadership
-  - FAQ section with expandable questions
-  - Blog/Articles for shooting tips and news
-  - Events calendar for competitions and workshops
+## 3. Tech Stack
 
-- **E-commerce Features**
-  - Product categories and subcategories
-  - Detailed product pages with specifications
-  - Shopping cart functionality (coming soon)
-  - Secure checkout (coming soon)
+### Frontend
+- **Framework**: React 18.3 with TypeScript
+- **Build Tool**: Vite 5.4
+- **Animations**: Framer Motion 12.11 for smooth transitions and interactions
+- **Styling**: 
+  - Tailwind CSS 3.4
+  - shadcn/ui components
+  - Custom theme configuration
+  - CSS variables for theming
+- **State Management**: 
+  - React Context (Theme, UI state)
+  - URL-based state for filters
+  - Local state management
+- **Routing & Navigation**: 
+  - React Router DOM 6.26
+  - Nested routes
+  - Dynamic routing
+- **UI Components**:
+  - Radix UI primitives
+  - Lucide React icons
+  - Custom components
+  - Responsive design patterns
+- **Development Tools**:
+  - TypeScript for type safety
+  - ESLint for code quality
+  - Prettier for code formatting
+  - Husky for git hooks
 
-## 🚀 Getting Started
+### Tools & Configuration
+- **Package Manager**: npm/Node.js
+- **Linting**: ESLint
+- **TypeScript Configuration**: Strict typing
+- **PostCSS** for CSS processing
+- **Tailwind plugins**:
+  - tailwindcss-animate
+  - @tailwindcss/typography
 
-### Prerequisites
+## 4. Code Architecture
 
-- Node.js 18+ and npm 9+
-- Git for version control
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/your-username/manglasportswebsite.git
-   cd manglasportswebsite
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Start the development server**
-   ```bash
-   npm run dev
-   ```
-
-4. **Open in your browser**
-   ```
-   http://localhost:5173
-   ```
-
-### Building for Production
-
-```bash
-# Build the application
-npm run build
-
-# Preview the production build
-npm run preview
-```
-
-## 🛠️ Built With
-
-- **Frontend Framework**: [React 18.3](https://reactjs.org/)
-- **Build Tool**: [Vite 5.4](https://vitejs.dev/)
-- **Styling**: [Tailwind CSS 3.4](https://tailwindcss.com/) with [shadcn/ui](https://ui.shadcn.com/)
-- **Type Safety**: [TypeScript 5.0](https://www.typescriptlang.org/)
-- **Routing**: [React Router 6.26](https://reactrouter.com/)
-- **Animations**: [Framer Motion 12.11](https://www.framer.com/motion/)
-- **Icons**: [Lucide React](https://lucide.dev/)
-- **Form Handling**: [React Hook Form](https://react-hook-form.com/)
-
-## 📱 Browser Support
-
-- Chrome (latest 2 versions)
-- Firefox (latest 2 versions)
-- Safari (latest 2 versions)
-- Edge (latest 2 versions)
-- Mobile Safari (iOS 13+)
-- Chrome for Android (latest 2 versions)
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📧 Contact
-
-For any inquiries, please contact us at [officialmanglasports@gmail.com](mailto:officialmanglasports@gmail.com) or call us at [+91 92569 30009](tel:+919256930009).
-
-## 🌐 Connect With Us
-
-- [Facebook](#)
-- [Instagram](#)
-- [Twitter](#)
-- [YouTube](#)
-
----
-
-<div align="center">
-  Made with ❤️ by Mangla Sports & Associates Team
-</div>
-
-
-## 📁 Project Structure
-
+### Directory Structure
 ```
 src/
-├── components/         # Reusable UI components
-│   ├── home/          # Home page components
-│   ├── layout/        # Layout components (Navbar, Footer, etc.)
-│   ├── products/      # Product-related components
-│   └── ui/            # shadcn/ui components
-├── hooks/             # Custom React hooks
-├── lib/               # Utility functions and configurations
+├── components/
+│   ├── home/           # Home page sections
+│   │   ├── AboutSnippet.tsx
+│   │   ├── BestSellers.tsx
+│   │   ├── FeaturedCollections.tsx
+│   │   └── ...
+│   ├── layout/         # Layout components
+│   │   ├── Footer.tsx
+│   │   ├── Navbar.tsx
+│   │   └── PageLayout.tsx
+│   ├── products/       # Product-related components
+│   │   ├── ProductsLayout.tsx
+│   │   ├── ProductsSidebar.tsx
+│   │   └── ...
+│   ├── theme/         # Theme components
+│   │   ├── ThemeProvider.tsx
+│   │   └── ThemeToggle.tsx
+│   └── ui/            # Reusable UI components
+│       ├── button.tsx
+│       ├── card.tsx
+│       └── ...
+├── hooks/             # Custom hooks
+├── lib/               # Utilities and helpers
 ├── pages/             # Page components
 │   ├── About.tsx
+│   ├── Categories.tsx
 │   ├── Contact.tsx
-│   ├── Products.tsx
-│   └── ...
-├── styles/           # Global styles and Tailwind config
+│   ├── Index.tsx
+│   ├── NotFound.tsx
+│   ├── ProductDetail.tsx
+│   └── UnifiedProducts.tsx
 └── types/             # TypeScript type definitions
 ```
+  
+### Key Architectural Patterns
 
-## 🌟 Features in Detail
+#### Component Architecture
+- **Atomic Design Principles**: Components organized by complexity (atoms, molecules, organisms)
+- **Container/Component Pattern**: Separation of logic and presentation
+- **Composition Over Inheritance**: Flexible component composition
+- **Centralized Data Management**: Consistent product data source to ensure pricing consistency across pages
 
-### 🎨 Theming System
-- System preference detection for light/dark mode
-- Smooth theme transitions
-- Consistent color scheme across components
+#### State Management
+- **Context API**: For global theme and UI state
+- **Local State**: For component-specific state
+- **URL State**: For filter and search parameters
 
-### 🛍️ Product Experience
-- Category-based product browsing
-- Advanced filtering and sorting
-- Product detail pages with specifications
-- Image gallery with zoom functionality
+#### Performance
+- **Code Splitting**: Route-based code splitting
+- **Lazy Loading**: For non-critical components
+- **Image Optimization**: Responsive images with modern formats
 
-### 📱 Responsive Design
-- Mobile-first approach
-- Adaptive layouts for all screen sizes
-- Touch-friendly interfaces
-- Optimized performance on all devices
+#### Best Practices
+- **Type Safety**: Comprehensive TypeScript integration with strict typing
+- **Accessibility**: WCAG 2.1 AA compliance with keyboard navigation and ARIA labels
+- **Responsive Design**: Mobile-first approach with Tailwind CSS
+- **Performance**: Optimized bundle size, code splitting, and lazy loading
+- **State Management**: React Query for server state and React Context for UI state
+- **Routing**: Nested routes with React Router v6
+- **Animations**: Smooth transitions with Framer Motion
+- **Theming**: Dark/light mode with system preference detection
+- **Form Handling**: Form validation with React Hook Form
+- **Error Boundaries**: Graceful error handling and fallback UIs
 
-### ⚡ Performance Optimizations
-- Code splitting with React.lazy
-- Image optimization and lazy loading
-- Efficient state management
-- Minimal bundle size
+### State Management
+- **Local Component State**: useState for component-specific state
+- **Global Theme State**: Context API for theme preferences
+- **Query State**: React Query for data fetching (prepared for future implementation)
+- **Centralized Product Data**: Single source of truth for product information to maintain consistency
 
-## 🧪 Testing
-
-Run tests with the following commands:
-
-```bash
-# Run unit tests
-npm test
-
-# Run tests in watch mode
-npm test:watch
-
-# Generate test coverage report
-npm run test:coverage
-```
-
-## 🚀 Deployment
-
-The application can be deployed to any static hosting service. A few examples:
-
-### Vercel
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyour-username%2Fmanglasportswebsite)
-
-### Netlify
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/your-username/manglasportswebsite)
-
-## 🤖 Development Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build locally
-- `npm run lint` - Run ESLint
-- `npm run format` - Format code with Prettier
-- `npm run type-check` - Check TypeScript types
-
-## 📚 Documentation
-
-- [Project Documentation](./docs/README.md)
-- [Component API](./docs/COMPONENTS.md)
-- [Deployment Guide](./docs/DEPLOYMENT.md)
-
-## 🙏 Acknowledgments
-
-- [shadcn/ui](https://ui.shadcn.com/) for amazing components
-- [Tailwind CSS](https://tailwindcss.com/) for utility-first CSS
-- [Framer Motion](https://www.framer.com/motion/) for animations
-- [React Icons](https://react-icons.github.io/react-icons/) for icons
 
