@@ -33,13 +33,13 @@ export const WishlistButton: React.FC<WishlistButtonProps> = ({
   const sizeClasses = {
     sm: 'h-8 w-8',
     md: 'h-10 w-10',
-    lg: 'h-12 w-12',
+    lg: 'h-10 w-10', // Reduce lg size for a more compact look
   };
 
   const iconSize = {
-    sm: 16,
-    md: 20,
-    lg: 24,
+    sm: 18,
+    md: 22,
+    lg: 22, // Reduce icon size for large button
   };
 
   const handleClick = (e: React.MouseEvent) => {
@@ -75,14 +75,17 @@ export const WishlistButton: React.FC<WishlistButtonProps> = ({
       type="button"
       onClick={handleClick}
       className={cn(
-        'flex items-center justify-center rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-md',
+        'flex items-center justify-center rounded-full border border-transparent',
+        'bg-white/90 dark:bg-gray-900/80 backdrop-blur-sm shadow-md',
         'transition-colors duration-200',
         isWishlisted 
-          ? 'text-rose-500 dark:text-rose-400 hover:text-rose-600 dark:hover:text-rose-300' 
-          : 'text-gray-700 hover:text-rose-500 dark:text-gray-200 dark:hover:text-rose-400',
+          ? 'text-rose-500 dark:text-rose-400 hover:text-rose-600 dark:hover:text-rose-300 border-rose-300 dark:border-rose-400' 
+          : 'text-gray-700 hover:text-rose-500 dark:text-gray-200 dark:hover:text-rose-400 border-gray-300 dark:border-gray-700',
+        'hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-mangla-gold',
         sizeClasses[size],
         className,
-        'opacity-100' // Always visible
+        'opacity-100',
+        'min-w-0 min-h-0' // Prevents oversized button
       )}
       whileTap={{ scale: 0.9 }}
       aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}

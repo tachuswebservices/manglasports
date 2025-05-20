@@ -93,7 +93,9 @@ export const WishlistProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   const clearWishlist = () => {
     setWishlist([]);
-    toast.success('Wishlist cleared');
+    toast.success('Wishlist cleared', {
+      duration: 2000 // 2 seconds
+    });
   };
 
   return (

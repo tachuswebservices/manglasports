@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { WishlistButton } from '@/components/common/WishlistButton';
 import { useCart } from '@/contexts/CartContext';
 import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
+import { cn, formatIndianPrice } from '@/lib/utils';
 import { products as allProducts } from '@/data/products';
 
 // Extend the Product interface to include soldCount
@@ -113,7 +113,13 @@ const BestSellerCard: React.FC<BestSellerProduct> = (product) => {
             </h3>
             <p className={`${isDark ? 'text-gray-400' : 'text-slate-600'} text-sm mb-2`}>{category}</p>
             <div className="flex items-center justify-between mb-2">
-              <p className={`${isDark ? 'text-white' : 'text-slate-900'} font-bold`}>{price}</p>
+              <p className={`${isDark ? 'text-white' : 'text-slate-900'} font-bold mb-3`}>
+  {formatIndianPrice(
+    typeof product.numericPrice === 'number' && !isNaN(product.numericPrice)
+      ? product.numericPrice
+      : (typeof price === 'string' ? parseFloat(price.replace(/[^\d.]/g, '')) : (typeof price === 'number' ? price : 0))
+  )}
+</p>
               <div className="flex items-center bg-amber-500/20 px-2 py-0.5 rounded">
                 <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400 mr-1" />
                 <span className="text-xs font-medium text-amber-600 dark:text-amber-400">{rating}</span>

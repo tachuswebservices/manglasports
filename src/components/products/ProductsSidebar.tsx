@@ -18,11 +18,12 @@ interface ProductsSidebarProps {
   onFilterChange: (filters: ProductFilters) => void;
   onClearFilters: () => void;
   allCategories: { slug: string; title: string }[];
-  slug: string; // The current category slug from the URL
+  slug: string;
   title: string;
   allBrands: string[];
   maxPrice: number;
-  hideCategories?: boolean; // Flag to hide the categories section
+  hideCategories: boolean;
+  onApplyFiltersMobile?: (filters: ProductFilters) => void;
 }
 
 const ProductsSidebar: React.FC<ProductsSidebarProps> = ({
@@ -30,15 +31,27 @@ const ProductsSidebar: React.FC<ProductsSidebarProps> = ({
   onFilterChange,
   onClearFilters,
   allCategories = [],
-  slug = '', // Current category slug from the URL
+  slug = '',
+  title = '',
   allBrands = [],
   maxPrice = 100000,
-  hideCategories = false
+  hideCategories = false,
+  onApplyFiltersMobile
 }) => {
   // Convert slug to category format for matching with filters
   const categorySlug = slug.replace(/\//g, '');
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  
+  // Calculate active filter count
+  const activeFilterCount = (
+    (filters.priceRange[0] > 0 || filters.priceRange[1] < maxPrice ? 1 : 0) +
+    filters.categories.length +
+    filters.brands.length +
+    filters.availability.length +
+    filters.ratings.length +
+    (filters.onSale ? 1 : 0)
+  );
   
   // Local state for UI
   const [priceRange, setPriceRange] = useState<[number, number]>(filters.priceRange);
@@ -158,16 +171,6 @@ const ProductsSidebar: React.FC<ProductsSidebarProps> = ({
     </div>
   );
   
-  // Main filter count badge
-  const activeFilterCount = (
-    (filters.categories.length > 0 ? 1 : 0) +
-    (filters.brands.length > 0 ? 1 : 0) +
-    (filters.availability.length > 0 ? 1 : 0) +
-    (filters.ratings.length > 0 ? 1 : 0) +
-    (filters.onSale ? 1 : 0) +
-    ((filters.priceRange[0] > minPrice || filters.priceRange[1] < maxPrice) ? 1 : 0)
-  );
-
   return (
     <div className={cn(
       "space-y-6 p-4 rounded-lg",
@@ -464,12 +467,18 @@ const ProductsSidebar: React.FC<ProductsSidebarProps> = ({
       <div className="pt-4">
         <button 
           className={cn(
-            "w-full py-2 px-4 rounded-md text-sm font-medium transition",
+            "block md:hidden w-full py-2 px-4 rounded-md text-sm font-medium transition",
             isDark 
               ? "bg-mangla-gold text-slate-900 hover:bg-yellow-500" 
               : "bg-amber-500 text-white hover:bg-amber-600"
           )}
-          onClick={() => onFilterChange(filters)}
+          onClick={() => {
+            if (onApplyFiltersMobile) {
+              onApplyFiltersMobile(filters);
+            } else {
+              onFilterChange(filters);
+            }
+          }}
         >
           Apply Filters
         </button>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Star } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, formatIndianPrice } from '@/lib/utils';
 import { useTheme } from '../theme/ThemeProvider';
 import type { ProductDetails } from './QuickViewModal';
 
@@ -105,15 +105,12 @@ const RecentlyViewedProducts: React.FC<RecentlyViewedProductsProps> = ({
                 </div>
                 
                 <div className="flex items-baseline mt-1">
-                  <span className={cn(
-                    "text-sm font-bold",
-                    isDark ? "text-white" : "text-gray-900"
-                  )}>
-                    ₹{product.price.toLocaleString()}
+                  <span className="text-sm font-bold">
+                    {formatIndianPrice(product.price)}
                   </span>
                   {product.originalPrice && (
                     <span className="ml-2 text-xs text-gray-500 line-through">
-                      ₹{product.originalPrice.toLocaleString()}
+                      {formatIndianPrice(product.originalPrice)}
                     </span>
                   )}
                 </div>

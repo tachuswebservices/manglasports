@@ -2,12 +2,14 @@ import React, { useEffect } from 'react';
 import { Heart, X, Heart as HeartFilled, ShoppingCart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useWishlist } from '@/contexts/WishlistContext';
+import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/components/theme/ThemeProvider';
-import { cn } from '@/lib/utils';
+import { cn, formatIndianPrice } from '@/lib/utils';
 import { Product } from '@/data/products';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useCart } from '@/contexts/CartContext';
 
 interface WishlistItemProps {
   product: Product;
@@ -32,7 +34,17 @@ const WishlistItem = ({ product, onRemove, onMoveToCart }: WishlistItemProps) =>
         <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
           {product.name}
         </h4>
-        <p className="text-sm font-bold text-mangla-gold mt-1">{product.price}</p>
+        <p className="text-sm font-bold text-mangla-gold mt-1">
+          {formatIndianPrice(
+            typeof product.numericPrice === 'number' && !isNaN(product.numericPrice)
+              ? product.numericPrice
+              : (typeof product.price === 'string' && product.price.trim() !== '' && !isNaN(parseFloat(product.price.replace(/[^\d.]/g, ''))))
+                ? parseFloat(product.price.replace(/[^\d.]/g, ''))
+                : (typeof product.price === 'number' && !isNaN(product.price))
+                  ? product.price
+                  : 0
+          )}
+        </p>
         <div className="flex mt-2 space-x-2">
           <Button 
             variant="outline" 
@@ -58,6 +70,7 @@ const WishlistItem = ({ product, onRemove, onMoveToCart }: WishlistItemProps) =>
 
 const WishlistIcon = () => {
   const { wishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const { addToCart } = useCart();
   const [isOpen, setIsOpen] = React.useState(false);
   const { theme } = useTheme();
   const isMobile = useIsMobile();
@@ -97,8 +110,16 @@ const WishlistIcon = () => {
   };
 
   const handleMoveToCart = (product: Product) => {
-    // TODO: Implement move to cart functionality
-    console.log('Move to cart:', product);
+    // Add the product to cart
+    const added = addToCart(product, 1);
+    
+    // If successfully added to cart, remove from wishlist
+    if (added) {
+      removeFromWishlist(product.id);
+      toast.success(`${product.name} moved to cart`, {
+        duration: 2000
+      });
+    }
   };
 
   return (

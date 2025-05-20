@@ -2,7 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart, Star, Info, Clock, Package, Check, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { cn, formatIndianPrice } from '@/lib/utils';
 import { useTheme } from '../theme/ThemeProvider';
 import { StockLevel } from './StockIndicator';
 
@@ -180,12 +180,12 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 {/* Price */}
                 <div className="flex items-baseline mb-4">
                   <span className="text-2xl font-bold">
-                    ₹{product.price.toLocaleString()}
+                    {formatIndianPrice(product.price)}
                   </span>
-                  {product.originalPrice && (
+                  {formatIndianPrice(product.originalPrice) && (
                     <>
                       <span className="ml-2 text-lg text-gray-500 line-through">
-                        ₹{product.originalPrice.toLocaleString()}
+                        {formatIndianPrice(product.originalPrice)}
                       </span>
                       <span className="ml-2 text-sm font-medium text-green-600 dark:text-green-400">
                         {discountPercentage}% OFF

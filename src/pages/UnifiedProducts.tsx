@@ -3,7 +3,7 @@ import { useParams, Navigate, Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Star, ShoppingCart, Heart, SlidersHorizontal, HeartOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { cn, formatIndianPrice } from '@/lib/utils';
 import { useTheme } from '@/components/theme/ThemeProvider';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { useCart } from '@/contexts/CartContext';
@@ -160,8 +160,18 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   const { addToCart } = useCart();
   const [isWishlisted, setIsWishlisted] = useState(false);
   
-  // Use the price string directly as it already contains the formatted price with currency symbol
-  const displayPrice = product.price;
+  // Use numericPrice if available, else parse price string, else 0
+  const displayPrice = formatIndianPrice(
+    typeof product.numericPrice === 'number' && !isNaN(product.numericPrice)
+      ? product.numericPrice
+      : (typeof product.price === 'string' && product.price.trim() !== '' && !isNaN(parseFloat(product.price.replace(/[^\d.]/g, '')))
+          ? parseFloat(product.price.replace(/[^\d.]/g, ''))
+          : (typeof product.price === 'number' && !isNaN(product.price)
+              ? product.price
+              : 0
+            )
+        )
+  );
   
   // Check if product is in wishlist
   useEffect(() => {
@@ -174,11 +184,15 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
     
     if (isWishlisted) {
       removeFromWishlist(product.id);
-      toast.success('Removed from wishlist');
+      toast.success('Removed from wishlist', {
+        duration: 2000 // 2 seconds
+      });
     } else {
       // The product is already in the correct format for the wishlist
       addToWishlist(product);
-      toast.success('Added to wishlist');
+      toast.success('Added to wishlist', {
+        duration: 2000 // 2 seconds
+      });
     }
     
     setIsWishlisted(!isWishlisted);
@@ -190,10 +204,8 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
     
     if (!product.inStock) return;
     
-    const added = addToCart(product, 1);
-    if (added) {
-      toast.success(`${product.name} added to cart`);
-    }
+    // Just call addToCart - the toast is shown in CartContext
+    addToCart(product, 1);
   };
   
   return (
@@ -206,37 +218,38 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
         "h-full rounded-lg overflow-hidden border transition-all hover:shadow-lg relative",
         isDark ? "bg-mangla-dark-gray border-gray-800" : "bg-white border-gray-200"
       )}>
-        <Link to={`/products/product/${product.id}`} className="block h-full">
-          {/* Always visible tags */}
-          <div className="absolute top-3 left-3 z-20 flex flex-col items-start gap-2">
-            {product.isNew && (
-              <motion.span 
-                className="bg-blue-500 text-white text-xs px-2 py-1 rounded font-semibold shadow-md"
-                initial={{ opacity: 1 }}
-                whileHover={{ scale: 1.05 }}
-              >
-                NEW
-              </motion.span>
-            )}
-            {product.isHot && (
-              <motion.span 
-                className="bg-red-500 text-white text-xs px-2 py-1 rounded font-semibold shadow-md"
-                initial={{ opacity: 1 }}
-                whileHover={{ scale: 1.05 }}
-              >
-                HOT
-              </motion.span>
-            )}
-            {product.numericPrice && product.numericPrice > 100000 && (
-              <motion.span 
-                className="bg-purple-500 text-white text-xs px-2 py-1 rounded font-semibold shadow-md"
-                initial={{ opacity: 1 }}
-                whileHover={{ scale: 1.05 }}
-              >
-                PREMIUM
-              </motion.span>
-            )}
-          </div>
+        <div className="relative h-full flex flex-col">
+          <Link to={`/products/product/${product.id}`} className="block flex-1 relative">
+            {/* Product tags */}
+            <div className="absolute top-3 left-3 z-20 flex flex-col items-start gap-2">
+              {product.isNew && (
+                <motion.span 
+                  className="bg-blue-500 text-white text-xs px-2 py-1 rounded font-semibold shadow-md"
+                  initial={{ opacity: 1 }}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  NEW
+                </motion.span>
+              )}
+              {product.isHot && (
+                <motion.span 
+                  className="bg-red-500 text-white text-xs px-2 py-1 rounded font-semibold shadow-md"
+                  initial={{ opacity: 1 }}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  HOT
+                </motion.span>
+              )}
+              {product.numericPrice && product.numericPrice > 100000 && (
+                <motion.span 
+                  className="bg-purple-500 text-white text-xs px-2 py-1 rounded font-semibold shadow-md"
+                  initial={{ opacity: 1 }}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  PREMIUM
+                </motion.span>
+              )}
+            </div>
           
           {/* Wishlist button - always visible */}
           <div className="absolute top-3 right-3 z-20">
@@ -326,34 +339,32 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
                   "text-sm line-through ml-2",
                   isDark ? "text-gray-400" : "text-gray-500"
                 )}>
-                  ₹{product.originalPrice.toLocaleString()}
+                  {formatIndianPrice(product.originalPrice)}
                 </p>
               )}
             </div>
             
-            {/* Stock indicator */}
-            <div className="mt-2">
-              <StockIndicator level={product.inStock ? 'high' : 'out-of-stock'} />
-            </div>
+
           </div>
-        </Link>
+          </Link>
         
-        {/* Action buttons */}
-        <div className="px-4 pb-4">
-          <Button
-            onClick={handleAddToCart}
-            className={cn(
-              "w-full py-2 text-sm font-medium transition-colors",
-              product.inStock
-                ? isDark 
-                  ? "bg-mangla-gold hover:bg-mangla-gold/90 text-mangla-dark-gray"
-                  : "bg-blue-600 hover:bg-blue-700 text-white"
-                : "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
-            )}
-            disabled={!product.inStock}
-          >
-            {product.inStock ? 'Add to Cart' : 'Out of Stock'}
-          </Button>
+          {/* Action buttons */}
+          <div className="px-4 pb-4 mt-auto">
+            <Button
+              onClick={handleAddToCart}
+              className={cn(
+                "w-full py-2 text-sm font-medium transition-colors",
+                product.inStock
+                  ? isDark 
+                    ? "bg-mangla-gold hover:bg-mangla-gold/90 text-mangla-dark-gray"
+                    : "bg-blue-600 hover:bg-blue-700 text-white"
+                  : "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+              )}
+              disabled={!product.inStock}
+            >
+              {product.inStock ? 'Add to Cart' : 'Out of Stock'}
+            </Button>
+          </div>
         </div>
       </div>
     </motion.div>
@@ -491,16 +502,45 @@ const ProductsContent: React.FC = () => {
     return filtered;
   }, [category, filters, sortBy, currentCategory]);
   
+  // --- SANITIZE PRODUCTS BEFORE RENDERING ---
+  // Always use this array for rendering ProductCard
+  const safeProducts = products.map(product => ({
+    ...product,
+    numericPrice:
+      typeof product.numericPrice === 'number' && !isNaN(product.numericPrice)
+        ? product.numericPrice
+        : (typeof product.price === 'string' && product.price.trim() !== '' && !isNaN(parseFloat(product.price.replace(/[^\d.]/g, '')))
+            ? parseFloat(product.price.replace(/[^\d.]/g, ''))
+            : (typeof product.price === 'number' && !isNaN(product.price)
+                ? product.price
+                : 0
+              )
+          ),
+    price:
+      typeof product.price === 'string' && product.price.trim() !== '' && !isNaN(parseFloat(product.price.replace(/[^\d.]/g, '')))
+        ? product.price
+        : (typeof product.numericPrice === 'number' && !isNaN(product.numericPrice)
+            ? product.numericPrice.toString()
+            : '0'
+          )
+  }));
+
   // Handle filter change
   const handleFilterChange = (newFilters: ProductFilters) => {
     setFilters(newFilters);
   };
-  
+
+  // Handles filter apply on mobile: applies filters and closes panel
+  const handleApplyFiltersMobile = (newFilters: ProductFilters) => {
+    setFilters(newFilters);
+    setIsMobileFiltersOpen(false);
+  };
+
   // Handle clear filters
   const handleClearFilters = () => {
     setFilters({
       priceRange: [0, maxPrice],
-      categories: category ? [category] : [],
+      categories: [], 
       brands: [],
       availability: [],
       ratings: [],
@@ -634,7 +674,7 @@ const ProductsContent: React.FC = () => {
                     transition={{ duration: 0.6, delay: index * 0.1 + 0.2 }}
                   >
                     {categoryProducts.slice(0, 4).map((product, idx) => (
-                      <ProductCard key={idx} product={product} />
+                      <ProductCard key={idx} product={safeProducts.find(p => p.id === product.id) || product} />
                     ))}
                   </motion.div>
                 </div>
@@ -749,6 +789,7 @@ const ProductsContent: React.FC = () => {
               filters={filters}
               onFilterChange={handleFilterChange}
               onClearFilters={handleClearFilters}
+              onApplyFiltersMobile={handleApplyFiltersMobile}
               allCategories={allCollections.map(c => ({ slug: c.slug, title: c.title }))}
               slug={category || ''}
               title={currentCategory?.title || 'All Products'}
@@ -827,17 +868,21 @@ const ProductsContent: React.FC = () => {
                   }
                 }}
               >
-                {filteredProducts.map((product, index) => (
-                  <motion.div
-                    key={product.id}
-                    variants={{
-                      hidden: { opacity: 0, y: 20 },
-                      visible: { opacity: 1, y: 0 }
-                    }}
-                  >
-                    <ProductCard product={product} />
-                  </motion.div>
-                ))}
+                {filteredProducts.map((product, index) => {
+                  // Always use sanitized products to prevent NaN prices
+                  const safeProduct = safeProducts.find(p => p.id === product.id) || product;
+                  return (
+                    <motion.div
+                      key={product.id}
+                      variants={{
+                        hidden: { opacity: 0, y: 20 },
+                        visible: { opacity: 1, y: 0 }
+                      }}
+                    >
+                      <ProductCard product={safeProduct} />
+                    </motion.div>
+                  );
+                })}
               </motion.div>
             ) : (
               <div className="py-12 text-center">

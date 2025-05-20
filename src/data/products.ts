@@ -109,8 +109,8 @@ export const products: Product[] = [
   {
     id: "tachus-10-ets",
     name: "Tachus 10 ETS",
-    price: "₹45,999",
-    numericPrice: 45999,
+    price: "₹150,000",
+    numericPrice: 150000,
     image: "/lovable-uploads/aa897794-9610-4c04-9c17-d3928750fc0e.png",
     category: "Electronic Target Systems",
     rating: 4.7,

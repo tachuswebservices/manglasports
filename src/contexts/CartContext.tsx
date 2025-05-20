@@ -87,7 +87,9 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
     });
     
-    toast.success(`${product.name} added to cart`);
+    toast.success(`${product.name} added to cart`, {
+      duration: 2000 // 2 seconds
+    });
     return true;
   };
 
@@ -104,7 +106,9 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (removed) {
       const product = cart.find(item => item.id === productId);
       if (product) {
-        toast.success(`${product.name} removed from cart`);
+        toast.success(`${product.name} removed from cart`, {
+          duration: 2000 // 2 seconds, shorter duration
+        });
       }
     }
     
@@ -130,7 +134,9 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const clearCart = () => {
     setCart([]);
-    toast.success('Cart cleared');
+    toast.success('Cart cleared', {
+      duration: 2000 // 2 seconds
+    });
   };
 
   const getCartTotal = () => {

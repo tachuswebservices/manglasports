@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { WishlistButton } from '@/components/common/WishlistButton';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { cn } from '@/lib/utils';
+import { cn, formatIndianPrice } from '@/lib/utils';
 import { useTheme } from '@/components/theme/ThemeProvider';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -243,20 +243,33 @@ const ProductDetail: React.FC = () => {
                   className="w-full h-full object-contain p-4"
                 />
                 
+                {/* Share Button - Top Right Corner */}
+                <button 
+                  onClick={handleShare}
+                  className={cn(
+                    "absolute top-3 right-3 p-2 rounded-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm",
+                    "shadow-md hover:shadow-lg transition-shadow",
+                    isDark ? "text-gray-200 hover:text-white" : "text-gray-700 hover:text-gray-900"
+                  )}
+                  aria-label="Share this product"
+                >
+                  <Share2 className="w-5 h-5" />
+                </button>
+                
                 {/* Navigation Arrows */}
                 <button 
                   onClick={prevImage}
                   className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-colors"
                   aria-label="Previous image"
                 >
-                  <ChevronLeft className="w-6 h-6" />
+                  <ChevronLeft className="w-5 h-5" />
                 </button>
                 <button 
                   onClick={nextImage}
                   className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-colors"
                   aria-label="Next image"
                 >
-                  <ChevronRight className="w-6 h-6" />
+                  <ChevronRight className="w-5 h-5" />
                 </button>
               </div>
               
@@ -289,10 +302,10 @@ const ProductDetail: React.FC = () => {
             {/* Product Info */}
             <div className={cn("py-2", isDark ? "text-gray-200" : "text-gray-800")}>
               {/* Category and Brand */}
-              <div className="flex flex-col lg:flex-row gap-4 items-center mb-6">
+              <div className="mb-6">
                 <h1 className="text-3xl md:text-4xl font-bold">{product.name}</h1>
                 <span className={cn(
-                  "px-3 py-1 text-sm font-medium rounded-full",
+                  "mt-2 inline-block px-3 py-1 text-sm font-medium rounded-full",
                   product.inStock 
                     ? "bg-green-50 text-green-700 dark:bg-green-900 dark:text-green-300"
                     : "bg-red-50 text-red-700 dark:bg-red-900 dark:text-red-300"
@@ -327,24 +340,25 @@ const ProductDetail: React.FC = () => {
               {/* Price */}
               <div className="mb-6">
                 <div className="flex items-baseline space-x-3">
-                  <p className="text-xl md:text-2xl font-bold mb-2">{product.price}</p>
+                  <p className="text-xl md:text-2xl font-bold mb-2">
+                    {formatIndianPrice(product.numericPrice || parseFloat(product.price.replace(/[^0-9.]/g, '')))}
+                  </p>
                 {product.originalPrice && (
                   <div className="flex items-center gap-2 mb-4">
-                    <p className="text-gray-500 line-through">₹{product.originalPrice.toLocaleString()}</p>
+                    <p className="text-gray-500 line-through">
+                      {formatIndianPrice(product.originalPrice)}
+                    </p>
                     <span className="bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-red-900 dark:text-red-300">
-                      Save ₹{(product.originalPrice - product.numericPrice).toLocaleString()}
+                      Save {formatIndianPrice(product.originalPrice - (product.numericPrice || parseFloat(product.price.replace(/[^0-9.]/g, ''))))}
                     </span>
                   </div>
-                )}  {product.originalPrice && (
-                    <span className="text-sm font-medium bg-red-600 text-white px-2 py-0.5 rounded">
-                      {Math.round((1 - product.numericPrice / product.originalPrice) * 100)}% OFF
-                    </span>
-                  )}
+                )}
+                {product.originalPrice && (
+                  <span className="text-sm font-medium bg-red-600 text-white px-2 py-0.5 rounded">
+                    {Math.round((1 - (product.numericPrice || parseFloat(product.price.replace(/[^0-9.]/g, ''))) / product.originalPrice) * 100)}% OFF
+                  </span>
+                )}
                 </div>
-                
-                <p className={cn("text-sm mt-1", isDark ? "text-green-400" : "text-green-700")}>
-                  {product.inStock ? 'In Stock' : 'Out of Stock'}
-                </p>
               </div>
               
               {/* Short Description */}
@@ -363,9 +377,10 @@ const ProductDetail: React.FC = () => {
                 </ul>
               </div>
               
-              {/* Add to Cart */}
+              {/* Add to Cart and Wishlist Row */}
               <div className="mb-8">
-                <div className="flex items-center space-x-4 mb-4">
+                <div className="flex items-center gap-3">
+                  {/* Quantity Selector */}
                   <div className={cn(
                     "flex items-center border rounded-md overflow-hidden",
                     isDark ? "border-gray-700" : "border-gray-300"
@@ -373,7 +388,7 @@ const ProductDetail: React.FC = () => {
                     <button 
                       onClick={() => handleQuantityChange(quantity - 1)}
                       className={cn(
-                        "px-3 py-2 text-lg font-medium",
+                        "px-3 py-1.5 text-base font-medium",
                         isDark 
                           ? "hover:bg-gray-700" 
                           : "hover:bg-gray-100"
@@ -382,11 +397,11 @@ const ProductDetail: React.FC = () => {
                     >
                       -
                     </button>
-                    <span className="w-12 text-center">{quantity}</span>
+                    <span className="w-8 text-center text-sm">{quantity}</span>
                     <button 
                       onClick={() => handleQuantityChange(quantity + 1)}
                       className={cn(
-                        "px-3 py-2 text-lg font-medium",
+                        "px-3 py-1.5 text-base font-medium",
                         isDark 
                           ? "hover:bg-gray-700" 
                           : "hover:bg-gray-100"
@@ -397,30 +412,27 @@ const ProductDetail: React.FC = () => {
                     </button>
                   </div>
                   
+                  {/* Add to Cart Button */}
                   <Button 
-                    className={cn("flex-1 py-6 bg-mangla-gold hover:bg-mangla-gold/90 text-white")}
-                    size="lg"
+                    className={cn(
+                      "flex-1 py-2 bg-mangla-gold hover:bg-mangla-gold/90 text-white",
+                      "text-sm sm:text-base"
+                    )}
                     onClick={handleAddToCart}
                     disabled={!product?.inStock}
                   >
                     {product?.inStock ? 'Add to Cart' : 'Out of Stock'}
                   </Button>
-                </div>
-                
-                <div className="flex space-x-3">
+                  
+                  {/* Wishlist Button */}
                   <WishlistButton 
                     product={product} 
-                    className={cn("flex-1 py-6 h-auto hover:bg-transparent hover:text-mangla-gold", isDark ? "border-gray-700 hover:bg-gray-800" : "")}
-                    size="lg"
+                    className={cn(
+                      "h-10 w-10 p-0 flex-shrink-0",
+                      isDark ? "hover:bg-gray-800" : "hover:bg-gray-100"
+                    )}
+                    size="md"
                   />
-                  <Button 
-                    variant="outline" 
-                    onClick={handleShare}
-                    className={cn("py-6", isDark ? "border-gray-700 hover:bg-gray-800" : "")}
-                    aria-label="Share this product"
-                  >
-                    <Share2 className="w-5 h-5" />
-                  </Button>
                 </div>
               </div>
               

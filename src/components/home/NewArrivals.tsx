@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../theme/ThemeProvider';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { cn, formatIndianPrice } from '@/lib/utils';
 import { products as allProducts } from '@/data/products';
 import { WishlistButton } from '@/components/common/WishlistButton';
 import { useCart } from '@/contexts/CartContext';
@@ -109,7 +109,13 @@ interface ProductCardProps {
             </span>
           </div>
           
-          <p className={`${isDark ? 'text-white' : 'text-slate-900'} font-bold mb-3`}>{price}</p>
+          <p className={`${isDark ? 'text-white' : 'text-slate-900'} font-bold mb-3`}>
+  {formatIndianPrice(
+    typeof product.numericPrice === 'number' && !isNaN(product.numericPrice)
+      ? product.numericPrice
+      : (typeof price === 'string' ? parseFloat(price.replace(/[^\d.]/g, '')) : (typeof price === 'number' ? price : 0))
+  )}
+</p>
           
           <div className="space-y-2">
             <Button

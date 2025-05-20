@@ -3,7 +3,7 @@ import { useParams, Navigate, Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Star, ShoppingCart, Heart, SlidersHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { cn, formatIndianPrice } from '@/lib/utils';
 import { useTheme } from '../components/theme/ThemeProvider';
 import ProductsSidebar, { ProductFilters } from '../components/products/ProductsSidebar';
 import StockIndicator from '../components/products/StockIndicator';
@@ -281,11 +281,11 @@ const ProductCard: React.FC<ProductCardProps> = (product) => {
           
           <div className="flex items-baseline">
             <span className="text-lg font-bold text-gray-900 dark:text-white">
-              ₹{product.price.toLocaleString()}
+              {formatIndianPrice(product.price)}
             </span>
             {product.originalPrice && (
               <span className="ml-2 text-sm text-gray-500 line-through">
-                ₹{product.originalPrice.toLocaleString()}
+                {formatIndianPrice(product.originalPrice)}
               </span>
             )}
             {product.originalPrice && (
@@ -754,6 +754,8 @@ const ProductsContent: React.FC = () => {
                   allBrands={allBrands}
                   maxPrice={maxPrice}
                   hideCategories={!!category} // Pass a flag to hide the categories section completely
+                  slug={category || ''} // Add the missing required prop
+                  title={currentCategory?.title || 'All Products'} // Add the missing required prop
                 />
               </div>
             </div>

@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '@/contexts/CartContext';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { cn, formatIndianPrice } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 interface CartItemProps {
@@ -167,7 +167,7 @@ const CartIcon = () => {
                   <div className="p-4 border-t border-gray-200 dark:border-gray-700">
                     <div className="flex justify-between items-center mb-4">
                       <span className="font-medium text-gray-700 dark:text-gray-300">Total:</span>
-                      <span className="font-bold text-lg text-mangla-gold">₹{totalPrice.toFixed(2)}</span>
+                      <span className="font-bold text-lg text-mangla-gold">{formatIndianPrice(totalPrice)}</span>
                     </div>
                     <Button
                       asChild

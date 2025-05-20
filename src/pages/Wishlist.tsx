@@ -6,26 +6,51 @@ import { useWishlist } from '@/contexts/WishlistContext';
 import { toast } from 'sonner';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import { cn } from '@/lib/utils';
+import { cn, formatIndianPrice } from '@/lib/utils';
+
+// Helper function to safely extract numeric price from product
+const getNumericPrice = (product: any): number => {
+  // First try to get numericPrice if it exists and is valid
+  if (typeof product.numericPrice === 'number' && !isNaN(product.numericPrice)) {
+    return product.numericPrice;
+  }
+  
+  // If price is a string, try to parse it
+  if (typeof product.price === 'string' && product.price.trim() !== '') {
+    const numericString = product.price.replace(/[^\d.]/g, '');
+    const parsed = parseFloat(numericString);
+    if (!isNaN(parsed)) {
+      return parsed;
+    }
+  }
+  
+  // If price is a valid number, use it
+  if (typeof product.price === 'number' && !isNaN(product.price)) {
+    return product.price;
+  }
+  
+  // Default to 0 if no valid price found
+  return 0;
+};
 
 export default function Wishlist() {
   const { wishlist, removeFromWishlist, clearWishlist } = useWishlist();
 
   const handleRemoveItem = (productId: string, productName: string) => {
     removeFromWishlist(productId);
-    toast.success(`${productName} has been removed from your wishlist.`);
+    toast.success(`${productName} has been removed from your wishlist.`, {
+      duration: 2000 // 2 seconds
+    });
   };
 
   const handleClearWishlist = () => {
     clearWishlist();
-    toast.success('All items have been removed from your wishlist.');
+    toast.success('All items have been removed from your wishlist.', {
+      duration: 2000 // 2 seconds
+    });
   };
   
-  // Format price with currency symbol
-  const formatPrice = (price: string | number) => {
-    const priceNumber = typeof price === 'string' ? parseFloat(price) : price;
-    return `₹${priceNumber.toLocaleString('en-IN')}`;
-  };
+
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
@@ -131,7 +156,7 @@ export default function Wishlist() {
                               {product.name}
                             </h3>
                             <p className="text-mangla-gold font-semibold">
-                              {formatPrice(product.price)}
+                              {formatIndianPrice(getNumericPrice(product))}
                             </p>
                             <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">
                               {product.category}

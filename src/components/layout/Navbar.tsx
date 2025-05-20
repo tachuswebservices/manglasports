@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, Search, X } from 'lucide-react';
+import { ChevronRight, Menu, Search, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ThemeToggle from '../theme/ThemeToggle';
 import { useTheme } from '../theme/ThemeProvider';
@@ -55,13 +55,14 @@ const Navbar = () => {
   ];
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${isScrolled ? 'shadow-md' : ''}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 w-full max-w-[100vw] transition-all duration-300 ${isScrolled ? 'shadow-md' : ''}`}>
       {/* Top bar with contact info, FAQ, Blog, and social links */}
       <TopBar />
 
       {/* Main navigation with logo and search */}
-      <div className={`${isDark ? 'bg-slate-900' : 'bg-white'} px-4 md:px-6 lg:px-8 py-3 md:py-4 shadow-sm`}>
-        <div className="container-custom flex justify-between items-center relative">
+      <div className={`${isDark ? 'bg-slate-900' : 'bg-white'} w-full px-2 sm:px-3 md:px-6 lg:px-8 py-2 sm:py-3 md:py-4 shadow-sm`}>
+        <div className="w-full max-w-[100vw]">
+        <div className="container-custom flex items-center justify-between relative">
           {/* Logo and tagline */}
           <Link to="/" className="flex-shrink-0 mr-2" onClick={scrollToTop}>
             <div className="flex items-center gap-2">
@@ -159,7 +160,9 @@ const Navbar = () => {
               </div>
               
               {/* Mobile Icons - only visible on mobile */}
-              <div className="flex items-center space-x-3 md:hidden">
+              <div className="flex items-center justify-end flex-1 md:hidden pr-0">
+                {/* Mobile icons container with proper spacing */}
+                <div className="flex items-center space-x-2 sm:space-x-3">
                 {/* Search icon for mobile */}
                 <button
                   onClick={toggleSearch}
@@ -183,16 +186,18 @@ const Navbar = () => {
                 
                 <ThemeToggle />
                 
-                {/* Mobile menu button */}
-                <button 
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
-                  className={`${isDark ? 'text-gray-300' : 'text-slate-700'} p-1`}
-                  aria-label="Toggle menu"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
-                  </svg>
-                </button>
+                {/* Mobile menu button - fixed position to ensure full visibility */}
+                <div className="relative flex items-center justify-center px-1">
+                  <button 
+                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
+                    className={`mobile-nav-button p-1 flex items-center justify-center rounded-md ${isDark ? 'text-gray-300 hover:bg-slate-800 hover:text-white' : 'text-slate-700 hover:bg-gray-100 hover:text-slate-900'}`}
+                    aria-label="Toggle menu"
+                    style={{ zIndex: 100 }}
+                  >
+                    <Menu className="h-6 w-6 flex-shrink-0" strokeWidth={2.5} />
+                  </button>
+                </div>
+                </div>
               </div>
               
               {/* Desktop Icons - only visible on desktop */}
@@ -202,6 +207,7 @@ const Navbar = () => {
             </div>
           </div>
         </div>
+      </div>
       </div>
       
       {/* Full-width search bar on mobile - shown only when search icon is clicked */}
@@ -263,21 +269,13 @@ const Navbar = () => {
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
             >
-              {/* Header area with logo and close button */}
-              <div className={`${isDark ? 'bg-slate-800' : 'bg-gray-100'} py-4 px-6 flex items-center justify-between`}>
+              {/* Header area with logo */}
+              <div className={`${isDark ? 'bg-slate-800' : 'bg-gray-100'} py-4 px-6 flex items-center`}>
                 <img 
                   src="/lovable-uploads/msa-logo.png" 
                   alt="Mangla Sports Logo" 
                   className="h-12 w-auto" 
                 />
-                <button
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`${isDark ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-black'} p-1 rounded-full transition-colors`}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
               </div>
               
               {/* Search input */}

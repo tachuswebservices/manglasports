@@ -72,10 +72,11 @@ const SearchBar: React.FC<SearchBarProps> = ({ isMobile = false, onClose, classN
     }
   };
 
-  const handleSuggestionClick = (productName: string) => {
-    navigate(`/products?q=${encodeURIComponent(productName)}`);
+  const handleSuggestionClick = (product: typeof products[0]) => {
+    navigate(`/products/product/${product.id}`);
     setSearchQuery('');
     setSuggestions([]);
+    setIsFocused(false);
     if (onClose) onClose();
   };
 
@@ -160,7 +161,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isMobile = false, onClose, classN
                 <button
                   key={product.id}
                   type="button"
-                  onClick={() => handleSuggestionClick(product.name)}
+                  onClick={() => handleSuggestionClick(product)}
                   className={`w-full text-left px-4 py-2 text-sm ${
                     isDark
                       ? 'text-gray-200 hover:bg-slate-700'

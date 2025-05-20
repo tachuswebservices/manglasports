@@ -6,7 +6,7 @@ import { Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
-import { cn } from '@/lib/utils';
+import { cn, formatIndianPrice } from '@/lib/utils';
 import { useTheme } from '../components/theme/ThemeProvider';
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -264,11 +264,11 @@ const Products: React.FC = () => {
                     
                     <div className="flex items-baseline">
                       <span className="text-lg font-bold text-gray-900 dark:text-white">
-                        ₹{product.price.toLocaleString()}
+                        {formatIndianPrice(product.price)}
                       </span>
                       {product.originalPrice && (
                         <span className="ml-2 text-sm text-gray-500 line-through">
-                          ₹{product.originalPrice.toLocaleString()}
+                          {formatIndianPrice(product.originalPrice)}
                         </span>
                       )}
                       {product.originalPrice && (
