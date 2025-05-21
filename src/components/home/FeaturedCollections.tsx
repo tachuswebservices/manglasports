@@ -34,7 +34,7 @@ const allCollections: CollectionItemProps[] = [
   },
   { 
     title: "Air Pellets", 
-    link: "/products/air-pellets",
+    link: "/products/pellets",
     image: "/lovable-uploads/ccff352e-0441-4a8a-992b-6d6d4071eab8.png" 
   },
   { 
@@ -113,7 +113,16 @@ const CollectionItem: React.FC<CollectionItemProps> = ({ title, link, image, fea
       whileHover={{ y: -5 }}
       transition={{ type: "spring", stiffness: 400, damping: 17 }}
     >
-      <Link to={link}>
+      <Link
+        to={link}
+        onClick={e => {
+          e.preventDefault();
+          window.scrollTo(0, 0);
+          setTimeout(() => {
+            window.location.href = link;
+          }, 0);
+        }}
+      >
         <Card className={cn(
           "h-full overflow-hidden",
           isDark ? "bg-mangla-dark-gray border-gray-800" : "bg-white border-gray-300"

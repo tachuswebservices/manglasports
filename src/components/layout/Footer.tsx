@@ -16,7 +16,7 @@ const Footer = () => {
             <Link to="/" className="flex items-center mb-6">
               <div className="flex items-center">
                 <img 
-                  src="/lovable-uploads/59a0133d-7459-463e-8a2f-fd2a578ea3ea.png" 
+                  src="/lovable-uploads/msa-logo.png" 
                   alt="Mangla Sports Logo" 
                   className="h-14 mr-3" 
                 />

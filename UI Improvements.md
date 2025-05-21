@@ -59,3 +59,12 @@
 - Added rounded corners to remove buttons for consistent styling
 
 
+### 7. Major Product & Navigation Updates (May 2025)
+- **Resolved navigation issues in Air Pellets link (Featured Section)**: Fixed category filtering and ensured correct product display.
+- **Corrected scroll-to-top navigation for products in Featured Section**: Improved user experience when moving between sections.
+- **Discussed and investigated Share option for mobile view in Product View Page**: Clarified technical limitations and browser support.
+- **Added/updated three more products under Pellets (Air Pellets) and two new brands**: Faced and resolved issues with product data structure and integration.
+- **Corrected product descriptions under headings**: Removed hardcoded and duplicate descriptions for clarity and accuracy.
+- **Standardized and corrected product specifications**: Updated all relevant products for accuracy and consistency, overcoming hardcoded data challenges.
+- **Verified and cleaned product data**: Ensured no unintended or duplicate products remain in the catalog.
+

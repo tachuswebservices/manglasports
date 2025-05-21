@@ -36,15 +36,9 @@ const fetchProduct = async (productId: string): Promise<DetailedProduct | null> 
   // In a real app, these would come from an API, but here we'll generate some mock details
   return {
     ...product,
-    description: `Professional-grade ${product.category.toLowerCase()} designed for competitive shooting with exceptional accuracy and precision. Features an adjustable stock, match-grade trigger, and advanced recoil absorption system.`,
-    features: [
-      'Match-grade trigger with adjustable pull weight',
-      'Advanced recoil absorption system',
-      'Precision-rifled barrel for superior accuracy',
-      'Adjustable cheek rest and butt pad',
-      'Integrated accessory rail for scopes and sights'
-    ],
-    specifications: {
+    description: product.shortDescription || '',
+    features: product.features || [],
+    specifications: product.specifications || {
       'Brand': product.brand,
       'Category': product.category,
       'Caliber': '.177 / 4.5mm',
@@ -455,19 +449,9 @@ const ProductDetail: React.FC = () => {
           
           {/* Product Tabs */}
           <div className="mt-16">
-            <Tabs defaultValue="description" className="w-full">
+            <Tabs defaultValue="specifications" className="w-full">
               <TabsList className={cn("w-full justify-start p-0 border-b rounded-none", isDark ? "bg-mangla border-gray-800" : "bg-transparent border-gray-200")}>
-                <TabsTrigger 
-                  value="description" 
-                  className={cn(
-                    "py-4 px-6 rounded-none border-b-2 border-transparent data-[state=active]:border-mangla-gold data-[state=active]:shadow-none",
-                    isDark 
-                      ? "data-[state=active]:bg-transparent data-[state=active]:text-white" 
-                      : "data-[state=active]:bg-transparent data-[state=active]:text-gray-900"
-                  )}
-                >
-                  Description
-                </TabsTrigger>
+                
                 <TabsTrigger 
                   value="specifications" 
                   className={cn(
@@ -493,22 +477,7 @@ const ProductDetail: React.FC = () => {
               </TabsList>
               
               <div className="py-8">
-                <TabsContent value="description">
-                  <div className="prose max-w-none" style={isDark ? { color: '#e5e7eb' } : {}}>
-                    <h3>Product Description</h3>
-                    <p>{product.description}</p>
-                    
-                    <h4>Features</h4>
-                    <ul>
-                      {product.features.map((feature, index) => (
-                        <li key={index}>{feature}</li>
-                      ))}
-                    </ul>
-                    
-                    <h4>Warranty & Support</h4>
-                    <p>This product comes with a 1-year manufacturer's warranty. Our dedicated support team is available to assist you with any questions or issues.</p>
-                  </div>
-                </TabsContent>
+                
                 
                 <TabsContent value="specifications">
                   <div className="overflow-hidden">

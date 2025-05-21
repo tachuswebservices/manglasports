@@ -106,6 +106,36 @@ const mockProducts: ProductDetails[] = [
     isOnSale: false,
     shortDescription: 'Match-grade competition pellets for superior accuracy and consistent flight path.',
     stockLevel: 'high'
+  },
+  {
+    id: 'pellets-2',
+    name: 'H&N Excite Econ II',
+    price: 400,
+    image: '/lovable-uploads/EXCITE PELLET.JPG',
+    rating: 4.5,
+    reviewCount: 85,
+    inStock: true,
+    category: 'air-pellets',
+    brand: 'H&N',
+    isNew: false,
+    isOnSale: false,
+    shortDescription: 'The H&N Excite Econ II is a lightweight, accurate pellet for plinking, hobby shooting, and CO2 pistols. It features an updated head design for improved performance and is ideal for universal use at an extremely favorable price.',
+    stockLevel: 'high'
+  },
+  {
+    id: 'pellets-3',
+    name: 'RWS Diabolo Basic',
+    price: 475,
+    image: '/lovable-uploads/GREENDIABOLO.JPG',
+    rating: 4.6,
+    reviewCount: 92,
+    inStock: true,
+    category: 'air-pellets',
+    brand: 'RWS',
+    isNew: false,
+    isOnSale: false,
+    shortDescription: 'The RWS Diabolo Basic wadcutter (flat-nose) pellet provides everything you need in a basic target shooting pellet. Made in Germany for consistent size and weight, it is ideal for lower-powered airguns and offers reliable accuracy for practice and plinking.',
+    stockLevel: 'high'
   }
 ];
 
@@ -298,6 +328,11 @@ const ProductCard: React.FC<ProductCardProps> = (product) => {
           <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
             {product.brand}
           </div>
+          {product.shortDescription && (
+            <div className="mt-2 text-sm text-gray-700 dark:text-gray-300 line-clamp-3">
+              {product.shortDescription}
+            </div>
+          )}
           <div className="mt-2">
             <StockIndicator 
               level={product.stockLevel === 'high' ? 'high' : 
