@@ -65,9 +65,14 @@ const CartItem = ({ product, onRemove, onUpdateQuantity }: CartItemProps) => {
   );
 };
 
-const CartIcon = () => {
+interface CartIconProps {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+}
+
+const CartIcon: React.FC<CartIconProps> = ({ isOpen, setIsOpen }) => {
   const { cart, removeFromCart, updateQuantity, getCartTotal, getCartItemCount } = useCart();
-  const [isOpen, setIsOpen] = React.useState(false);
+  
   const isMobile = useIsMobile();
   const hasItems = cart.length > 0;
   const totalItems = getCartItemCount();
@@ -128,6 +133,18 @@ const CartIcon = () => {
             transition={{ duration: 0.2 }}
             className={`fixed sm:absolute top-0 sm:top-auto right-0 sm:right-0 mt-0 sm:mt-2 w-full sm:w-80 h-screen sm:h-auto sm:max-h-[80vh] bg-white dark:bg-slate-800 rounded-none sm:rounded-lg shadow-xl sm:shadow-lg overflow-y-auto z-50 border-0 sm:border border-gray-200 dark:border-gray-700 transition-all duration-300 transform ${isMobile ? 'translate-x-0' : 'translate-y-0'}`}
           >
+            {/* Mobile Close Button */}
+            {isMobile && (
+              <button
+                onClick={() => setIsOpen(false)}
+                aria-label="Close cart"
+                className="absolute top-4 right-4 z-50 p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors shadow-md focus:outline-none focus:ring-2 focus:ring-mangla-gold"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
             <div className="p-4 border-b border-gray-200 dark:border-gray-700">
               <div className="flex justify-between items-center">
                 <h3 className="font-medium text-gray-900 dark:text-white">Shopping Cart</h3>

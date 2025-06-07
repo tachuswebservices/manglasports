@@ -68,10 +68,15 @@ const WishlistItem = ({ product, onRemove, onMoveToCart }: WishlistItemProps) =>
   );
 };
 
-const WishlistIcon = () => {
+interface WishlistIconProps {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+}
+
+const WishlistIcon: React.FC<WishlistIconProps> = ({ isOpen, setIsOpen }) => {
   const { wishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const { addToCart } = useCart();
-  const [isOpen, setIsOpen] = React.useState(false);
+  
   const { theme } = useTheme();
   const isMobile = useIsMobile();
   const isDark = theme === 'dark';
@@ -166,6 +171,18 @@ const WishlistIcon = () => {
               isMobile ? 'translate-x-0' : 'translate-y-0'
             )}
           >
+            {/* Mobile Close Button */}
+            {isMobile && (
+              <button
+                onClick={() => setIsOpen(false)}
+                aria-label="Close wishlist"
+                className="absolute top-4 right-4 z-50 p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors shadow-md focus:outline-none focus:ring-2 focus:ring-mangla-gold"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
             <div className={`p-4 flex justify-between items-center border-b border-gray-200 dark:border-gray-700 sm:hidden`}>
               <h3 className="text-lg font-medium text-gray-900 dark:text-white">My Wishlist</h3>
             </div>

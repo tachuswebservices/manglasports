@@ -11,6 +11,8 @@ import CartIcon from './CartIcon';
 import SearchBar from '../search/SearchBar';
 
 const Navbar = () => {
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const [isScrolled, setIsScrolled] = useState(false);
@@ -150,12 +152,12 @@ const Navbar = () => {
               <div className="hidden md:flex items-center space-x-2">
                 {/* Wishlist icon */}
                 <div className="relative">
-                  <WishlistIcon />
+                  <WishlistIcon isOpen={isWishlistOpen} setIsOpen={setIsWishlistOpen} />
                 </div>
                 
                 {/* Cart icon */}
                 <div className="relative">
-                  <CartIcon />
+                  <CartIcon isOpen={isCartOpen} setIsOpen={setIsCartOpen} />
                 </div>
               </div>
               
@@ -176,27 +178,29 @@ const Navbar = () => {
                 
                 {/* Wishlist icon for mobile */}
                 <div className="relative">
-                  <WishlistIcon />
+                  <WishlistIcon isOpen={isWishlistOpen} setIsOpen={setIsWishlistOpen} />
                 </div>
                 
                 {/* Cart icon for mobile */}
                 <div className="relative">
-                  <CartIcon />
+                  <CartIcon isOpen={isCartOpen} setIsOpen={setIsCartOpen} />
                 </div>
                 
                 <ThemeToggle />
                 
                 {/* Mobile menu button - fixed position to ensure full visibility */}
-                <div className="relative flex items-center justify-center px-1">
-                  <button 
-                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
-                    className={`mobile-nav-button p-1 flex items-center justify-center rounded-md ${isDark ? 'text-gray-300 hover:bg-slate-800 hover:text-white' : 'text-slate-700 hover:bg-gray-100 hover:text-slate-900'}`}
-                    aria-label="Toggle menu"
-                    style={{ zIndex: 100 }}
-                  >
-                    <Menu className="h-6 w-6 flex-shrink-0" strokeWidth={2.5} />
-                  </button>
-                </div>
+                {!(isCartOpen || isWishlistOpen) && (
+                  <div className="relative flex items-center justify-center px-1">
+                    <button 
+                      onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
+                      className={`mobile-nav-button p-1 flex items-center justify-center rounded-md ${isDark ? 'text-gray-300 hover:bg-slate-800 hover:text-white' : 'text-slate-700 hover:bg-gray-100 hover:text-slate-900'}`}
+                      aria-label="Toggle menu"
+                      style={{ zIndex: 100 }}
+                    >
+                      <Menu className="h-6 w-6 flex-shrink-0" strokeWidth={2.5} />
+                    </button>
+                  </div>
+                )}
                 </div>
               </div>
               

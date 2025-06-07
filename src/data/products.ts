@@ -20,8 +20,46 @@ export interface Product {
 }
 
 // Combined products from New Arrivals and Best Sellers
+// New Arrivals
 export const products: Product[] = [
-  // New Arrivals
+  {
+    id: "tec-hro-stativ-3-carbon",
+    name: "TEC-HRO STATIV 3.0 CARBON, THE NEW RIFLE TRIPOD",
+    price: "₹26,000",
+    numericPrice: 26000,
+    image: "/lovable-uploads/Tech-HRO Stnad.png",
+    category: "Air Rifle Accessories",
+    rating: 4.6,
+    reviewCount: 15,
+    soldCount: 35,
+    inStock: true,
+    isNew: true,
+    isHot: true,
+    brand: "TEC-HRO",
+    shortDescription: "Ultra-light, stable, and user-friendly carbon tripod for competitive rifle shooters. Features innovative design, quick-release levers, and brilliant colors for maximum performance.",
+    features: [
+      "New, lighter carbon fiber tubes in five brilliant colors",
+      "Weight-optimized foot construction for stability",
+      "Quick-release lever on rifle and ammunition tray",
+      "Ammunition tray swivels and mounts at multiple heights",
+      "Feet splayed at 100° for increased stability",
+      "Extremely robust yet lightweight (approx. 1.25 kg)",
+      "Max height: 170 cm, folds to 67 cm length",
+      "Easy assembly/disassembly without tools",
+      "Rubber-coated rifle tray for secure placement"
+    ],
+    specifications: {
+      "Material": "Carbon fiber tubes, milled aluminum foot unit",
+      "Weight": "Approx. 1.25 kg",
+      "Max Height": "170 cm",
+      "Folded Dimensions": "67 cm length, 9 cm diameter (with bag)",
+      "Ammunition Tray": "Swiveling, mounts on upper/middle/lower tube",
+      "Foot Design": "100° splayed for stability",
+      "Assembly": "Tool-free, quick-release levers",
+      "Compatibility": "Universal for sport rifles",
+      "Country of Manufacture": "Germany"
+    }
+  },
   {
     id: "walther-lg500-itec",
     name: "Walther LG500 ITEC Triple Edition",
@@ -98,6 +136,44 @@ export const products: Product[] = [
       "Compensator": "Integrated, recoil elimination system",
       "Country of Manufacture": "Italy",
       "Intended Use": "Precision target shooting, ISSF competition"
+    }
+  },
+  {
+    id: "morini-electronic-grip-right",
+    name: "Morini Electronic grip for Right hand shooters",
+    price: "₹35,000",
+    numericPrice: 35000,
+    image: "/lovable-uploads/Morini_LeftGrip.png",
+    category: "Air Pistol Accessories",
+    rating: 4.2,
+    reviewCount: 4,
+    soldCount: 13,
+    inStock: true,
+    isNew: true,
+    isHot: true,
+    brand: "Morini",
+    shortDescription: "Precision-crafted electronic grip for right-handed shooters, compatible with Morini CM162EI air pistols. Adjustable ergonomic design for optimal control and comfort in competitive shooting.",
+    features: [
+      "Handmade from high-quality walnut wood",
+      "Designed for right-handed shooters",
+      "Electronic trigger compatibility (CM162EI)",
+      "Adjustable palm shelf for custom fit",
+      "Enhanced ergonomics for improved stability",
+      "CNC-machined for precision",
+      "Available in multiple sizes (XS, S, M, L, XL, XXL)",
+      "Smooth finish for comfortable grip",
+      "Ideal for ISSF and Olympic-level air pistol competition"
+    ],
+    specifications: {
+      "Material": "Premium walnut wood",
+      "Compatibility": "Morini CM162EI electronic air pistol",
+      "Hand Orientation": "Right",
+      "Sizes Available": "XS, S, M, L, XL, XXL",
+      "Palm Shelf": "Adjustable, CNC-machined",
+      "Finish": "Smooth, ergonomic",
+      "Trigger": "Electronic (for CM162EI)",
+      "Country of Manufacture": "Switzerland",
+      "Intended Use": "Precision air pistol sport shooting"
     }
   },
   {
