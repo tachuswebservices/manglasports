@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -25,6 +25,17 @@ const ProductsLayout: React.FC<ProductsLayoutProps> = ({
 }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  const [categories, setCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:4000/api/categories')
+      .then(res => res.json())
+      .then(setCategories);
+    fetch('http://localhost:4000/api/brands')
+      .then(res => res.json())
+      .then(setBrands);
+  }, []);
 
   return (
     <div className={cn(

@@ -38,10 +38,23 @@ const ProductsSidebar: React.FC<ProductsSidebarProps> = ({
   hideCategories = false,
   onApplyFiltersMobile
 }) => {
-  // Convert slug to category format for matching with filters
-  const categorySlug = slug.replace(/\//g, '');
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  
+  const [categories, setCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:4000/api/categories')
+      .then(res => res.json())
+      .then(setCategories);
+    fetch('http://localhost:4000/api/brands')
+      .then(res => res.json())
+      .then(setBrands);
+  }, []);
+  
+  // Convert slug to category format for matching with filters
+  const categorySlug = slug.replace(/\//g, '');
   
   // Calculate active filter count
   const activeFilterCount = (

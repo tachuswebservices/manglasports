@@ -1,0 +1,39 @@
+{
+  "products": [
+    {
+      "id": "tachus-10-ets",
+      "name": "Tachus 10 ETS",
+      "brand": "Tachus",
+      "price": "₹150,000",
+      "numericPrice": 150000,
+      "image": "tachus-10-ets.png",
+      "category": "Electronic Target Systems",
+      "rating": 4.7,
+      "inStock": true,
+      "reviewCount": 76,
+      "soldCount": 42,
+      "isNew": false,
+      "isHot": true,
+      "shortDescription": "The Tachus 10 ETS is a precision electronic target system designed for training and competition, providing instant feedback and high accuracy for shooters.",
+      "features": [
+        "Electronic scoring for instant feedback",
+        "High-precision target sensors",
+        "Wireless connectivity for easy setup",
+        "Compatible with various calibers and airguns",
+        "Durable and weather-resistant construction"
+      ],
+      "specifications": {
+        "Application": "10m air rifle and pistol ISSF events",
+        "Technology": "Acoustic sensor-based scoring",
+        "Target Movement": "Automatic paper roll advancement after each shot",
+        "Scoring Software": "Windows 7/8/10 compatible, real-time analytics",
+        "Illumination": "Adjustable internal LED system",
+        "Maintenance": "Removable pellet trap",
+        "Installation": "Simple, suitable for home and range",
+        "Accuracy": "ISSF-compliant, high precision",
+        "Country of Manufacture": "India",
+        "Intended Use": "Personal training, club competitions, professional events"
+      }
+    }
+  ]
+}

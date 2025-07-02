@@ -6,13 +6,17 @@ type CartItem = Product & {
   quantity: number;
 };
 
+// TODO: Replace with real user authentication
+const USER_ID = 1;
+const API_BASE = 'http://localhost:4000/api/cart';
+
 type CartContextType = {
   cart: CartItem[];
-  addToCart: (product: Product, quantity?: number) => boolean;
-  removeFromCart: (productId: string) => boolean;
-  updateQuantity: (productId: string, quantity: number) => void;
+  addToCart: (product: Product, quantity?: number) => Promise<boolean>;
+  removeFromCart: (productId: string) => Promise<boolean>;
+  updateQuantity: (productId: string, quantity: number) => Promise<void>;
   isInCart: (productId: string) => boolean;
-  clearCart: () => void;
+  clearCart: () => Promise<void>;
   getCartTotal: () => number;
   getCartItemCount: () => number;
 };
@@ -29,114 +33,106 @@ export const useCart = () => {
 
 export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [isInitialized, setIsInitialized] = useState(false);
 
-  // Load cart from localStorage on initial render
+  // Load cart from backend on initial render
   useEffect(() => {
-    try {
-      const savedCart = localStorage.getItem('manglaSportsCart');
-      if (savedCart) {
-        const parsed = JSON.parse(savedCart) as CartItem[];
-        // Validate cart items
-        const validCart = parsed.filter((item): item is CartItem => {
-          return (
-            typeof item?.id === 'string' &&
-            typeof item?.name === 'string' &&
-            typeof item?.price === 'string' &&
-            typeof item?.numericPrice === 'number' &&
-            typeof item?.image === 'string' &&
-            typeof item?.category === 'string' &&
-            typeof item?.quantity === 'number' &&
-            item.quantity > 0
-          );
-        });
-        setCart(validCart);
-      }
-    } catch (error) {
-      console.error('Failed to load cart from localStorage', error);
-    } finally {
-      setIsInitialized(true);
-    }
+    fetch(`${API_BASE}?userId=${USER_ID}`)
+      .then(res => res.json())
+      .then(data => setCart(data.map((item: any) => ({ ...item.product, quantity: item.quantity }))))
+      .catch(() => setCart([]));
   }, []);
 
-  // Save cart to localStorage whenever it changes
-  useEffect(() => {
-    if (isInitialized) {
-      localStorage.setItem('manglaSportsCart', JSON.stringify(cart));
-    }
-  }, [cart, isInitialized]);
-
-  const addToCart = (product: Product, quantity: number = 1): boolean => {
+  const addToCart = async (product: Product, quantity: number = 1): Promise<boolean> => {
     if (quantity < 1) return false;
-    
-    setCart((prevCart) => {
-      // Check if product is already in cart
-      const existingItemIndex = prevCart.findIndex(item => item.id === product.id);
-      
-      if (existingItemIndex >= 0) {
-        // Update quantity if product already in cart
-        const updatedCart = [...prevCart];
-        updatedCart[existingItemIndex] = {
-          ...updatedCart[existingItemIndex],
-          quantity: updatedCart[existingItemIndex].quantity + quantity
-        };
-        return updatedCart;
-      } else {
-        // Add new item to cart
-        return [...prevCart, { ...product, quantity }];
-      }
-    });
-    
-    toast.success(`${product.name} added to cart`, {
-      duration: 2000 // 2 seconds
-    });
-    return true;
-  };
-
-  const removeFromCart = (productId: string): boolean => {
-    let removed = false;
-    setCart((prevCart) => {
-      const exists = prevCart.some(item => item.id === productId);
-      if (!exists) return prevCart;
-      
-      removed = true;
-      return prevCart.filter(item => item.id !== productId);
-    });
-    
-    if (removed) {
-      const product = cart.find(item => item.id === productId);
-      if (product) {
-        toast.success(`${product.name} removed from cart`, {
-          duration: 2000 // 2 seconds, shorter duration
+    try {
+      const res = await fetch(API_BASE, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: USER_ID, productId: product.id, quantity })
+      });
+      if (res.ok) {
+        setCart(prev => {
+          const existing = prev.find(item => item.id === product.id);
+          if (existing) {
+            return prev.map(item => item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item);
+          } else {
+            return [...prev, { ...product, quantity }];
+          }
         });
+        toast.success(`${product.name} added to cart`);
+        return true;
+      } else {
+        toast.error('Failed to add to cart');
+        return false;
       }
+    } catch {
+      toast.error('Failed to add to cart');
+      return false;
     }
-    
-    return removed;
   };
 
-  const updateQuantity = (productId: string, quantity: number) => {
+  const removeFromCart = async (productId: string): Promise<boolean> => {
+    try {
+      const res = await fetch(`${API_BASE}/${productId}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: USER_ID })
+      });
+      if (res.ok) {
+        setCart(prev => prev.filter(item => item.id !== productId));
+        toast.success('Removed from cart');
+        return true;
+      } else {
+        toast.error('Failed to remove from cart');
+        return false;
+      }
+    } catch {
+      toast.error('Failed to remove from cart');
+      return false;
+    }
+  };
+
+  const updateQuantity = async (productId: string, quantity: number) => {
     if (quantity < 1) {
-      removeFromCart(productId);
+      await removeFromCart(productId);
       return;
     }
-    
-    setCart((prevCart) =>
-      prevCart.map(item =>
-        item.id === productId ? { ...item, quantity } : item
-      )
-    );
+    try {
+      const res = await fetch(`${API_BASE}/${productId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: USER_ID, quantity })
+      });
+      if (res.ok) {
+        setCart(prev => prev.map(item => item.id === productId ? { ...item, quantity } : item));
+      } else {
+        toast.error('Failed to update cart item');
+      }
+    } catch {
+      toast.error('Failed to update cart item');
+    }
   };
 
   const isInCart = (productId: string) => {
     return cart.some(item => item.id === productId);
   };
 
-  const clearCart = () => {
-    setCart([]);
-    toast.success('Cart cleared', {
-      duration: 2000 // 2 seconds
-    });
+  const clearCart = async () => {
+    try {
+      const res = await fetch(API_BASE, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: USER_ID })
+      });
+      if (res.ok) {
+        setCart([]);
+        toast.success('Cart cleared');
+      } else {
+        toast.error('Failed to clear cart');
+      }
+    } catch {
+      toast.error('Failed to clear cart');
+    }
   };
 
   const getCartTotal = () => {

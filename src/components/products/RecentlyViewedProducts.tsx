@@ -9,6 +9,7 @@ import type { ProductDetails } from './QuickViewModal';
 interface RecentlyViewedProductsProps {
   currentProductId?: string;
   onProductClick?: (product: ProductDetails) => void;
+  productIds: string[];
 }
 
 const MAX_RECENT_PRODUCTS = 5;
@@ -16,7 +17,8 @@ const STORAGE_KEY = 'mangla-recently-viewed';
 
 const RecentlyViewedProducts: React.FC<RecentlyViewedProductsProps> = ({ 
   currentProductId,
-  onProductClick 
+  onProductClick,
+  productIds
 }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
@@ -38,6 +40,14 @@ const RecentlyViewedProducts: React.FC<RecentlyViewedProductsProps> = ({
       console.error('Error loading recently viewed products:', error);
     }
   }, [currentProductId]);
+  
+  useEffect(() => {
+    Promise.all(
+      productIds.map(id =>
+        fetch(`http://localhost:4000/api/products/${id}`).then(res => res.json())
+      )
+    ).then(setProducts);
+  }, [productIds]);
   
   // If no products, don't render anything
   if (products.length === 0) {

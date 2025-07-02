@@ -1,0 +1,52 @@
+{
+  "products": [
+    {
+      "id": "walther-lg500-itec",
+      "name": "Walther LG500 ITEC Triple Edition",
+      "brand": "Walther",
+      "price": "₹249,999",
+      "numericPrice": 249999,
+      "image": "walther-lg500-itec.png",
+      "category": "Air Rifles",
+      "rating": 4.9,
+      "inStock": true,
+      "reviewCount": 42,
+      "soldCount": 28,
+      "isNew": true,
+      "isHot": true,
+      "shortDescription": "The Walther LG500 itec marks a new era in competitive shooting, redefining perfection with its advanced features and cutting edge innovations. Whether a seasoned competitor or an aspiring champion, the Walther LG500 itec promises an unmatched shooting experience that will lead you straight to the podium.",
+      "features": [
+        "Electronic trigger integrated into grip",
+        "Perfected grip ergonomics",
+        "Grip and trigger infinitely adjustable in length, cast and angle",
+        "Right and left handed grip options in S, M and L sizes",
+        "Vibration minimized system for optimal response",
+        "Adaptive inline impulse equalizer",
+        "Vibration minimized loading mechanics",
+        "Pneumatically driven absorber",
+        "90g balancing elements in forend and buttstock",
+        "Independent adjustment of length of pull and cheekpiece position",
+        "Infinite lateral fine adjustment of cheekpiece",
+        "Innovative aerospace-grade aluminum buttplate with infinite adjustment"
+      ],
+      "specifications": {
+        "Caliber": ".177 (4.5mm)",
+        "Trigger": "Electronic BTe trigger",
+        "Grip": "MEMORY 3D-grip BIOMETRIC, right- or left-hand, S/M/L sizes",
+        "Propulsion": "Compressed air, 300/200 bar",
+        "Shot Capacity": "Approx. 500 shots per fill",
+        "Max Energy": "7.5 Joules",
+        "Barrel": "Match-grade, precision rifled",
+        "Weight Distribution": "Adjustable balancing system",
+        "Stock": "Infinitely adjustable, ergonomic design",
+        "Sights": "Visionic Match Diopter, micro-precise",
+        "Overall Length": "1080-1200 mm (adjustable)",
+        "Weight": "~4.2 kg (without sights)",
+        "Buttplate": "Aerospace-grade aluminum, infinitely adjustable",
+        "Cheekpiece": "Infinitely adjustable in height and angle",
+        "Country of Manufacture": "Germany",
+        "Intended Use": "Professional competition, Olympic shooting, ISSF events"
+      }
+    }
+  ]
+}

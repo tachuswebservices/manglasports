@@ -159,7 +159,7 @@ export default function Wishlist() {
                               {formatIndianPrice(getNumericPrice(product))}
                             </p>
                             <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">
-                              {product.category}
+                              {typeof product.category === 'string' ? product.category : product.category?.name || ''}
                             </span>
                           </div>
                         </Link>

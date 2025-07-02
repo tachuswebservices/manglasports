@@ -1,18 +1,13 @@
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../theme/ThemeProvider';
 import { Button } from '@/components/ui/button';
 import { cn, formatIndianPrice } from '@/lib/utils';
-import { products as allProducts } from '@/data/products';
 import { WishlistButton } from '@/components/common/WishlistButton';
 import { useCart } from '@/contexts/CartContext';
 import { toast } from 'sonner';
 import { Star } from 'lucide-react';
-
-// Get new arrivals from the main products list (products marked as isNew)
-const products = allProducts.filter(product => product.isNew);
 
 const container = {
   hidden: { opacity: 0 },
@@ -31,10 +26,10 @@ const item = {
 };
 
 interface ProductCardProps {
-  product: typeof allProducts[0];
+  product: any;
 }
 
-  const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { name, price, image, category, inStock, rating, reviewCount, soldCount } = product;
   const { theme } = useTheme();
   const { addToCart } = useCart();
@@ -80,7 +75,7 @@ interface ProductCardProps {
           </div>
         </div>
         <div className="p-4">
-          <p className="text-mangla-gold text-sm mb-1">{category}</p>
+          <p className="text-mangla-gold text-sm mb-1">{category?.name || ''}</p>
           <h3 className={`${isDark ? 'text-white' : 'text-slate-900'} font-medium mb-1 group-hover:text-mangla-gold transition-colors line-clamp-2 h-12`}>
             {name}
           </h3>
@@ -148,7 +143,15 @@ interface ProductCardProps {
   );
 };
 
-const NewArrivals = () => {
+export default function NewArrivals() {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:4000/api/products')
+      .then(res => res.json())
+      .then(data => setProducts(data.filter((p: any) => p.isNew)));
+  }, []);
+
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   
@@ -249,6 +252,4 @@ const NewArrivals = () => {
       </div>
     </section>
   );
-};
-
-export default NewArrivals;
+}

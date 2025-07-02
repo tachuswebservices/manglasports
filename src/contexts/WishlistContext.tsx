@@ -2,12 +2,17 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { toast } from 'sonner';
 import { Product } from '@/data/products';
 
+// TODO: Replace with real user authentication
+const USER_ID = 1;
+
+const API_BASE = 'http://localhost:4000/api/wishlist';
+
 type WishlistContextType = {
   wishlist: Product[];
-  addToWishlist: (product: Product) => boolean;
-  removeFromWishlist: (productId: string) => boolean;
+  addToWishlist: (product: Product) => Promise<boolean>;
+  removeFromWishlist: (productId: string) => Promise<boolean>;
   isInWishlist: (productId: string) => boolean;
-  clearWishlist: () => void;
+  clearWishlist: () => Promise<void>;
 };
 
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
@@ -22,80 +27,77 @@ export const useWishlist = () => {
 
 export const WishlistProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [wishlist, setWishlist] = useState<Product[]>([]);
-  const [isInitialized, setIsInitialized] = useState(false);
 
-  // Load wishlist from localStorage on initial render
+  // Load wishlist from backend on initial render
   useEffect(() => {
-    try {
-      const savedWishlist = localStorage.getItem('manglaSportsWishlist');
-      if (savedWishlist) {
-        const parsed = JSON.parse(savedWishlist) as Product[];
-        // Ensure all products have required fields
-        const validProducts = parsed.filter((item): item is Product => {
-          return (
-            typeof item?.id === 'string' &&
-            typeof item?.name === 'string' &&
-            typeof item?.price === 'string' &&
-            typeof item?.image === 'string' &&
-            typeof item?.category === 'string' &&
-            typeof item?.rating === 'number' &&
-            typeof item?.inStock === 'boolean' &&
-            typeof item?.brand === 'string'
-          );
-        });
-        setWishlist(validProducts);
-      }
-    } catch (error) {
-      console.error('Failed to load wishlist from localStorage', error);
-    } finally {
-      setIsInitialized(true);
-    }
+    fetch(`${API_BASE}?userId=${USER_ID}`)
+      .then(res => res.json())
+      .then(data => setWishlist(data))
+      .catch(() => setWishlist([]));
   }, []);
 
-  // Save wishlist to localStorage whenever it changes
-  useEffect(() => {
-    if (isInitialized) {
-      localStorage.setItem('manglaSportsWishlist', JSON.stringify(wishlist));
-    }
-  }, [wishlist, isInitialized]);
-
-  const addToWishlist = (product: Product): boolean => {
-    let added = false;
-    
-    setWishlist((prevWishlist) => {
-      // Check if product is already in wishlist
-      if (prevWishlist.some(item => item.id === product.id)) {
-        return prevWishlist;
+  const addToWishlist = async (product: Product): Promise<boolean> => {
+    try {
+      const res = await fetch(API_BASE, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: USER_ID, productId: product.id })
+      });
+      if (res.ok) {
+        setWishlist(prev => [...prev, product]);
+        toast.success('Added to wishlist');
+        return true;
+      } else {
+        toast.error('Failed to add to wishlist');
+        return false;
       }
-      
-      added = true;
-      return [...prevWishlist, product];
-    });
-    
-    return added;
+    } catch {
+      toast.error('Failed to add to wishlist');
+      return false;
+    }
   };
 
-  const removeFromWishlist = (productId: string): boolean => {
-    let removed = false;
-    setWishlist((prevWishlist) => {
-      const exists = prevWishlist.some(item => item.id === productId);
-      if (!exists) return prevWishlist;
-      
-      removed = true;
-      return prevWishlist.filter(item => item.id !== productId);
-    });
-    return removed;
+  const removeFromWishlist = async (productId: string): Promise<boolean> => {
+    try {
+      const res = await fetch(`${API_BASE}/${productId}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: USER_ID })
+      });
+      if (res.ok) {
+        setWishlist(prev => prev.filter(item => item.id !== productId));
+        toast.success('Removed from wishlist');
+        return true;
+      } else {
+        toast.error('Failed to remove from wishlist');
+        return false;
+      }
+    } catch {
+      toast.error('Failed to remove from wishlist');
+      return false;
+    }
   };
 
   const isInWishlist = (productId: string) => {
     return wishlist.some(item => item.id === productId);
   };
 
-  const clearWishlist = () => {
-    setWishlist([]);
-    toast.success('Wishlist cleared', {
-      duration: 2000 // 2 seconds
-    });
+  const clearWishlist = async () => {
+    try {
+      const res = await fetch(API_BASE, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: USER_ID })
+      });
+      if (res.ok) {
+        setWishlist([]);
+        toast.success('Wishlist cleared');
+      } else {
+        toast.error('Failed to clear wishlist');
+      }
+    } catch {
+      toast.error('Failed to clear wishlist');
+    }
   };
 
   return (

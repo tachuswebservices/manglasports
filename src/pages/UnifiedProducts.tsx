@@ -11,7 +11,28 @@ import { toast } from 'sonner';
 import ProductsSidebar, { ProductFilters } from '../components/products/ProductsSidebar';
 import StockIndicator from '../components/products/StockIndicator';
 import PageLayout from '../components/layout/PageLayout';
-import { Product, products, getAllCategories, getAllBrands, getMaxPrice } from '../data/products';
+// import { Product, products, getAllCategories, getAllBrands, getMaxPrice } from '../data/products';
+
+// Define Product type based on backend API
+export interface Product {
+  id: string;
+  name: string;
+  price: string;
+  numericPrice: number;
+  originalPrice?: number;
+  image: string;
+  category: { id: number; name: string };
+  brand: { id: number; name: string };
+  rating: number;
+  reviewCount?: number;
+  soldCount?: number;
+  inStock: boolean;
+  isNew?: boolean;
+  isHot?: boolean;
+  shortDescription?: string;
+  features?: { value: string }[];
+  specifications?: { key: string; value: string }[];
+}
 
 // Define collection type
 interface Collection {
@@ -78,27 +99,6 @@ const allCollections: Collection[] = [
     emoji: "📦"
   }
 ];
-
-// Add any categories from products that might not be in our predefined list
-const ensureAllProductCategoriesAreIncluded = () => {
-  const existingCategories = allCollections.map(c => c.title);
-  const productCategories = getAllCategories();
-  
-  productCategories.forEach(category => {
-    if (!existingCategories.includes(category)) {
-      const slug = category.toLowerCase().replace(/\s+/g, '-');
-      allCollections.push({
-        title: category,
-        slug,
-        description: `Premium quality ${category.toLowerCase()} for professional shooters and enthusiasts.`,
-        emoji: '🎯'
-      });
-    }
-  });
-};
-
-// Ensure all product categories are represented
-ensureAllProductCategoriesAreIncluded();
 
 // Sort options
 interface SortOption {
@@ -290,7 +290,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
                 "text-sm",
                 isDark ? "text-mangla-gold" : "text-blue-600"
               )}>
-                {product.category}
+                {product.category.name || ''}
               </p>
               <h3 className={cn(
                 "font-medium line-clamp-2 h-12",
@@ -379,22 +379,46 @@ const ProductsContent: React.FC = () => {
   const isDark = theme === 'dark';
   const [isLoading, setIsLoading] = useState(true);
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+  const [products, setProducts] = useState<Product[]>([]);
+  
+  // Fetch products from backend
+  useEffect(() => {
+    setIsLoading(true);
+    fetch('http://localhost:4000/api/products')
+      .then(res => res.json())
+      .then(data => setProducts(data))
+      .catch(() => setProducts([]))
+      .finally(() => setIsLoading(false));
+  }, []);
   
   // Get max price for the range slider
-  const maxPrice = getMaxPrice();
+  const maxPrice = useMemo(
+    () => products.length > 0 ? products.reduce((max, p) => Math.max(max, p.numericPrice), 0) : 100000,
+    [products]
+  );
   
   // Get all unique brands
-  const allBrands = getAllBrands();
+  const allBrands = useMemo(() => Array.from(new Set(products.map(p => p.brand?.name).filter(Boolean))), [products]);
   
   // Filter state initialization
   const [filters, setFilters] = useState<ProductFilters>({
-    priceRange: [0, maxPrice],
-    categories: [], // Don't add the current URL category to filters
+    priceRange: [0, 100000], // Use a sensible default
+    categories: [],
     brands: [],
     availability: [],
     ratings: [],
     onSale: false
   });
+  
+  // When products load, update the priceRange if needed
+  useEffect(() => {
+    if (products.length > 0) {
+      setFilters(f => ({
+        ...f,
+        priceRange: [0, maxPrice]
+      }));
+    }
+  }, [products, maxPrice]);
   
   // Sort state
   const [sortBy, setSortBy] = useState<string>('featured');
@@ -439,15 +463,15 @@ const ProductsContent: React.FC = () => {
       filtered = filtered.filter(p => 
         p.name.toLowerCase().includes(query) || 
         p.shortDescription?.toLowerCase().includes(query) ||
-        p.brand.toLowerCase().includes(query) ||
-        p.category.toLowerCase().includes(query)
+        p.brand.name.toLowerCase().includes(query) ||
+        p.category.name.toLowerCase().includes(query)
       );
     }
     // Apply category filter if provided (only if no search query)
     else if (category) {
       // Get category title from slug
       const categoryTitle = currentCategory?.title || '';
-      filtered = filtered.filter(p => p.category === categoryTitle);
+      filtered = filtered.filter(p => p.category.name === categoryTitle);
     } 
     // Otherwise apply multiple category filters if selected
     else if (filters.categories.length > 0) {
@@ -459,7 +483,7 @@ const ProductsContent: React.FC = () => {
         })
         .filter(title => title !== '');
         
-      filtered = filtered.filter(p => selectedCategoryTitles.includes(p.category));
+      filtered = filtered.filter(p => selectedCategoryTitles.includes(p.category.name));
     }
     
     // Apply price filter
@@ -469,7 +493,7 @@ const ProductsContent: React.FC = () => {
     
     // Apply brand filter
     if (filters.brands.length > 0) {
-      filtered = filtered.filter(p => filters.brands.includes(p.brand));
+      filtered = filtered.filter(p => filters.brands.includes(p.brand.name));
     }
     
     // Apply availability filter
@@ -623,7 +647,7 @@ const ProductsContent: React.FC = () => {
           <div className="space-y-16">
             {allCollections.map((collection, index) => {
               // Find products for this category
-              const categoryProducts = products.filter(p => p.category === collection.title);
+              const categoryProducts = products.filter(p => p.category.name === collection.title);
               
               // Only show categories that have products
               if (categoryProducts.length === 0) return null;

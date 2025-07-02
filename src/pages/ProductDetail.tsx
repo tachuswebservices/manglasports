@@ -10,55 +10,53 @@ import { cn, formatIndianPrice } from '@/lib/utils';
 import { useTheme } from '@/components/theme/ThemeProvider';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import { Product as BaseProduct, products } from '@/data/products';
+// import { Product as BaseProduct, products } from '@/data/products';
 import { useCart } from '@/contexts/CartContext';
 
-// Extended Product interface with additional detail fields
-interface DetailedProduct extends BaseProduct {
+// Product type based on backend API
+interface Product {
+  id: string;
+  name: string;
+  price: string;
+  numericPrice: number;
+  originalPrice?: number;
+  image: string;
+  category: { id: number; name: string };
+  brand: { id: number; name: string };
+  rating: number;
+  reviewCount?: number;
+  soldCount?: number;
+  inStock: boolean;
+  isNew?: boolean;
+  isHot?: boolean;
+  shortDescription?: string;
+  features?: { value: string }[];
+  specifications?: { key: string; value: string }[];
+}
+
+interface DetailedProduct extends Product {
   description: string;
-  features: string[];
-  specifications: { [key: string]: string };
   images: string[];
   sku: string;
 }
 
-// Function to fetch product data from centralized data source
 const fetchProduct = async (productId: string): Promise<DetailedProduct | null> => {
-  // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  // Find the product in our centralized data source
-  const product = products.find(p => p.id === productId || p.name.toLowerCase().replace(/\s+/g, '-') === productId);
-  
-  if (!product) return null;
-  
-  // Enhance the product with additional details
-  // In a real app, these would come from an API, but here we'll generate some mock details
-  return {
-    ...product,
-    description: product.shortDescription || '',
-    features: product.features || [],
-    specifications: product.specifications || {
-      'Brand': product.brand,
-      'Category': product.category,
-      'Caliber': '.177 / 4.5mm',
-      'Velocity': 'Up to 1000 FPS',
-      'Action': product.category.includes('Pistol') ? 'Semi-automatic' : 'Break barrel',
-      'Overall Length': product.category.includes('Pistol') ? '11 inches' : '44 inches',
-      'Barrel Length': product.category.includes('Pistol') ? '5.5 inches' : '19.5 inches',
-      'Weight': product.category.includes('Pistol') ? '2.5 lbs' : '7.7 lbs',
-      'Power Source': product.category.includes('CO2') ? 'CO2' : 'Spring piston',
-      'Safety': 'Automatic',
-      'Trigger': 'Two-stage adjustable'
-    },
-    images: [
-      product.image,
-      '/placeholder-rifle-2.jpg',
-      '/placeholder-rifle-3.jpg',
-      '/placeholder-rifle-4.jpg'
-    ],
-    sku: `MS-${product.id.toUpperCase()}-2024`,
-  };
+  try {
+    const res = await fetch(`http://localhost:4000/api/products/${productId}`);
+    if (!res.ok) return null;
+    const product = await res.json();
+    // Enhance with additional details for UI compatibility
+    return {
+      ...product,
+      description: product.shortDescription || '',
+      features: product.features || [],
+      specifications: product.specifications || [],
+      images: [product.image],
+      sku: `MS-${product.id.toUpperCase()}-2024`,
+    };
+  } catch {
+    return null;
+  }
 };
 
 const ProductDetail: React.FC = () => {
@@ -365,7 +363,7 @@ const ProductDetail: React.FC = () => {
                   {product.features.map((feature, index) => (
                     <li key={index} className="flex items-start">
                       <span className="text-mangla-gold mr-2">•</span>
-                      <span>{feature}</span>
+                      <span>{feature.value}</span>
                     </li>
                   ))}
                 </ul>
@@ -483,13 +481,13 @@ const ProductDetail: React.FC = () => {
                   <div className="overflow-hidden">
                     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                       <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                        {Object.entries(product.specifications).map(([key, value]) => (
-                          <tr key={key}>
+                        {product.specifications.map((spec, index) => (
+                          <tr key={index}>
                             <td className="py-3 px-4 text-sm font-medium whitespace-nowrap" style={isDark ? { color: '#9ca3af' } : { color: '#6b7280' }}>
-                              {key}
+                              {spec.key}
                             </td>
                             <td className="py-3 px-4 text-sm" style={isDark ? { color: '#e5e7eb' } : { color: '#111827' }}>
-                              {value}
+                              {spec.value}
                             </td>
                           </tr>
                         ))}
