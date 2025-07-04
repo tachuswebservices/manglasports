@@ -4,7 +4,6 @@ import { Search, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { useTheme } from '@/components/theme/ThemeProvider';
-import { products } from '@/data/products';
 
 interface SearchBarProps {
   isMobile?: boolean;
@@ -17,10 +16,19 @@ const SearchBar: React.FC<SearchBarProps> = ({ isMobile = false, onClose, classN
   const isDark = theme === 'dark';
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
-  const [suggestions, setSuggestions] = useState<typeof products>([]);
+  const [allProducts, setAllProducts] = useState<any[]>([]);
+  const [suggestions, setSuggestions] = useState<any[]>([]);
   const [isFocused, setIsFocused] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Fetch all products from backend on mount
+  useEffect(() => {
+    fetch('http://localhost:4000/api/products')
+      .then(res => res.json())
+      .then(data => setAllProducts(data))
+      .catch(() => setAllProducts([]));
+  }, []);
 
   // Close suggestions when clicking outside
   useEffect(() => {
@@ -51,12 +59,16 @@ const SearchBar: React.FC<SearchBarProps> = ({ isMobile = false, onClose, classN
     }
 
     const queryLower = query.toLowerCase();
-    const results = products.filter(
+    const results = allProducts.filter(
       (product) =>
         product.name.toLowerCase().includes(queryLower) ||
         product.shortDescription?.toLowerCase().includes(queryLower) ||
-        product.brand.toLowerCase().includes(queryLower) ||
-        product.category.toLowerCase().includes(queryLower)
+        (typeof product.brand === 'string'
+          ? product.brand.toLowerCase().includes(queryLower)
+          : product.brand?.name?.toLowerCase().includes(queryLower)) ||
+        (typeof product.category === 'string'
+          ? product.category.toLowerCase().includes(queryLower)
+          : product.category?.name?.toLowerCase().includes(queryLower))
     );
 
     setSuggestions(results.slice(0, 5)); // Show top 5 results
@@ -72,7 +84,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isMobile = false, onClose, classN
     }
   };
 
-  const handleSuggestionClick = (product: typeof products[0]) => {
+  const handleSuggestionClick = (product: any) => {
     navigate(`/products/product/${product.id}`);
     setSearchQuery('');
     setSuggestions([]);
@@ -170,7 +182,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isMobile = false, onClose, classN
                 >
                   <div className="font-medium">{product.name}</div>
                   <div className="text-xs text-gray-400 truncate">
-                    {product.brand} • {product.category}
+                    {(typeof product.brand === 'string' ? product.brand : product.brand?.name) || ''} • {(typeof product.category === 'string' ? product.category : product.category?.name) || ''}
                   </div>
                 </button>
               ))}

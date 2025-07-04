@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../theme/ThemeProvider';
@@ -8,20 +8,9 @@ import { WishlistButton } from '@/components/common/WishlistButton';
 import { useCart } from '@/contexts/CartContext';
 import { toast } from 'sonner';
 import { cn, formatIndianPrice } from '@/lib/utils';
-import { products as allProducts } from '@/data/products';
+import { Product } from '@/data/products';
 
-// Extend the Product interface to include soldCount
-interface BestSellerProduct extends Omit<typeof allProducts[0], 'inWishlist'> {
-  soldCount: number;
-}
-
-// Get best sellers from the main products list
-const products: BestSellerProduct[] = allProducts
-  .filter(product => product.isHot)
-  .map(product => ({
-    ...product,
-    soldCount: (product as any).soldCount || 0
-  }));
+type BestSellerProduct = Product & { soldCount: number };
 
 const container = {
   hidden: { opacity: 0 },
@@ -111,7 +100,9 @@ const BestSellerCard: React.FC<BestSellerProduct> = (product) => {
             <h3 className={`${isDark ? 'text-white' : 'text-slate-900'} font-medium mb-1 group-hover:text-mangla-gold transition-colors line-clamp-2 h-12`}>
               {name}
             </h3>
-            <p className={`${isDark ? 'text-gray-400' : 'text-slate-600'} text-sm mb-2`}>{category}</p>
+            <p className={`${isDark ? 'text-gray-400' : 'text-slate-600'} text-sm mb-2`}>
+              {(typeof category === 'string' ? category : category?.name) || ''}
+            </p>
             <div className="flex items-center justify-between mb-2">
               <p className={`${isDark ? 'text-white' : 'text-slate-900'} font-bold mb-3`}>
   {formatIndianPrice(
@@ -170,6 +161,15 @@ const BestSellers = () => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   
+  const [products, setProducts] = useState<BestSellerProduct[]>([]);
+
+  useEffect(() => {
+    fetch('http://localhost:4000/api/products?isHot=true')
+      .then(res => res.json())
+      .then((data: Product[]) => setProducts(data.map((p) => ({ ...p, soldCount: p.soldCount || 0 }))))
+      .catch(() => setProducts([]));
+  }, []);
+
   return (
     <section className={`section-padding ${isDark ? 'bg-mangla' : 'bg-gradient-to-b from-white to-slate-100'}`}>
       <div className="container-custom">

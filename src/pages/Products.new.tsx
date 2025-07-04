@@ -326,7 +326,7 @@ const ProductCard: React.FC<ProductCardProps> = (product) => {
           </div>
           
           <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-            {product.brand}
+            {(typeof product.brand === 'string' ? product.brand : product.brand?.name) || ''}
           </div>
           {product.shortDescription && (
             <div className="mt-2 text-sm text-gray-700 dark:text-gray-300 line-clamp-3">
