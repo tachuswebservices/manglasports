@@ -1008,16 +1008,16 @@ async function main() {
   ]
 
   // When creating products, set categoryId: categoryIdMap[product.category]
-  for (const product of products) {
-    const { category, ...productData } = product;
-    await prisma.product.create({
-      data: {
-        ...productData,
-        categoryId: categoryIdMap[category],
-        // brandId is already set correctly
-      },
-    });
-  }
+  // for (const product of products) {
+  //   const { category, ...productData } = product;
+  //   await prisma.product.create({
+  //     data: {
+  //       ...productData,
+  //       categoryId: categoryIdMap[category],
+  //       // brandId is already set correctly
+  //     },
+  //   });
+  // }
 
   // Create a demo user
   await prisma.user.upsert({

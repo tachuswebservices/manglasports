@@ -29,10 +29,10 @@ const ProductsLayout: React.FC<ProductsLayoutProps> = ({
   const [brands, setBrands] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/categories')
+    fetch('https://manglasportsbackend.onrender.com/api/categories')
       .then(res => res.json())
       .then(setCategories);
-    fetch('http://localhost:4000/api/brands')
+    fetch('https://manglasportsbackend.onrender.com/api/brands')
       .then(res => res.json())
       .then(setBrands);
   }, []);

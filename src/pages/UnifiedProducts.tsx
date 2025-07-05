@@ -384,7 +384,7 @@ const ProductsContent: React.FC = () => {
   // Fetch products from backend
   useEffect(() => {
     setIsLoading(true);
-    fetch('http://localhost:4000/api/products')
+    fetch('https://manglasportsbackend.onrender.com/api/products')
       .then(res => res.json())
       .then(data => setProducts(data))
       .catch(() => setProducts([]))

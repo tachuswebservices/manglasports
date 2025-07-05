@@ -1,3 +1,7 @@
+# Backend
+
+> All backend documentation is now in [docs/](./docs/)
+
 # Mangla Sports Backend
 
 This is the backend for the Mangla Sports & Associates website, built with Node.js, Express, and Prisma ORM.

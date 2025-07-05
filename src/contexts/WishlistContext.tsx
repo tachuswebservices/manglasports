@@ -5,7 +5,7 @@ import { Product } from '@/data/products';
 // TODO: Replace with real user authentication
 const USER_ID = 1;
 
-const API_BASE = 'http://localhost:4000/api/wishlist';
+const API_BASE = 'https://manglasportsbackend.onrender.com/api/wishlist';
 
 type WishlistContextType = {
   wishlist: Product[];
