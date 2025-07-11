@@ -15,6 +15,7 @@ import {
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '../components/ui/select';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
+import { X, Upload } from 'lucide-react';
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({ products: 0, orders: 0, users: 0 });
@@ -33,6 +34,8 @@ const AdminDashboard = () => {
     isNew: false,
     isHot: false
   };
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [newProduct, setNewProduct] = useState(initialProductState);
   const [loadingStats, setLoadingStats] = useState(true);
   const [statsError, setStatsError] = useState('');
@@ -77,12 +80,51 @@ const AdminDashboard = () => {
       .then(setBrands);
   }, []);
 
-  const handleAddProduct = () => {
+  // Handle multiple image file selection
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []).filter(
+      file => file.type === 'image/jpeg' || file.type === 'image/png'
+    );
+    // Add new files to existing, but max 5
+    const newFiles = [...imageFiles, ...files].slice(0, 5);
+    setImageFiles(newFiles);
+    setImagePreviews(newFiles.map(file => URL.createObjectURL(file)));
+    // Reset the input value so the same file can be selected again if needed
+    if (e.target.value) e.target.value = '';
+  };
+  const handleRemoveImage = (idx: number) => {
+    const newFiles = imageFiles.filter((_, i) => i !== idx);
+    const newPreviews = imagePreviews.filter((_, i) => i !== idx);
+    setImageFiles(newFiles);
+    setImagePreviews(newPreviews);
+  };
+
+  const handleAddProduct = async () => {
     setAddingProduct(true);
     setAddProductError('');
+    let imageUrls: string[] = [];
+    // If new image files are selected, upload them first
+    if (imageFiles.length > 0) {
+      const formData = new FormData();
+      imageFiles.forEach(file => formData.append('images', file));
+      try {
+        const res = await fetch('http://localhost:4000/api/products/upload-image', {
+          method: 'POST',
+          body: formData
+        });
+        if (!res.ok) throw new Error('Image upload failed');
+        const data = await res.json();
+        imageUrls = data.imageUrls;
+      } catch (err: any) {
+        setAddProductError(err.message || 'Image upload failed');
+        setAddingProduct(false);
+        return;
+      }
+    }
     // Prepare payload with correct types
     const payload = {
       ...newProduct,
+      images: imageUrls,
       categoryId: newProduct.categoryId ? Number(newProduct.categoryId) : undefined,
       brandId: newProduct.brandId ? Number(newProduct.brandId) : undefined,
       numericPrice: newProduct.numericPrice ? Number(newProduct.numericPrice) : undefined,
@@ -101,6 +143,8 @@ const AdminDashboard = () => {
       .then(product => {
         setProducts([...products, product]);
         setNewProduct(initialProductState);
+        setImageFiles([]);
+        setImagePreviews([]);
       })
       .catch(err => setAddProductError(err.message))
       .finally(() => setAddingProduct(false));
@@ -234,13 +278,43 @@ const AdminDashboard = () => {
                         ))}
                       </SelectContent>
                     </Select>
-                    <Input
-                      placeholder="Image URL"
-                      value={newProduct.image || ''}
-                      onChange={e => setNewProduct({ ...newProduct, image: e.target.value })}
-                      disabled={addingProduct}
-                      required
-                    />
+                    <div className="flex flex-col gap-2">
+                      <label className="font-medium">Product Images (.jpg, .png, up to 5)</label>
+                      <input
+                        id="product-image-upload"
+                        type="file"
+                        accept=".jpg,.jpeg,.png"
+                        multiple
+                        onChange={handleImageChange}
+                        disabled={addingProduct}
+                        className="hidden"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => document.getElementById('product-image-upload')?.click()}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors w-fit"
+                        disabled={addingProduct || imageFiles.length >= 5}
+                      >
+                        <Upload className="w-4 h-4" /> Upload
+                      </button>
+                      {imagePreviews.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {imagePreviews.map((preview, idx) => (
+                            <div key={idx} className="relative">
+                              <img src={preview} alt={`Preview ${idx + 1}`} className="max-h-32 rounded border" />
+                              <button
+                                type="button"
+                                className="absolute top-1 right-1 bg-white/80 rounded-full p-1 hover:bg-red-100"
+                                onClick={() => handleRemoveImage(idx)}
+                                aria-label="Remove image"
+                              >
+                                <X className="w-4 h-4 text-red-500" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                     <Input
                       placeholder="Numeric Price"
                       type="number"
