@@ -152,4 +152,9 @@ export async function deleteProduct(req, res) {
   } catch (err) {
     res.status(400).json({ error: 'Failed to delete product' });
   }
+}
+
+// Count all products
+export async function countProducts() {
+  return prisma.product.count();
 } 

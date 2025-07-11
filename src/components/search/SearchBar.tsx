@@ -24,7 +24,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isMobile = false, onClose, classN
 
   // Fetch all products from backend on mount
   useEffect(() => {
-    fetch('https://manglasportsbackend.onrender.com/api/products')
+    fetch('http://localhost:4000/api/products')
       .then(res => res.json())
       .then(data => setAllProducts(data))
       .catch(() => setAllProducts([]));

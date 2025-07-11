@@ -164,7 +164,7 @@ const BestSellers = () => {
   const [products, setProducts] = useState<BestSellerProduct[]>([]);
 
   useEffect(() => {
-    fetch('https://manglasportsbackend.onrender.com/api/products?isHot=true')
+    fetch('http://localhost:4000/api/products?isHot=true')
       .then(res => res.json())
       .then((data: Product[]) => setProducts(data.map((p) => ({ ...p, soldCount: p.soldCount || 0 }))))
       .catch(() => setProducts([]));

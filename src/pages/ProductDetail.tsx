@@ -42,7 +42,7 @@ interface DetailedProduct extends Product {
 
 const fetchProduct = async (productId: string): Promise<DetailedProduct | null> => {
   try {
-    const res = await fetch(`https://manglasportsbackend.onrender.com/api/products/${productId}`);
+    const res = await fetch(`http://localhost:4000/api/products/${productId}`);
     if (!res.ok) return null;
     const product = await res.json();
     // Enhance with additional details for UI compatibility

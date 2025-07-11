@@ -8,7 +8,7 @@ type CartItem = Product & {
 
 // TODO: Replace with real user authentication
 const USER_ID = 1;
-const API_BASE = 'https://manglasportsbackend.onrender.com/api/cart';
+const API_BASE = 'http://localhost:4000/api/cart';
 
 type CartContextType = {
   cart: CartItem[];

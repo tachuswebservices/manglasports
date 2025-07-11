@@ -48,4 +48,9 @@ export async function deleteUser(req, res) {
   } catch (err) {
     res.status(400).json({ error: 'Failed to delete user' });
   }
+}
+
+// Count all users
+export async function countUsers() {
+  return prisma.user.count();
 } 

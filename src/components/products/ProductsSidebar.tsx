@@ -45,10 +45,10 @@ const ProductsSidebar: React.FC<ProductsSidebarProps> = ({
   const [brands, setBrands] = useState([]);
 
   useEffect(() => {
-    fetch('https://manglasportsbackend.onrender.com/api/categories')
+    fetch('http://localhost:4000/api/categories')
       .then(res => res.json())
       .then(setCategories);
-    fetch('https://manglasportsbackend.onrender.com/api/brands')
+    fetch('http://localhost:4000/api/brands')
       .then(res => res.json())
       .then(setBrands);
   }, []);

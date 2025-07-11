@@ -44,7 +44,7 @@ const RecentlyViewedProducts: React.FC<RecentlyViewedProductsProps> = ({
   useEffect(() => {
     Promise.all(
       productIds.map(id =>
-        fetch(`https://manglasportsbackend.onrender.com/api/products/${id}`).then(res => res.json())
+        fetch(`http://localhost:4000/api/products/${id}`).then(res => res.json())
       )
     ).then(setProducts);
   }, [productIds]);

@@ -51,4 +51,9 @@ export async function deleteOrder(req, res) {
   } catch (err) {
     res.status(400).json({ error: 'Failed to delete order' });
   }
+}
+
+// Count all orders
+export async function countOrders() {
+  return prisma.order.count();
 } 
