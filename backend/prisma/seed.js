@@ -116,7 +116,7 @@ async function main() {
       name: 'TEC-HRO STATIV 3.0 CARBON, THE NEW RIFLE TRIPOD',
       price: '₹26,000',
       numericPrice: 26000,
-      image: '/lovable-uploads/Tech-HRO Stnad.png',
+      images: ['/lovable-uploads/Tech-HRO Stnad.png'],
       category: 'Air Rifle Accessories',
       brandId: brands['TEC-HRO'].id,
       rating: 4.6,
@@ -158,7 +158,7 @@ async function main() {
       name: 'Walther LG500 ITEC Triple Edition',
       price: '₹249,999',
       numericPrice: 249999,
-      image: '/lovable-uploads/44b2615c-e47e-41de-b6c4-97af839d9903.png',
+      images: ['/lovable-uploads/44b2615c-e47e-41de-b6c4-97af839d9903.png'],
       category: 'Air Rifles',
       brandId: brands['Walther'].id,
       rating: 4.9,
@@ -204,7 +204,7 @@ async function main() {
       name: 'Pardini K12 J Short',
       price: '₹189,999',
       numericPrice: 189999,
-      image: '/lovable-uploads/5818a836-9981-47bc-bfb7-4efb566262b6.png',
+      images: ['/lovable-uploads/5818a836-9981-47bc-bfb7-4efb566262b6.png'],
       category: 'Air Pistols',
       brandId: brands['Pardini'].id,
       rating: 4.8,
@@ -246,7 +246,7 @@ async function main() {
       name: 'Morini Electronic grip for Right hand shooters',
       price: '₹35,000',
       numericPrice: 35000,
-      image: '/lovable-uploads/Morini_LeftGrip.png',
+      images: ['/lovable-uploads/Morini_LeftGrip.png'],
       category: 'Air Pistol Accessories',
       brandId: brands['Morini'].id,
       rating: 4.2,
@@ -288,7 +288,7 @@ async function main() {
       name: 'Umarex 12g CO2 Cartridges (Capsules)',
       price: '₹1,499',
       numericPrice: 1499,
-      image: '/lovable-uploads/343e01c8-d47b-4613-9aad-6f7197159da6.png',
+      images: ['/lovable-uploads/343e01c8-d47b-4613-9aad-6f7197159da6.png'],
       category: 'Consumables',
       brandId: brands['Umarex'].id,
       rating: 4.7,
@@ -325,7 +325,7 @@ async function main() {
       name: 'SCATT MX-W2 WI-FI',
       price: '₹90,000',
       numericPrice: 90000,
-      image: '/lovable-uploads/e284a5bc-98e2-45a3-b9b1-11aea9dadfb1.png',
+      images: ['/lovable-uploads/e284a5bc-98e2-45a3-b9b1-11aea9dadfb1.png'],
       category: 'Scatt Training Systems',
       brandId: brands['SCATT'].id,
       rating: 4.9,
@@ -365,7 +365,7 @@ async function main() {
       name: 'Walther LG500',
       price: '₹249,999',
       numericPrice: 249999,
-      image: '/lovable-uploads/94816e34-750a-420e-b8fc-bde67a9fe267.png',
+      images: ['/lovable-uploads/94816e34-750a-420e-b8fc-bde67a9fe267.png'],
       category: 'Air Rifles',
       brandId: brands['Walther'].id,
       rating: 5.0,
@@ -408,7 +408,7 @@ async function main() {
       name: 'Pietro Beretta Px4 Storm',
       price: '₹89,999',
       numericPrice: 89999,
-      image: '/lovable-uploads/81cbd973-5303-4c06-bfdf-36f0555888f8.png',
+      images: ['/lovable-uploads/81cbd973-5303-4c06-bfdf-36f0555888f8.png'],
       category: 'CO2 Pistols',
       brandId: brands['Beretta'].id,
       rating: 4.8,
@@ -452,7 +452,7 @@ async function main() {
       name: 'Tachus 10 ETS',
       price: '₹150,000',
       numericPrice: 150000,
-      image: '/lovable-uploads/aa897794-9610-4c04-9c17-d3928750fc0e.png',
+      images: ['/lovable-uploads/aa897794-9610-4c04-9c17-d3928750fc0e.png'],
       category: 'Electronic Target Systems',
       brandId: brands['Tachus'].id,
       rating: 4.7,
@@ -492,7 +492,7 @@ async function main() {
       name: 'Pardini K12 Absorber Pistol',
       price: '₹189,999',
       numericPrice: 189999,
-      image: '/lovable-uploads/9d861ad0-08bd-4f35-9567-bf07dbe5551b.png',
+      images: ['/lovable-uploads/9d861ad0-08bd-4f35-9567-bf07dbe5551b.png'],
       category: 'Air Pistols',
       brandId: brands['Pardini'].id,
       rating: 4.9,
@@ -534,7 +534,7 @@ async function main() {
       name: 'H&N Excite Econ II',
       price: '₹400',
       numericPrice: 400,
-      image: '/lovable-uploads/EXCITE PELLET.jpg',
+      images: ['/lovable-uploads/EXCITE PELLET.jpg'],
       category: 'Pellets',
       brandId: brands['H&N'].id,
       rating: 4.5,
@@ -573,7 +573,7 @@ async function main() {
       name: 'RWS Diabolo Basic',
       price: '₹475',
       numericPrice: 475,
-      image: '/lovable-uploads/GREEN DIABOLO.jpg',
+      images: ['/lovable-uploads/GREEN DIABOLO.jpg'],
       category: 'Pellets',
       brandId: brands['RWS'].id,
       rating: 4.6,
@@ -610,7 +610,7 @@ async function main() {
       name: 'RWS R10 Pistol Pellets',
       price: '₹950',
       numericPrice: 950,
-      image: '/lovable-uploads/R10 PISTOL.jpg',
+      images: ['/lovable-uploads/R10 PISTOL.jpg'],
       category: 'Pellets',
       brandId: brands['RWS'].id,
       rating: 4.7,
@@ -650,7 +650,7 @@ async function main() {
       price: '₹6,500',
       numericPrice: 6500,
       originalPrice: 7500, // Kept this as it might be a new field in your schema
-      image: '/lovable-uploads/sauer-top-ten-gloves.png',
+      images: ['/lovable-uploads/sauer-top-ten-gloves.png'],
       category: 'Air Rifle Accessories',
       brandId: brands['Sauer'].id,
       rating: 4.7,
@@ -686,7 +686,7 @@ async function main() {
       name: 'Centra Spy Short Sight',
       price: '₹59,300',
       numericPrice: 59300,
-      image: '/lovable-uploads/centra-spy-short-sight.png',
+      images: ['/lovable-uploads/centra-spy-short-sight.png'],
       category: 'Air Rifle Accessories',
       brandId: brands['Centra'].id,
       rating: 4.8,
@@ -725,7 +725,7 @@ async function main() {
       name: 'Centra Sight 3.0 Basic',
       price: '₹22,500',
       numericPrice: 22500,
-      image: '/lovable-uploads/centra-sight-3-basic.png',
+      images: ['/lovable-uploads/centra-sight-3-basic.png'],
       category: 'Air Rifle Accessories',
       brandId: brands['Centra'].id,
       rating: 4.6,
@@ -764,7 +764,7 @@ async function main() {
       price: '₹28,900',
       numericPrice: 28900,
       originalPrice: 32000, // Kept this as it might be a new field in your schema
-      image: '/lovable-uploads/varga-shooting-frame.png',
+      images: ['/lovable-uploads/varga-shooting-frame.png'],
       category: 'Air Rifle Accessories',
       brandId: brands['Varga'].id,
       rating: 4.5,
@@ -804,7 +804,7 @@ async function main() {
       name: 'MEC Centra Contact IV Buttplate',
       price: '₹22,000',
       numericPrice: 22000,
-      image: '/lovable-uploads/mec-contact-iv-buttplate.png',
+      images: ['/lovable-uploads/mec-contact-iv-buttplate.png'],
       category: 'Air Rifle Accessories',
       brandId: brands['MEC'].id,
       rating: 4.9,
@@ -844,7 +844,7 @@ async function main() {
       name: 'Walther LG500 ITEC E',
       price: '₹5,50,000',
       numericPrice: 550000,
-      image: '/lovable-uploads/walther-lg500-itec-e.png',
+      images: ['/lovable-uploads/walther-lg500-itec-e.png'],
       category: 'Air Rifles',
       brandId: brands['Walther'].id,
       rating: 4.9,
@@ -885,7 +885,7 @@ async function main() {
       name: 'MORINI CM 162MI',
       price: '₹1,94,700',
       numericPrice: 194700,
-      image: '/lovable-uploads/morini-cm-162mi.png',
+      images: ['/lovable-uploads/morini-cm-162mi.png'],
       category: 'CO2 Pistols',
       brandId: brands['Morini'].id,
       rating: 4.8,
@@ -928,7 +928,7 @@ async function main() {
       price: '₹2,800',
       numericPrice: 2800,
       originalPrice: 3200, // Kept this as it might be a new field in your schema
-      image: '/lovable-uploads/qys-training-pellets.png',
+      images: ['/lovable-uploads/qys-training-pellets.png'],
       category: 'Pellets',
       brandId: brands['QYS'].id,
       rating: 4.6,
@@ -968,7 +968,7 @@ async function main() {
       name: 'Champion Super Olympic Pistol Frame',
       price: '₹42,800',
       numericPrice: 42800,
-      image: '/lovable-uploads/champion-super-olympic-frame.png',
+      images: ['/lovable-uploads/champion-super-olympic-frame.png'],
       category: 'Air Pistol Accessories',
       brandId: brands['Champion'].id,
       rating: 4.9,
@@ -1008,16 +1008,16 @@ async function main() {
   ]
 
   // When creating products, set categoryId: categoryIdMap[product.category]
-  // for (const product of products) {
-  //   const { category, ...productData } = product;
-  //   await prisma.product.create({
-  //     data: {
-  //       ...productData,
-  //       categoryId: categoryIdMap[category],
-  //       // brandId is already set correctly
-  //     },
-  //   });
-  // }
+  for (const product of products) {
+    const { category, ...productData } = product;
+    await prisma.product.create({
+      data: {
+        ...productData,
+        categoryId: categoryIdMap[category],
+        // brandId is already set correctly
+      },
+    });
+  }
 
   // Create a demo user
   await prisma.user.upsert({

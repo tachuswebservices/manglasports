@@ -20,7 +20,7 @@ export interface Product {
   price: string;
   numericPrice: number;
   originalPrice?: number;
-  image: string;
+  images: string[];
   category: { id: number; name: string };
   brand: { id: number; name: string };
   rating: number;
@@ -277,7 +277,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
           {/* Image container with fixed aspect ratio */}
           <div className="relative w-full pt-[100%] bg-white overflow-hidden">
             <img
-              src={product.image}
+              src={product.images && product.images.length > 0 ? product.images[0] : '/placeholder.png'}
               alt={product.name}
               className="absolute inset-0 w-full h-full object-contain p-4 transition-transform duration-300 group-hover:scale-110"
             />
@@ -386,7 +386,7 @@ const ProductsContent: React.FC = () => {
     setIsLoading(true);
     fetch('http://localhost:4000/api/products')
       .then(res => res.json())
-      .then(data => setProducts(data))
+      .then(data => setProducts(data.products))
       .catch(() => setProducts([]))
       .finally(() => setIsLoading(false));
   }, []);

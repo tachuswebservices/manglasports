@@ -82,7 +82,7 @@ const RecentlyViewedProducts: React.FC<RecentlyViewedProductsProps> = ({
             >
               <div className="aspect-square bg-gray-100 dark:bg-gray-800 relative overflow-hidden p-2">
                 <img 
-                  src={product.image} 
+                  src={product.images && product.images.length > 0 ? product.images[0] : '/placeholder.png'} 
                   alt={product.name}
                   className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
                 />

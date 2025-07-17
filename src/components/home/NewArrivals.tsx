@@ -30,7 +30,7 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const { name, price, image, category, inStock, rating, reviewCount, soldCount } = product;
+  const { name, price, images, category, inStock, rating, reviewCount, soldCount } = product;
   const { theme } = useTheme();
   const { addToCart } = useCart();
   const isDark = theme === 'dark';
@@ -57,7 +57,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <div className={`h-full rounded-lg overflow-hidden border transition-all hover:shadow-lg ${isDark ? 'bg-mangla-dark-gray border-gray-800' : 'bg-white border-gray-200'}`}>
         <div className="relative h-64 overflow-hidden">
           <img 
-            src={image} 
+            src={images && images.length > 0 ? images[0] : '/placeholder.png'} 
             alt={name} 
             className="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-110"
           />
@@ -149,7 +149,7 @@ export default function NewArrivals() {
   useEffect(() => {
     fetch('http://localhost:4000/api/products')
       .then(res => res.json())
-      .then(data => setProducts(data.filter((p: any) => p.isNew)));
+      .then(data => setProducts((data.products || []).filter((p: any) => p.isNew)));
   }, []);
 
   const { theme } = useTheme();

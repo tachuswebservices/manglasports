@@ -176,7 +176,7 @@ const Products: React.FC = () => {
                 name: 'Precision Air Rifle Pro X',
                 price: 45999,
                 originalPrice: 52999,
-                image: '/placeholder-rifle-1.jpg',
+                images: ['/placeholder-rifle-1.jpg'],
                 rating: 4.8,
                 reviewCount: 124,
                 inStock: true
@@ -186,7 +186,7 @@ const Products: React.FC = () => {
                 name: 'Olympic Target Air Rifle',
                 price: 68999,
                 originalPrice: 75999,
-                image: '/placeholder-rifle-2.jpg',
+                images: ['/placeholder-rifle-2.jpg'],
                 rating: 4.9,
                 reviewCount: 87,
                 inStock: true
@@ -195,7 +195,7 @@ const Products: React.FC = () => {
                 id: 'air-rifle-3',
                 name: 'Hunting Air Rifle Elite',
                 price: 38999,
-                image: '/placeholder-rifle-3.jpg',
+                images: ['/placeholder-rifle-3.jpg'],
                 rating: 4.6,
                 reviewCount: 203,
                 inStock: true
@@ -205,7 +205,7 @@ const Products: React.FC = () => {
                 name: 'Junior Air Rifle Trainer',
                 price: 28999,
                 originalPrice: 32999,
-                image: '/placeholder-rifle-4.jpg',
+                images: ['/placeholder-rifle-4.jpg'],
                 rating: 4.7,
                 reviewCount: 56,
                 inStock: false
@@ -225,7 +225,7 @@ const Products: React.FC = () => {
                 <Link to={`/products/product/${product.id}`} className="block">
                   <div className="aspect-square bg-gray-100 dark:bg-gray-800 relative overflow-hidden">
                     <img 
-                      src={product.image} 
+                      src={product.images && product.images.length > 0 ? product.images[0] : '/placeholder.png'} 
                       alt={product.name}
                       className="w-full h-full object-contain p-4 transition-transform duration-300 group-hover:scale-105"
                     />

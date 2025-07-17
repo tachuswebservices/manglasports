@@ -3,17 +3,26 @@ const prisma = new PrismaClient();
 
 export async function getAllProducts(req, res) {
   try {
-    const products = await prisma.product.findMany({
-      include: {
-        category: true,
-        brand: true,
-        features: true,
-        specifications: true,
-      },
-    });
-    res.json(products);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const [products, total] = await Promise.all([
+      prisma.product.findMany({
+        skip,
+        take: limit,
+        include: {
+          category: true,
+          brand: true,
+          features: true,
+          specifications: true,
+        },
+      }),
+      prisma.product.count(),
+    ]);
+    res.json({ products, total });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch products' });
+    console.error(err); // Log the real error
+    res.status(500).json({ error: 'Failed to fetch products', details: err.message });
   }
 }
 

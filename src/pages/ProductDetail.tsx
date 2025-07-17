@@ -51,7 +51,7 @@ const fetchProduct = async (productId: string): Promise<DetailedProduct | null> 
       description: product.shortDescription || '',
       features: product.features || [],
       specifications: product.specifications || [],
-      images: [product.image],
+      images: product.images,
       sku: `MS-${product.id.toUpperCase()}-2024`,
     };
   } catch {

@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 import { cn, formatIndianPrice } from '@/lib/utils';
 import { Product } from '@/data/products';
 
-type BestSellerProduct = Product & { soldCount: number };
+type BestSellerProduct = Product & { soldCount: number; images: string[] };
 
 const container = {
   hidden: { opacity: 0 },
@@ -29,7 +29,7 @@ const item = {
 };
 
 const BestSellerCard: React.FC<BestSellerProduct> = (product) => {
-  const { name, price, image, category, rating, soldCount, inStock } = product;
+  const { name, price, images, category, rating, soldCount, inStock } = product;
   const { theme } = useTheme();
   const { addToCart } = useCart();
   const isDark = theme === 'dark';
@@ -79,7 +79,7 @@ const BestSellerCard: React.FC<BestSellerProduct> = (product) => {
           <div className="w-full h-[260px] flex items-center justify-center bg-white">
             <div className="p-4 flex items-center justify-center w-full h-full">
               <img 
-                src={image} 
+                src={images && images.length > 0 ? images[0] : '/placeholder.png'} 
                 alt={name} 
                 className="transition-transform duration-500 group-hover:scale-110"
                 style={{ 
@@ -166,7 +166,7 @@ const BestSellers = () => {
   useEffect(() => {
     fetch('http://localhost:4000/api/products?isHot=true')
       .then(res => res.json())
-      .then((data: Product[]) => setProducts(data.map((p) => ({ ...p, soldCount: p.soldCount || 0 }))))
+      .then((data) => setProducts((data.products || []).map((p: Product) => ({ ...p, soldCount: p.soldCount || 0 }))))
       .catch(() => setProducts([]));
   }, []);
 

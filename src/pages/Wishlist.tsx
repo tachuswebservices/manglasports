@@ -146,7 +146,7 @@ export default function Wishlist() {
                         >
                           <div className="aspect-square bg-gray-100 dark:bg-gray-700 overflow-hidden">
                             <img
-                              src={product.image}
+                              src={product.images && product.images.length > 0 ? product.images[0] : '/placeholder.png'}
                               alt={product.name}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             />

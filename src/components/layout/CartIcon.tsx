@@ -12,7 +12,7 @@ interface CartItemProps {
     id: string;
     name: string;
     price: string;
-    image: string;
+    images: string[];
     quantity: number;
   };
   onRemove: (id: string) => void;
@@ -24,7 +24,7 @@ const CartItem = ({ product, onRemove, onUpdateQuantity }: CartItemProps) => {
     <div className="flex items-center p-3 border-b border-gray-200 dark:border-gray-700 last:border-0">
       <div className="flex-shrink-0 h-16 w-16 bg-white dark:bg-gray-700 rounded-md overflow-hidden">
         <img 
-          src={product.image} 
+          src={product.images && product.images.length > 0 ? product.images[0] : '/placeholder.png'} 
           alt={product.name}
           className="h-full w-full object-contain p-1"
         />

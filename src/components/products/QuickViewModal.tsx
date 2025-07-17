@@ -11,7 +11,7 @@ export interface ProductDetails {
   name: string;
   price: number;
   originalPrice?: number;
-  image: string;
+  images: string[];
   rating: number;
   reviewCount: number;
   inStock: boolean;
@@ -21,6 +21,7 @@ export interface ProductDetails {
   isOnSale: boolean;
   shortDescription?: string;
   stockLevel?: StockLevel;
+  images?: string[]; // Added images to the interface
 }
 
 interface QuickViewModalProps {
@@ -131,7 +132,7 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({
               <div className="md:w-1/2 p-6 bg-gray-100 dark:bg-slate-800 flex items-center justify-center">
                 <div className="relative w-full h-80 md:h-96">
                   <img 
-                    src={product.image} 
+                    src={product.images && product.images.length > 0 ? product.images[0] : '/placeholder.png'} 
                     alt={product.name} 
                     className="w-full h-full object-contain"
                   />

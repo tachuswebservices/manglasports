@@ -8,73 +8,74 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
   password  String
   name      String?
-  wishlist  Wishlist[]
+  createdAt DateTime   @default(now())
   cart      Cart[]
   orders    Order[]
-  createdAt DateTime @default(now())
+  wishlist  Wishlist[]
 }
 
 model Category {
-  id    Int      @id @default(autoincrement())
-  name  String   @unique
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
   products Product[]
 }
 
 model Brand {
-  id    Int      @id @default(autoincrement())
-  name  String   @unique
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
   products Product[]
 }
 
 model Product {
-  id             String   @id
-  name           String
-  price          String
-  numericPrice   Float
-  originalPrice  Float?
-  images         String[]
-  categoryId     Int
-  brandId        Int
-  rating         Float
-  reviewCount    Int?
-  soldCount      Int?
-  inStock        Boolean
-  isNew          Boolean?
-  isHot          Boolean?
+  id               String          @id
+  name             String
+  price            String
+  numericPrice     Float
+  originalPrice    Float?
+  images           String[]
+  categoryId       Int
+  brandId          Int
+  rating           Float
+  reviewCount      Int?
+  soldCount        Int?
+  inStock          Boolean
+  isNew            Boolean?
+  isHot            Boolean?
   shortDescription String?
-  features       Feature[]
-  specifications Specification[]
-  category       Category @relation(fields: [categoryId], references: [id])
-  brand          Brand    @relation(fields: [brandId], references: [id])
-  wishlist       Wishlist[]
-  cart           Cart[]
-  orders         Order[]
+  cart             Cart[]
+  features         Feature[]
+  orders           Order[]
+  brand            Brand           @relation(fields: [brandId], references: [id])
+  category         Category        @relation(fields: [categoryId], references: [id])
+  specifications   Specification[]
+  wishlist         Wishlist[]
 }
 
 model Feature {
-  id        Int      @id @default(autoincrement())
+  id        Int     @id @default(autoincrement())
   value     String
   productId String
-  product   Product  @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
 }
 
 model Specification {
-  id        Int      @id @default(autoincrement())
+  id        Int     @id @default(autoincrement())
   key       String
   value     String
   productId String
-  product   Product  @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
 }
 
 model Wishlist {
   userId    Int
   productId String
-  user      User    @relation(fields: [userId], references: [id])
   product   Product @relation(fields: [productId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
+
   @@id([userId, productId])
 }
 
@@ -82,8 +83,9 @@ model Cart {
   userId    Int
   productId String
   quantity  Int
-  user      User    @relation(fields: [userId], references: [id])
   product   Product @relation(fields: [productId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
+
   @@id([userId, productId])
 }
 
@@ -92,8 +94,8 @@ model Order {
   userId    Int
   productId String
   quantity  Int
-  status    Int
-  user      User    @relation(fields: [userId], references: [id])
-  product   Product @relation(fields: [productId], references: [id])
   createdAt DateTime @default(now())
-} 
+  status    Int?
+  product   Product  @relation(fields: [productId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}

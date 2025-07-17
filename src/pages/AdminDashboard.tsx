@@ -61,6 +61,9 @@ const AdminDashboard = () => {
   const editFileInputRef = useRef<HTMLInputElement>(null);
   const [editError, setEditError] = useState('');
   const [editLoading, setEditLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [totalProducts, setTotalProducts] = useState(0);
 
   useEffect(() => {
     setLoadingStats(true);
@@ -75,12 +78,15 @@ const AdminDashboard = () => {
       .finally(() => setLoadingStats(false));
     setLoadingProducts(true);
     setProductsError('');
-    fetch('http://localhost:4000/api/products')
+    fetch(`http://localhost:4000/api/products?page=${page}&limit=${limit}`)
       .then(res => {
         if (!res.ok) throw new Error('Failed to fetch products');
         return res.json();
       })
-      .then(data => setProducts(data))
+      .then(data => {
+        setProducts(data.products);
+        setTotalProducts(data.total);
+      })
       .catch(err => setProductsError(err.message))
       .finally(() => setLoadingProducts(false));
     // Fetch categories and brands for modal dropdowns
@@ -90,7 +96,7 @@ const AdminDashboard = () => {
     fetch('http://localhost:4000/api/brands')
       .then(res => res.json())
       .then(setBrands);
-  }, []);
+  }, [page, limit]);
 
   // Handle multiple image file selection
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -261,13 +267,22 @@ const AdminDashboard = () => {
       .finally(() => setEditLoading(false));
   };
 
-  // Filtered and searched products
+  // Filtered and searched products (client-side for current page)
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = filterCategory ? product.categoryId === Number(filterCategory) : true;
     const matchesBrand = filterBrand ? product.brandId === Number(filterBrand) : true;
     return matchesSearch && matchesCategory && matchesBrand;
   });
+  // Pagination controls
+  const totalPages = Math.ceil(totalProducts / limit);
+  const handleLimitChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setLimit(Number(e.target.value));
+    setPage(1);
+  };
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) setPage(newPage);
+  };
 
   return (
     <div className="bg-mangla min-h-screen flex flex-col">
@@ -547,7 +562,18 @@ const AdminDashboard = () => {
               </div>
               {/* Products Table Section */}
               <section>
-                <h3 className="text-xl font-semibold mb-4 text-slate-700 dark:text-slate-200">All Products</h3>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
+                  <h3 className="text-xl font-semibold text-slate-700 dark:text-slate-200">All Products</h3>
+                  <div className="flex gap-2 items-center">
+                    <span className="text-sm">Show</span>
+                    <select value={limit} onChange={handleLimitChange} className="px-2 py-1 rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm">
+                      <option value={10}>10</option>
+                      <option value={25}>25</option>
+                      <option value={50}>50</option>
+                    </select>
+                    <span className="text-sm">per page</span>
+                  </div>
+                </div>
                 <div className="overflow-x-auto rounded-xl shadow bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
                   {loadingProducts ? (
                     <div className="text-center py-8">Loading products...</div>
@@ -630,6 +656,23 @@ const AdminDashboard = () => {
                   )}
                   {removeProductError && <div className="text-red-500 mt-2 px-4 pb-4">{removeProductError}</div>}
                 </div>
+                {/* Pagination controls */}
+                {totalPages > 1 && (
+                  <div className="flex justify-center items-center gap-2 py-4">
+                    <Button variant="outline" size="sm" onClick={() => handlePageChange(page - 1)} disabled={page === 1}>&lt;</Button>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                      <button
+                        key={p}
+                        className={`px-3 py-1 rounded ${p === page ? 'bg-mangla-gold text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'}`}
+                        onClick={() => handlePageChange(p)}
+                        disabled={p === page}
+                      >
+                        {p}
+                      </button>
+                    ))}
+                    <Button variant="outline" size="sm" onClick={() => handlePageChange(page + 1)} disabled={page === totalPages}>&gt;</Button>
+                  </div>
+                )}
               </section>
             </div>
           )}

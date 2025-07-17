@@ -15,7 +15,7 @@ interface ProductDetails {
   name: string;
   price: number;
   originalPrice?: number;
-  image: string;
+  images: string[];
   rating: number;
   reviewCount: number;
   inStock: boolean;
@@ -34,7 +34,7 @@ const mockProducts: ProductDetails[] = [
     name: 'Precision Air Rifle Pro X',
     price: 45999,
     originalPrice: 52999,
-    image: '/placeholder-rifle-1.jpg',
+    images: ['/placeholder-rifle-1.jpg'],
     rating: 4.8,
     reviewCount: 124,
     inStock: true,
@@ -50,7 +50,7 @@ const mockProducts: ProductDetails[] = [
     name: 'Olympic Target Air Rifle',
     price: 68999,
     originalPrice: 75999,
-    image: '/placeholder-rifle-2.jpg',
+    images: ['/placeholder-rifle-2.jpg'],
     rating: 4.9,
     reviewCount: 87,
     inStock: true,
@@ -65,7 +65,7 @@ const mockProducts: ProductDetails[] = [
     id: 'air-pistol-1',
     name: 'Competition Air Pistol Elite',
     price: 38999,
-    image: '/placeholder-pistol-1.jpg',
+    images: ['/placeholder-pistol-1.jpg'],
     rating: 4.7,
     reviewCount: 156,
     inStock: true,
@@ -81,7 +81,7 @@ const mockProducts: ProductDetails[] = [
     name: 'CO2 Target Pistol Pro',
     price: 28999,
     originalPrice: 32999,
-    image: '/placeholder-co2-1.jpg',
+    images: ['/placeholder-co2-1.jpg'],
     rating: 4.5,
     reviewCount: 92,
     inStock: false,
@@ -96,7 +96,7 @@ const mockProducts: ProductDetails[] = [
     id: 'pellets-1',
     name: 'Match Grade Air Pellets (500)',
     price: 1299,
-    image: '/placeholder-pellets-1.jpg',
+    images: ['/placeholder-pellets-1.jpg'],
     rating: 4.8,
     reviewCount: 342,
     inStock: true,
@@ -111,7 +111,7 @@ const mockProducts: ProductDetails[] = [
     id: 'pellets-2',
     name: 'H&N Excite Econ II',
     price: 400,
-    image: '/lovable-uploads/EXCITE PELLET.JPG',
+    images: ['/lovable-uploads/EXCITE PELLET.JPG'],
     rating: 4.5,
     reviewCount: 85,
     inStock: true,
@@ -126,7 +126,7 @@ const mockProducts: ProductDetails[] = [
     id: 'pellets-3',
     name: 'RWS Diabolo Basic',
     price: 475,
-    image: '/lovable-uploads/GREENDIABOLO.JPG',
+    images: ['/lovable-uploads/GREENDIABOLO.JPG'],
     rating: 4.6,
     reviewCount: 92,
     inStock: true,
@@ -241,7 +241,7 @@ const ProductCard: React.FC<ProductCardProps> = (product) => {
         <div className="aspect-square bg-gray-100 dark:bg-gray-800 relative overflow-hidden">
           <div className="relative w-full h-full">
             <img 
-              src={product.image} 
+              src={product.images && product.images.length > 0 ? product.images[0] : '/placeholder.png'} 
               alt={product.name}
               className="w-full h-full object-contain p-4 transition-transform duration-300"
               style={{
@@ -395,7 +395,7 @@ interface Product {
   name: string;
   price: number;
   originalPrice?: number;
-  image: string;
+  images: string[];
   rating: number;
   reviewCount: number;
   inStock: boolean;
