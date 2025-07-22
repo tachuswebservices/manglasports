@@ -8,6 +8,8 @@ import cartRoutes from './routes/cart.routes.js';
 import categoryRoutes from './routes/category.routes.js';
 import brandRoutes from './routes/brand.routes.js';
 import authRoutes from './routes/auth.routes.js';
+import addressRoutes from './routes/address.routes.js';
+import paymentRoutes from './routes/payment.routes.js';
 
 const app = express();
 
@@ -26,5 +28,7 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/brands', brandRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/addresses', addressRoutes);
+app.use('/api/payment', paymentRoutes);
 
 export default app; 

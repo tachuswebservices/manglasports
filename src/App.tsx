@@ -21,14 +21,15 @@ import ScrollToTop from "./components/ScrollToTop";
 import { WishlistProvider } from "./contexts/WishlistContext";
 import { CartProvider } from "./contexts/CartContext";
 import AdminDashboard from "./pages/AdminDashboard";
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import React from 'react';
+import Checkout from './pages/Checkout';
 
 // ProtectedRoute component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated } = require('./contexts/AuthContext').useAuth();
+  const { isAuthenticated } = useAuth();
   if (!isAuthenticated) {
     window.location.href = '/login';
     return null;
@@ -63,6 +64,7 @@ const App = () => (
                   <Route path="/events" element={<Events />} />
                   <Route path="/events/:id" element={<Events />} />
                   <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
+                  <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                   <Route path="/terms-of-service" element={<TermsOfService />} />
                   <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />

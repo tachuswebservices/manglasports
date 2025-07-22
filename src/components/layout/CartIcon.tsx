@@ -176,8 +176,8 @@ const CartIcon: React.FC<CartIconProps> = ({ isOpen, setIsOpen }) => {
                       asChild
                       className="w-full bg-mangla-gold hover:bg-mangla-gold/90 text-mangla-dark-gray font-medium"
                     >
-                      <Link to="/cart" onClick={() => setIsOpen(false)}>
-                        View Cart & Checkout
+                      <Link to="/checkout" onClick={() => setIsOpen(false)}>
+                        Go to Checkout
                       </Link>
                     </Button>
                   </div>
