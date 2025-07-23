@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { ChevronRight, Menu, Search, X } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ChevronRight, Menu, Search, X, User, LogOut, List, MapPin, Edit } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ThemeToggle from '../theme/ThemeToggle';
 import { useTheme } from '../theme/ThemeProvider';
@@ -9,6 +9,8 @@ import TopBar from './TopBar';
 import WishlistIcon from './WishlistIcon';
 import CartIcon from './CartIcon';
 import SearchBar from '../search/SearchBar';
+import { useAuth } from '@/contexts/AuthContext';
+import { cn } from '@/lib/utils';
 
 const Navbar = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -19,6 +21,9 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const isMobile = useIsMobile();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const [profileOpen, setProfileOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -159,6 +164,63 @@ const Navbar = () => {
                 <div className="relative">
                   <CartIcon isOpen={isCartOpen} setIsOpen={setIsCartOpen} />
                 </div>
+                {/* Profile dropdown */}
+                <div className="relative">
+                  <button
+                    onClick={() => setProfileOpen((v) => !v)}
+                    className={cn(
+                      'p-2 rounded-full flex items-center justify-center transition-colors',
+                      isDark ? 'hover:bg-slate-700' : 'hover:bg-gray-100'
+                    )}
+                    aria-label="Profile"
+                  >
+                    {user?.name ? (
+                      <span className={cn(
+                        'inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-base',
+                        isDark ? 'bg-mangla-gold text-mangla-dark-gray' : 'bg-mangla-gold text-mangla-dark-gray'
+                      )}>
+                        {user.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                      </span>
+                    ) : (
+                      <User className="w-7 h-7 text-mangla-gold" />
+                    )}
+                  </button>
+                  {profileOpen && (
+                    <div className={cn(
+                      'absolute right-0 mt-2 w-56 rounded-xl shadow-lg z-50 border',
+                      isDark ? 'bg-mangla-dark-gray border-gray-700 text-white' : 'bg-white border-gray-200 text-slate-900'
+                    )}>
+                      <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                        <div className="font-bold">{user?.name || 'User'}</div>
+                        <div className="text-xs text-gray-500">{user?.email}</div>
+                      </div>
+                      <button
+                        className="w-full flex items-center gap-2 px-4 py-2 hover:bg-mangla-gold/10 transition-colors"
+                        onClick={() => { setProfileOpen(false); navigate('/profile?tab=orders'); }}
+                      >
+                        <List className="w-4 h-4" /> My Orders
+                      </button>
+                      <button
+                        className="w-full flex items-center gap-2 px-4 py-2 hover:bg-mangla-gold/10 transition-colors"
+                        onClick={() => { setProfileOpen(false); navigate('/profile?tab=profile'); }}
+                      >
+                        <Edit className="w-4 h-4" /> Edit Profile
+                      </button>
+                      <button
+                        className="w-full flex items-center gap-2 px-4 py-2 hover:bg-mangla-gold/10 transition-colors"
+                        onClick={() => { setProfileOpen(false); navigate('/profile?tab=addresses'); }}
+                      >
+                        <MapPin className="w-4 h-4" /> Addresses
+                      </button>
+                      <button
+                        className="w-full flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors border-t border-gray-100 dark:border-gray-700"
+                        onClick={() => { setProfileOpen(false); logout(); }}
+                      >
+                        <LogOut className="w-4 h-4" /> Logout
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
               
               {/* Mobile Icons - only visible on mobile */}
@@ -185,8 +247,63 @@ const Navbar = () => {
                 <div className="relative">
                   <CartIcon isOpen={isCartOpen} setIsOpen={setIsCartOpen} />
                 </div>
-                
-                <ThemeToggle />
+                {/* Profile icon for mobile */}
+                <div className="relative">
+                  <button
+                    onClick={() => setProfileOpen((v) => !v)}
+                    className={cn(
+                      'p-2 rounded-full flex items-center justify-center transition-colors',
+                      isDark ? 'hover:bg-slate-700' : 'hover:bg-gray-100'
+                    )}
+                    aria-label="Profile"
+                  >
+                    {user?.name ? (
+                      <span className={cn(
+                        'inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-base',
+                        isDark ? 'bg-mangla-gold text-mangla-dark-gray' : 'bg-mangla-gold text-mangla-dark-gray'
+                      )}>
+                        {user.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                      </span>
+                    ) : (
+                      <User className="w-7 h-7 text-mangla-gold" />
+                    )}
+                  </button>
+                  {profileOpen && (
+                    <div className={cn(
+                      'absolute right-0 mt-2 w-56 rounded-xl shadow-lg z-50 border',
+                      isDark ? 'bg-mangla-dark-gray border-gray-700 text-white' : 'bg-white border-gray-200 text-slate-900'
+                    )}>
+                      <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                        <div className="font-bold">{user?.name || 'User'}</div>
+                        <div className="text-xs text-gray-500">{user?.email}</div>
+                      </div>
+                      <button
+                        className="w-full flex items-center gap-2 px-4 py-2 hover:bg-mangla-gold/10 transition-colors"
+                        onClick={() => { setProfileOpen(false); navigate('/profile?tab=orders'); }}
+                      >
+                        <List className="w-4 h-4" /> Orders
+                      </button>
+                      <button
+                        className="w-full flex items-center gap-2 px-4 py-2 hover:bg-mangla-gold/10 transition-colors"
+                        onClick={() => { setProfileOpen(false); navigate('/profile?tab=profile'); }}
+                      >
+                        <Edit className="w-4 h-4" /> Profile
+                      </button>
+                      <button
+                        className="w-full flex items-center gap-2 px-4 py-2 hover:bg-mangla-gold/10 transition-colors"
+                        onClick={() => { setProfileOpen(false); navigate('/profile?tab=addresses'); }}
+                      >
+                        <MapPin className="w-4 h-4" /> Addresses
+                      </button>
+                      <button
+                        className="w-full flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors border-t border-gray-100 dark:border-gray-700"
+                        onClick={() => { setProfileOpen(false); logout(); }}
+                      >
+                        <LogOut className="w-4 h-4" /> Logout
+                      </button>
+                    </div>
+                  )}
+                </div>
                 
                 {/* Mobile menu button - fixed position to ensure full visibility */}
                 {!(isCartOpen || isWishlistOpen) && (

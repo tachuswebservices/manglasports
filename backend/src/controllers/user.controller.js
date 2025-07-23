@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 export async function getAllUsers(req, res) {
@@ -53,4 +54,22 @@ export async function deleteUser(req, res) {
 // Count all users
 export async function countUsers() {
   return prisma.user.count();
+}
+
+// Change password endpoint
+export async function changePassword(req, res) {
+  const userId = Number(req.params.id);
+  const { currentPassword, newPassword } = req.body;
+  if (!userId || !currentPassword || !newPassword) return res.status(400).json({ error: 'Missing fields' });
+  try {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    const valid = await bcrypt.compare(currentPassword, user.password);
+    if (!valid) return res.status(400).json({ error: 'Current password is incorrect' });
+    const hashed = await bcrypt.hash(newPassword, 10);
+    await prisma.user.update({ where: { id: userId }, data: { password: hashed } });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to change password', details: err.message });
+  }
 } 
