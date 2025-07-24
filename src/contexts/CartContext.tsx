@@ -4,6 +4,8 @@ import { Product } from '@/data/products';
 
 type CartItem = Product & {
   quantity: number;
+  offerPrice?: number;
+  gst?: number;
 };
 
 // TODO: Replace with real user authentication
@@ -137,7 +139,13 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const getCartTotal = () => {
     return cart.reduce((total, item) => {
-      return total + (item.numericPrice * item.quantity);
+      const price = (typeof item.offerPrice === 'number' && item.offerPrice > 0)
+        ? item.offerPrice
+        : (typeof item.numericPrice === 'number' && !isNaN(item.numericPrice)
+            ? item.numericPrice
+            : (typeof item.price === 'string' ? parseFloat(item.price.replace(/[^\d.]/g, '')) : (typeof item.price === 'number' ? item.price : 0))
+          );
+      return total + (price * item.quantity);
     }, 0);
   };
 

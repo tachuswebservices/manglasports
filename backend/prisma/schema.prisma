@@ -12,6 +12,7 @@ model User {
   email     String     @unique
   password  String
   name      String?
+  role      String     @default("user") // 'user' or 'admin'
   createdAt DateTime   @default(now())
   cart      Cart[]
   orders    Order[]
@@ -36,7 +37,6 @@ model Product {
   name             String
   price            String
   numericPrice     Float
-  originalPrice    Float?
   images           String[]
   categoryId       Int
   brandId          Int
@@ -47,6 +47,8 @@ model Product {
   isNew            Boolean?
   isHot            Boolean?
   shortDescription String?
+  gst              Float           @default(18)
+  offerPrice       Float           @default(0)
   cart             Cart[]
   features         Feature[]
   orders           Order[]

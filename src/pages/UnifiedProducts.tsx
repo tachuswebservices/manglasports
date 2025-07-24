@@ -13,7 +13,7 @@ import StockIndicator from '../components/products/StockIndicator';
 import PageLayout from '../components/layout/PageLayout';
 // import { Product, products, getAllCategories, getAllBrands, getMaxPrice } from '../data/products';
 
-// Define Product type based on backend API
+// Define Product type for frontend usage
 export interface Product {
   id: string;
   name: string;
@@ -21,8 +21,8 @@ export interface Product {
   numericPrice: number;
   originalPrice?: number;
   images: string[];
-  category: { id: number; name: string };
-  brand: { id: number; name: string };
+  category: any; // Accept both string and object for compatibility
+  brand: any;
   rating: number;
   reviewCount?: number;
   soldCount?: number;
@@ -30,8 +30,9 @@ export interface Product {
   isNew?: boolean;
   isHot?: boolean;
   shortDescription?: string;
-  features?: { value: string }[];
-  specifications?: { key: string; value: string }[];
+  features?: string[];
+  specifications?: any;
+  offerPrice?: number;
 }
 
 // Define collection type
@@ -160,18 +161,10 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   const { addToCart } = useCart();
   const [isWishlisted, setIsWishlisted] = useState(false);
   
-  // Use numericPrice if available, else parse price string, else 0
-  const displayPrice = formatIndianPrice(
-    typeof product.numericPrice === 'number' && !isNaN(product.numericPrice)
-      ? product.numericPrice
-      : (typeof product.price === 'string' && product.price.trim() !== '' && !isNaN(parseFloat(product.price.replace(/[^\d.]/g, '')))
-          ? parseFloat(product.price.replace(/[^\d.]/g, ''))
-          : (typeof product.price === 'number' && !isNaN(product.price)
-              ? product.price
-              : 0
-            )
-        )
-  );
+  // Show offerPrice if > 0, else show numericPrice
+  const hasOffer = typeof product.offerPrice === 'number' && product.offerPrice > 0;
+  const mainPrice = hasOffer ? product.offerPrice : product.numericPrice;
+  const displayPrice = formatIndianPrice(mainPrice);
   
   // Check if product is in wishlist
   useEffect(() => {
@@ -290,7 +283,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
                 "text-sm",
                 isDark ? "text-mangla-gold" : "text-blue-600"
               )}>
-                {product.category.name || ''}
+                {typeof product.category === 'string' ? product.category : product.category?.name || ''}
               </p>
               <h3 className={cn(
                 "font-medium line-clamp-2 h-12",
@@ -325,22 +318,20 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
             </div>
             
             {/* Price */}
-            <div className="mt-2 flex items-center">
-              <p className={cn(
+            <div className="flex items-baseline gap-2">
+              <span className={cn(
                 "text-lg font-bold",
                 isDark ? "text-white" : "text-slate-900"
               )}>
                 {displayPrice}
-              </p>
-              
-              {/* Placeholder for original price if we want to show discount */}
-              {product.originalPrice && (
-                <p className={cn(
-                  "text-sm line-through ml-2",
+              </span>
+              {hasOffer && (
+                <span className={cn(
+                  "text-sm line-through",
                   isDark ? "text-gray-400" : "text-gray-500"
                 )}>
-                  {formatIndianPrice(product.originalPrice)}
-                </p>
+                  {formatIndianPrice(product.numericPrice)}
+                </span>
               )}
             </div>
             
@@ -546,7 +537,10 @@ const ProductsContent: React.FC = () => {
         : (typeof product.numericPrice === 'number' && !isNaN(product.numericPrice)
             ? product.numericPrice.toString()
             : '0'
-          )
+          ),
+    features: Array.isArray(product.features)
+      ? product.features.map(f => typeof f === 'string' ? f : f.value)
+      : [],
   }));
 
   // Handle filter change

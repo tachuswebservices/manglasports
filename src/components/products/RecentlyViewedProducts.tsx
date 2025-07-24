@@ -114,13 +114,19 @@ const RecentlyViewedProducts: React.FC<RecentlyViewedProductsProps> = ({
                   </div>
                 </div>
                 
-                <div className="flex items-baseline mt-1">
-                  <span className="text-sm font-bold">
-                    {formatIndianPrice(product.price)}
-                  </span>
-                  {product.originalPrice && (
-                    <span className="ml-2 text-xs text-gray-500 line-through">
-                      {formatIndianPrice(product.originalPrice)}
+                <div className="flex items-baseline mt-1 gap-2">
+                  {product.offerPrice && product.offerPrice > 0 ? (
+                    <>
+                      <span className="text-sm font-bold">
+                        {formatIndianPrice(product.offerPrice)}
+                      </span>
+                      <span className="text-xs text-gray-500 line-through">
+                        {formatIndianPrice(product.numericPrice || product.price)}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-sm font-bold">
+                      {formatIndianPrice(product.numericPrice || product.price)}
                     </span>
                   )}
                 </div>

@@ -21,7 +21,7 @@ export async function signup(req, res) {
       data: { email, password: hashed, name },
     });
     const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
-    res.status(201).json({ token, user: { id: user.id, email: user.email, name: user.name } });
+    res.status(201).json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role } });
   } catch (err) {
     res.status(500).json({ error: 'Signup failed', details: err.message });
   }
@@ -42,7 +42,7 @@ export async function login(req, res) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
     const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
-    res.json({ token, user: { id: user.id, email: user.email, name: user.name } });
+    res.json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role } });
   } catch (err) {
     res.status(500).json({ error: 'Login failed', details: err.message });
   }

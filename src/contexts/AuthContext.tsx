@@ -5,12 +5,14 @@ interface User {
   id: number;
   email: string;
   name?: string;
+  role?: string;
 }
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
+  loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
@@ -21,6 +23,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,6 +33,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setToken(storedToken);
       setUser(JSON.parse(storedUser));
     }
+    setLoading(false);
   }, []);
 
   const login = async (email: string, password: string) => {
@@ -71,7 +75,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isAuthenticated: !!token, login, signup, logout }}>
+    <AuthContext.Provider value={{ user, token, isAuthenticated: !!token, loading, login, signup, logout }}>
       {children}
     </AuthContext.Provider>
   );

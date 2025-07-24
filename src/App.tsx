@@ -30,9 +30,25 @@ import Profile from './pages/Profile';
 
 // ProtectedRoute component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
+  if (loading) return null; // or a spinner
   if (!isAuthenticated) {
     window.location.href = '/login';
+    return null;
+  }
+  return <>{children}</>;
+};
+
+// AdminRoute component
+const AdminRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated, user, loading } = useAuth();
+  if (loading) return null; // or a spinner
+  if (!isAuthenticated) {
+    window.location.href = '/login';
+    return null;
+  }
+  if (user?.role !== 'admin') {
+    window.location.href = '/profile';
     return null;
   }
   return <>{children}</>;
@@ -68,7 +84,7 @@ const App = () => (
                   <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                   <Route path="/terms-of-service" element={<TermsOfService />} />
-                  <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+                  <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
                   <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/signup" element={<Signup />} />

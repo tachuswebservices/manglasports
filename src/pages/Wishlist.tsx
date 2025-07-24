@@ -36,6 +36,7 @@ const getNumericPrice = (product: any): number => {
 export default function Wishlist() {
   const { wishlist, removeFromWishlist, clearWishlist } = useWishlist();
 
+  type WishlistProduct = typeof wishlist[number] & { offerPrice?: number };
   const handleRemoveItem = (productId: string, productName: string) => {
     removeFromWishlist(productId);
     toast.success(`${productName} has been removed from your wishlist.`, {
@@ -131,7 +132,7 @@ export default function Wishlist() {
               >
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   <AnimatePresence>
-                    {wishlist.map((product) => (
+                    {(wishlist as WishlistProduct[]).map((product: WishlistProduct) => (
                       <motion.div
                         key={product.id}
                         layout
@@ -153,11 +154,24 @@ export default function Wishlist() {
                           </div>
                           <div className="p-4">
                             <h3 className="font-medium text-gray-900 dark:text-white line-clamp-2 mb-1">
-                              {product.name}
+                              {product.name || ''}
                             </h3>
-                            <p className="text-mangla-gold font-semibold">
-                              {formatIndianPrice(getNumericPrice(product))}
-                            </p>
+                            <div className="flex items-baseline gap-2">
+                              {product.offerPrice && product.offerPrice > 0 ? (
+                                <>
+                                  <span className="text-mangla-gold font-semibold">
+                                    {formatIndianPrice(product.offerPrice)}
+                                  </span>
+                                  <span className="text-xs text-gray-500 line-through">
+                                    {formatIndianPrice(getNumericPrice(product))}
+                                  </span>
+                                </>
+                              ) : (
+                                <span className="text-mangla-gold font-semibold">
+                                  {formatIndianPrice(getNumericPrice(product))}
+                                </span>
+                              )}
+                            </div>
                             <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">
                               {typeof product.category === 'string' ? product.category : product.category?.name || ''}
                             </span>
@@ -176,7 +190,7 @@ export default function Wishlist() {
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
-                              handleRemoveItem(product.id, product.name);
+                              handleRemoveItem(product.id, product.name || '');
                             }}
                           >
                             <Trash2 className="h-4 w-4" />

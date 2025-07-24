@@ -14,6 +14,8 @@ interface CartItemProps {
     price: string;
     images: string[];
     quantity: number;
+    offerPrice?: number;
+    numericPrice?: number;
   };
   onRemove: (id: string) => void;
   onUpdateQuantity: (id: string, quantity: number) => void;
@@ -33,7 +35,30 @@ const CartItem = ({ product, onRemove, onUpdateQuantity }: CartItemProps) => {
         <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
           {product.name}
         </h4>
-        <p className="text-sm font-bold text-mangla-gold mt-1">{product.price}</p>
+        <div className="flex items-baseline gap-2 mt-1">
+          {product.offerPrice && product.offerPrice > 0 ? (
+            <>
+              <span className="text-sm font-bold text-mangla-gold">
+                {formatIndianPrice(product.offerPrice)}
+              </span>
+              <span className="text-xs text-gray-500 line-through">
+                {formatIndianPrice(
+                  typeof product.numericPrice === 'number' && !isNaN(product.numericPrice)
+                    ? product.numericPrice
+                    : (typeof product.price === 'string' ? parseFloat(product.price.replace(/[^\d.]/g, '')) : (typeof product.price === 'number' ? product.price : 0))
+                )}
+              </span>
+            </>
+          ) : (
+            <span className="text-sm font-bold text-mangla-gold">
+              {formatIndianPrice(
+                typeof product.numericPrice === 'number' && !isNaN(product.numericPrice)
+                  ? product.numericPrice
+                  : (typeof product.price === 'string' ? parseFloat(product.price.replace(/[^\d.]/g, '')) : (typeof product.price === 'number' ? product.price : 0))
+              )}
+            </span>
+          )}
+        </div>
         <div className="flex items-center mt-2 space-x-2">
           <div className="flex items-center border border-gray-300 dark:border-gray-600 rounded-md overflow-hidden">
             <button 

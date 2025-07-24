@@ -104,13 +104,30 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </span>
           </div>
           
-          <p className={`${isDark ? 'text-white' : 'text-slate-900'} font-bold mb-3`}>
-  {formatIndianPrice(
-    typeof product.numericPrice === 'number' && !isNaN(product.numericPrice)
-      ? product.numericPrice
-      : (typeof price === 'string' ? parseFloat(price.replace(/[^\d.]/g, '')) : (typeof price === 'number' ? price : 0))
-  )}
-</p>
+          <div className="flex items-baseline gap-2 mb-3">
+            {product.offerPrice && product.offerPrice > 0 ? (
+              <>
+                <span className={`${isDark ? 'text-white' : 'text-slate-900'} font-bold text-lg`}>
+                  {formatIndianPrice(product.offerPrice)}
+                </span>
+                <span className="text-sm line-through text-gray-500">
+                  {formatIndianPrice(
+                    typeof product.numericPrice === 'number' && !isNaN(product.numericPrice)
+                      ? product.numericPrice
+                      : (typeof price === 'string' ? parseFloat(price.replace(/[^\d.]/g, '')) : (typeof price === 'number' ? price : 0))
+                  )}
+                </span>
+              </>
+            ) : (
+              <span className={`${isDark ? 'text-white' : 'text-slate-900'} font-bold text-lg`}>
+                {formatIndianPrice(
+                  typeof product.numericPrice === 'number' && !isNaN(product.numericPrice)
+                    ? product.numericPrice
+                    : (typeof price === 'string' ? parseFloat(price.replace(/[^\d.]/g, '')) : (typeof price === 'number' ? price : 0))
+                )}
+              </span>
+            )}
+          </div>
           
           <div className="space-y-2">
             <Button

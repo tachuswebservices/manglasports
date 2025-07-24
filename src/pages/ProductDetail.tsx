@@ -21,8 +21,8 @@ interface Product {
   numericPrice: number;
   originalPrice?: number;
   image: string;
-  category: { id: number; name: string };
-  brand: { id: number; name: string };
+  category: { id: number; name: string } | string;
+  brand: { id: number; name: string } | string;
   rating: number;
   reviewCount?: number;
   soldCount?: number;
@@ -32,6 +32,7 @@ interface Product {
   shortDescription?: string;
   features?: { value: string }[];
   specifications?: { key: string; value: string }[];
+  offerPrice?: number;
 }
 
 interface DetailedProduct extends Product {
@@ -332,24 +333,20 @@ const ProductDetail: React.FC = () => {
               {/* Price */}
               <div className="mb-6">
                 <div className="flex items-baseline space-x-3">
-                  <p className="text-xl md:text-2xl font-bold mb-2">
-                    {formatIndianPrice(product.numericPrice || parseFloat(product.price.replace(/[^0-9.]/g, '')))}
-                  </p>
-                {product.originalPrice && (
-                  <div className="flex items-center gap-2 mb-4">
-                    <p className="text-gray-500 line-through">
-                      {formatIndianPrice(product.originalPrice)}
+                  {product.offerPrice && product.offerPrice > 0 ? (
+                    <>
+                      <p className="text-xl md:text-2xl font-bold mb-2">
+                        {formatIndianPrice(product.offerPrice)}
+                      </p>
+                      <p className="text-gray-500 line-through text-lg md:text-xl mb-2">
+                        {formatIndianPrice(product.numericPrice || parseFloat(product.price.replace(/[^0-9.]/g, '')))}
+                      </p>
+                    </>
+                  ) : (
+                    <p className="text-xl md:text-2xl font-bold mb-2">
+                      {formatIndianPrice(product.numericPrice || parseFloat(product.price.replace(/[^0-9.]/g, '')))}
                     </p>
-                    <span className="bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-red-900 dark:text-red-300">
-                      Save {formatIndianPrice(product.originalPrice - (product.numericPrice || parseFloat(product.price.replace(/[^0-9.]/g, ''))))}
-                    </span>
-                  </div>
-                )}
-                {product.originalPrice && (
-                  <span className="text-sm font-medium bg-red-600 text-white px-2 py-0.5 rounded">
-                    {Math.round((1 - (product.numericPrice || parseFloat(product.price.replace(/[^0-9.]/g, ''))) / product.originalPrice) * 100)}% OFF
-                  </span>
-                )}
+                  )}
                 </div>
               </div>
               

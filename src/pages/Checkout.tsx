@@ -170,19 +170,50 @@ const Checkout: React.FC = () => {
         ) : (
           <div className="mb-6">
             <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-              {cart.map(item => (
-                <li key={item.id} className="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div>
-                    <div className="font-medium text-base sm:text-lg">{item.name || 'Product'}</div>
-                    <div className="text-sm text-gray-500">Qty: {item.quantity}</div>
-                  </div>
-                  <div className="font-semibold text-lg">₹{item.numericPrice ? (item.numericPrice * item.quantity).toLocaleString() : 0}</div>
-                </li>
-              ))}
+              {cart.map(item => {
+                const hasOffer = typeof item.offerPrice === 'number' && item.offerPrice > 0;
+                const mainPrice = hasOffer ? item.offerPrice : (typeof item.numericPrice === 'number' && !isNaN(item.numericPrice) ? item.numericPrice : (typeof item.price === 'string' ? parseFloat(item.price.replace(/[^\d.]/g, '')) : (typeof item.price === 'number' ? item.price : 0)));
+                const crossedPrice = hasOffer ? (typeof item.numericPrice === 'number' && !isNaN(item.numericPrice) ? item.numericPrice : (typeof item.price === 'string' ? parseFloat(item.price.replace(/[^\d.]/g, '')) : (typeof item.price === 'number' ? item.price : 0))) : null;
+                const gst = typeof item.gst === 'number' ? item.gst : 18;
+                const gstAmount = (mainPrice * item.quantity * gst) / 100;
+                return (
+                  <li key={item.id} className="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                      <div className="font-medium text-base sm:text-lg">{item.name || 'Product'}</div>
+                      <div className="text-sm text-gray-500">Qty: {item.quantity}</div>
+                      <div className="text-xs text-gray-500">GST: {gst}%</div>
+                    </div>
+                    <div className="flex flex-col items-end">
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-semibold text-lg">₹{(mainPrice * item.quantity).toLocaleString()}</span>
+                        {hasOffer && (
+                          <span className="text-sm line-through text-gray-500">₹{(crossedPrice * item.quantity).toLocaleString()}</span>
+                        )}
+                      </div>
+                      <div className="text-xs text-gray-500">GST Amt: ₹{gstAmount.toLocaleString()}</div>
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
-            <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-2">
-              <span className="font-bold text-lg">Total:</span>
-              <span className="font-bold text-2xl text-mangla-gold">₹{getCartTotal().toLocaleString()}</span>
+            {/* Subtotal, GST, Grand Total */}
+            <div className="flex flex-col gap-1 mt-6">
+              {(() => {
+                let subtotal = 0, totalGst = 0;
+                cart.forEach(item => {
+                  const hasOffer = typeof item.offerPrice === 'number' && item.offerPrice > 0;
+                  const mainPrice = hasOffer ? item.offerPrice : (typeof item.numericPrice === 'number' && !isNaN(item.numericPrice) ? item.numericPrice : (typeof item.price === 'string' ? parseFloat(item.price.replace(/[^\d.]/g, '')) : (typeof item.price === 'number' ? item.price : 0)));
+                  const gst = typeof item.gst === 'number' ? item.gst : 18;
+                  subtotal += mainPrice * item.quantity;
+                  totalGst += (mainPrice * item.quantity * gst) / 100;
+                });
+                const grandTotal = subtotal + totalGst;
+                return <>
+                  <div className="flex justify-between items-center"><span className="font-bold text-lg">Subtotal:</span><span className="font-bold">₹{subtotal.toLocaleString()}</span></div>
+                  <div className="flex justify-between items-center"><span className="font-bold text-lg">Total GST:</span><span className="font-bold">₹{totalGst.toLocaleString()}</span></div>
+                  <div className="flex justify-between items-center mt-2"><span className="font-bold text-xl">Grand Total:</span><span className="font-bold text-2xl text-mangla-gold">₹{grandTotal.toLocaleString()}</span></div>
+                </>;
+              })()}
             </div>
           </div>
         )}
