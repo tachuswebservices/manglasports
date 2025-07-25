@@ -2,6 +2,7 @@ import express from 'express';
 import * as productController from '../controllers/product.controller.js';
 import multer from 'multer';
 import path from 'path';
+import { deleteCloudinaryImage } from '../controllers/product.controller.js';
 
 const router = express.Router();
 
@@ -42,5 +43,8 @@ router.post('/upload-image', upload.array('images', 5), (req, res) => {
   const imageUrls = req.files.map(file => `/lovable-uploads/${file.filename}`);
   res.json({ imageUrls });
 });
+
+// Delete image from Cloudinary by publicId
+router.delete('/delete-image/:publicId', deleteCloudinaryImage);
 
 export default router; 
