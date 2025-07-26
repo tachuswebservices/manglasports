@@ -57,7 +57,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <div className={`h-full rounded-lg overflow-hidden border transition-all hover:shadow-lg ${isDark ? 'bg-mangla-dark-gray border-gray-800' : 'bg-white border-gray-200'}`}>
         <div className="relative h-64 overflow-hidden">
           <img 
-            src={images && images.length > 0 ? images[0] : '/placeholder.png'} 
+            src={images && images.length > 0 ? (typeof images[0] === 'string' ? images[0] : images[0]?.url) : '/placeholder.png'} 
             alt={name} 
             className="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-110"
           />

@@ -15,7 +15,7 @@ import {
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '../components/ui/select';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
-import { X, Upload, Search, Plus, Pencil, Trash, Eye } from 'lucide-react';
+import { X, Upload, Search, Plus, Pencil, Trash, Eye, Image as ImageIcon, Check, ChevronLeft, ChevronRight, ShieldAlert, LayoutGrid, List, Tag } from 'lucide-react';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '../components/ui/tooltip';
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction, AlertDialogCancel } from '../components/ui/alert-dialog';
 import { useToast } from '../components/ui/use-toast';
@@ -148,6 +148,10 @@ const AdminDashboard = () => {
   const [imageManagerProgress, setImageManagerProgress] = useState<number[]>([]);
   const [imageManagerDeleting, setImageManagerDeleting] = useState<string | null>(null);
   const [imageManagerError, setImageManagerError] = useState('');
+  const [imageManagerSaving, setImageManagerSaving] = useState(false);
+  // Delete mode for image manager
+  const [deleteMode, setDeleteMode] = useState(false);
+  const [confirmDeleteImg, setConfirmDeleteImg] = useState<{ url: string, publicId: string } | null>(null);
 
   // DnD sensors
   const sensors = useSensors(useSensor(PointerSensor));
@@ -165,14 +169,19 @@ const AdminDashboard = () => {
       .finally(() => setLoadingStats(false));
     setLoadingProducts(true);
     setProductsError('');
-    fetch(`http://localhost:4000/api/products?page=${page}&limit=${limit}`)
+    fetch('http://localhost:4000/api/products')
       .then(res => {
         if (!res.ok) throw new Error('Failed to fetch products');
         return res.json();
       })
       .then(data => {
-        setProducts(data.products);
-        setTotalProducts(data.total);
+        setProducts(Array.isArray(data.products) ? data.products.map(prod => ({
+          ...prod,
+          images: Array.isArray(prod.images)
+            ? prod.images.map(img => typeof img === 'string' ? { url: img, publicId: '' } : { url: img.url, publicId: img.publicId || '' })
+            : [],
+        })) : []);
+        setTotalProducts(data.total || 0);
       })
       .catch(err => setProductsError(err.message))
       .finally(() => setLoadingProducts(false));
@@ -183,7 +192,7 @@ const AdminDashboard = () => {
     fetch('http://localhost:4000/api/brands')
       .then(res => res.json())
       .then(setBrands);
-  }, [page, limit]);
+  }, []);
 
   // Handle multiple image file selection
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -208,7 +217,9 @@ const AdminDashboard = () => {
     setAddingProduct(true);
     setAddProductError('');
     // Cloudinary upload
-    let imageObjs: { url: string, publicId: string }[] = uploadedImages;
+    let imageObjs: { url: string, publicId: string }[] = Array.isArray(uploadedImages)
+      ? uploadedImages.map(img => typeof img === 'string' ? { url: img, publicId: '' } : { url: img.url, publicId: img.publicId || '' })
+      : [];
     if (imageFiles.length > 0) {
       setImageUploadProgress(Array(imageFiles.length).fill(0));
       try {
@@ -333,7 +344,9 @@ const AdminDashboard = () => {
   const handleEditProduct = async () => {
     setEditLoading(true);
     setEditError('');
-    let imageObjsEdit: { url: string, publicId: string }[] = editUploadedImages;
+    let imageObjsEdit: { url: string, publicId: string }[] = Array.isArray(editUploadedImages)
+      ? editUploadedImages.map(img => typeof img === 'string' ? { url: img, publicId: '' } : { url: img.url, publicId: img.publicId || '' })
+      : [];
     // Add existing images from editProductState.images (if not already objects)
     if (Array.isArray(editProductState.images)) {
       for (const img of editProductState.images) {
@@ -724,7 +737,7 @@ const AdminDashboard = () => {
   // Remove image in manager
   const handleImageManagerRemove = async (img: { url: string, publicId: string }) => {
     // Always remove from UI
-    setImageManagerImages(prev => prev.filter(i => i.url !== img.url));
+    setImageManagerImages(prev => prev.filter(i => !(i.url === img.url && i.publicId === img.publicId)));
     if (!img.publicId) return;
     setImageManagerDeleting(img.publicId);
     try {
@@ -741,10 +754,35 @@ const AdminDashboard = () => {
   };
 
   // Save images from manager to edit product
-  const handleImageManagerSave = () => {
-    setEditUploadedImages(imageManagerImages);
-    setImagesToDelete([]); // Already deleted from Cloudinary
-    setShowImageManager(false);
+  const handleImageManagerSave = async () => {
+    setImageManagerSaving(true);
+    setImageManagerError('');
+    const newImages = imageManagerImages.map(img =>
+      typeof img === 'string' ? { url: img, publicId: '' } : { url: img.url, publicId: img.publicId || '' }
+    );
+    try {
+      if (!editingProduct) throw new Error('No product selected');
+      const res = await fetch(`http://localhost:4000/api/products/${editingProduct.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...editingProduct, images: newImages }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Failed to update product images');
+      }
+      // Update product in UI
+      setProducts(products => products.map(p => p.id === editingProduct.id ? { ...p, images: newImages } : p));
+      setEditUploadedImages(newImages);
+      setImagesToDelete([]);
+      setShowImageManager(false);
+      toast({ title: 'Images updated', description: 'Product images updated successfully.' });
+    } catch (err: any) {
+      setImageManagerError(err.message || 'Failed to update images');
+      toast({ title: 'Failed to update images', description: err.message || 'Error', variant: 'destructive' });
+    } finally {
+      setImageManagerSaving(false);
+    }
   };
 
   // Cancel manager (discard changes)
@@ -753,7 +791,7 @@ const AdminDashboard = () => {
   };
 
   // Sortable image item
-  function SortableImage({ img, idx }: { img: { url: string, publicId: string }, idx: number }) {
+  function SortableImage({ img, idx, onRemove, deleteMode }: { img: { url: string, publicId: string }, idx: number, onRemove: (img: { url: string, publicId: string }) => void, deleteMode: boolean }) {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: img.publicId });
     return (
       <div
@@ -763,20 +801,22 @@ const AdminDashboard = () => {
         {...attributes}
         {...listeners}
       >
-        <img src={img.url} alt={`Image ${idx + 1}`} className="max-h-32 rounded border" />
-        <button
-          type="button"
-          className="absolute top-1 right-1 bg-white/80 rounded-full p-1 hover:bg-red-100"
-          onClick={() => handleImageManagerRemove(img)}
-          aria-label="Remove image"
-          disabled={imageManagerDeleting === img.publicId}
-        >
-          {imageManagerDeleting === img.publicId ? (
-            <span className="animate-spin"><svg width="16" height="16" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity=".2"/><path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/></svg></span>
-          ) : (
-            <X className="w-4 h-4 text-red-500" />
-          )}
-        </button>
+        <img src={img.url} alt={`Image ${idx + 1}`} className={`max-h-32 rounded border ${deleteMode ? 'border-red-500' : ''}`} />
+        {deleteMode && (
+          <button
+            type="button"
+            className="absolute top-1 right-1 bg-white/80 rounded-full p-1 hover:bg-red-100"
+            onClick={e => { e.stopPropagation(); onRemove(img); }}
+            aria-label="Remove image"
+            disabled={imageManagerDeleting === img.publicId}
+          >
+            {imageManagerDeleting === img.publicId ? (
+              <span className="animate-spin"><svg width="16" height="16" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity=".2"/><path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/></svg></span>
+            ) : (
+              <X className="w-4 h-4 text-red-500" />
+            )}
+          </button>
+        )}
       </div>
     );
   }
@@ -837,18 +877,20 @@ const AdminDashboard = () => {
               {/* View toggle, search, and filters */}
               <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div className="flex gap-2 items-center">
-                  <button
-                    className={`px-3 py-1 rounded-l border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-medium ${productView === 'table' ? 'text-mangla-gold border-mangla-gold' : 'text-slate-500'}`}
-                    onClick={() => setProductView('table')}
-                  >
-                    Table View
-                  </button>
-                  <button
-                    className={`px-3 py-1 rounded-r border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-medium ${productView === 'card' ? 'text-mangla-gold border-mangla-gold' : 'text-slate-500'}`}
-                    onClick={() => setProductView('card')}
-                  >
-                    Card View
-                  </button>
+                  <TooltipProvider>
+                    <Tooltip><TooltipTrigger asChild>
+                      <Button size="icon" variant={productView === 'table' ? 'default' : 'outline'} className="rounded-full" onClick={() => setProductView('table')} aria-label="Table View">
+                        <LayoutGrid className="w-5 h-5" />
+                      </Button>
+                    </TooltipTrigger><TooltipContent>Table View</TooltipContent></Tooltip>
+                  </TooltipProvider>
+                  <TooltipProvider>
+                    <Tooltip><TooltipTrigger asChild>
+                      <Button size="icon" variant={productView === 'card' ? 'default' : 'outline'} className="rounded-full" onClick={() => setProductView('card')} aria-label="Card View">
+                        <List className="w-5 h-5" />
+                      </Button>
+                    </TooltipTrigger><TooltipContent>Card View</TooltipContent></Tooltip>
+                  </TooltipProvider>
                 </div>
                 <div className="flex gap-2 items-center">
                   <div className="relative">
@@ -885,15 +927,27 @@ const AdminDashboard = () => {
               </div>
               <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="flex gap-2 mb-2 sm:mb-0">
-                  <Button onClick={() => setShowAddModal(true)} className="bg-mangla-gold hover:bg-mangla-gold/90 text-white font-semibold shadow px-6 py-2 rounded-lg">
-                    Add New Product
-                  </Button>
-                  <Button onClick={() => setShowManageCategories(true)} variant="outline" className="font-semibold px-6 py-2 rounded-lg">
-                    Manage Categories
-                  </Button>
-                  <Button onClick={() => setShowManageBrands(true)} variant="outline" className="font-semibold px-6 py-2 rounded-lg">
-                    Manage Brands
-                  </Button>
+                  <TooltipProvider>
+                    <Tooltip><TooltipTrigger asChild>
+                      <Button size="icon" className="bg-mangla-gold hover:bg-mangla-gold/90 text-white shadow rounded-full" onClick={() => setShowAddModal(true)} aria-label="Add Product">
+                        <Plus className="w-5 h-5" />
+                      </Button>
+                    </TooltipTrigger><TooltipContent>Add Product</TooltipContent></Tooltip>
+                  </TooltipProvider>
+                  <TooltipProvider>
+                    <Tooltip><TooltipTrigger asChild>
+                      <Button size="icon" variant="outline" className="rounded-full" onClick={() => setShowManageCategories(true)} aria-label="Manage Categories">
+                        <ImageIcon className="w-5 h-5" />
+                      </Button>
+                    </TooltipTrigger><TooltipContent>Manage Categories</TooltipContent></Tooltip>
+                  </TooltipProvider>
+                  <TooltipProvider>
+                    <Tooltip><TooltipTrigger asChild>
+                      <Button size="icon" variant="outline" className="rounded-full" onClick={() => setShowManageBrands(true)} aria-label="Manage Brands">
+                        <Tag className="w-5 h-5" />
+                      </Button>
+                    </TooltipTrigger><TooltipContent>Manage Brands</TooltipContent></Tooltip>
+                  </TooltipProvider>
                 </div>
                 <Dialog open={showAddModal} onOpenChange={setShowAddModal}>
                   <DialogTrigger asChild>
@@ -1332,7 +1386,9 @@ const AdminDashboard = () => {
                 {/* Pagination controls */}
                 {totalPages > 1 && (
                   <div className="flex justify-center items-center gap-2 py-4">
-                    <Button variant="outline" size="sm" onClick={() => handlePageChange(page - 1)} disabled={page === 1}>&lt;</Button>
+                    <Button variant="outline" size="icon" onClick={() => handlePageChange(page - 1)} disabled={page === 1} aria-label="Previous Page">
+                      <ChevronLeft className="w-5 h-5" />
+                    </Button>
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
                       <button
                         key={p}
@@ -1343,7 +1399,9 @@ const AdminDashboard = () => {
                         {p}
                       </button>
                     ))}
-                    <Button variant="outline" size="sm" onClick={() => handlePageChange(page + 1)} disabled={page === totalPages}>&gt;</Button>
+                    <Button variant="outline" size="icon" onClick={() => handlePageChange(page + 1)} disabled={page === totalPages} aria-label="Next Page">
+                      <ChevronRight className="w-5 h-5" />
+                    </Button>
                   </div>
                 )}
               </section>
@@ -1843,15 +1901,35 @@ const AdminDashboard = () => {
             <DialogTitle>Manage Product Images</DialogTitle>
           </DialogHeader>
           <div className="mb-2 text-sm text-muted-foreground">Drag to reorder. Add or remove images as needed.</div>
-          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleImageManagerDragEnd}>
-            <SortableContext items={imageManagerImages.map(img => img.publicId)} strategy={verticalListSortingStrategy}>
-              <div className="flex flex-wrap gap-2 mb-4">
-                {imageManagerImages.map((img, idx) => (
-                  <SortableImage key={img.publicId || img.url} img={img} idx={idx} />
-                ))}
-              </div>
-            </SortableContext>
-          </DndContext>
+          {deleteMode ? (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {imageManagerImages.map((img, idx) => (
+                <SortableImage
+                  key={img.publicId || img.url}
+                  img={img}
+                  idx={idx}
+                  deleteMode={deleteMode}
+                  onRemove={img => setConfirmDeleteImg(img)}
+                />
+              ))}
+            </div>
+          ) : (
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleImageManagerDragEnd}>
+              <SortableContext items={imageManagerImages.map(img => img.publicId)} strategy={verticalListSortingStrategy}>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {imageManagerImages.map((img, idx) => (
+                    <SortableImage
+                      key={img.publicId || img.url}
+                      img={img}
+                      idx={idx}
+                      deleteMode={deleteMode}
+                      onRemove={img => setConfirmDeleteImg(img)}
+                    />
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
+          )}
           {/* Add new images */}
           <div className="mb-2">
             <input
@@ -1868,9 +1946,13 @@ const AdminDashboard = () => {
                 setImageManagerPreviews(files.map(file => URL.createObjectURL(file)));
               }}
             />
-            <Button type="button" onClick={() => document.getElementById('image-manager-upload')?.click()} disabled={imageManagerFiles.length > 0 || imageManagerProgress.some(p => p > 0 && p < 100)}>
-              Add Images
-            </Button>
+            <TooltipProvider>
+              <Tooltip><TooltipTrigger asChild>
+                <Button type="button" size="icon" onClick={() => document.getElementById('image-manager-upload')?.click()} disabled={imageManagerFiles.length > 0 || imageManagerProgress.some(p => p > 0 && p < 100)} aria-label="Add Images">
+                  <Plus className="w-5 h-5" />
+                </Button>
+              </TooltipTrigger><TooltipContent>Add Images</TooltipContent></Tooltip>
+            </TooltipProvider>
           </div>
           {/* Show previews and upload progress for new images */}
           {imageManagerPreviews.length > 0 && (
@@ -1901,9 +1983,60 @@ const AdminDashboard = () => {
           )}
           {imageManagerError && <div className="text-red-500 text-sm mt-2">{imageManagerError}</div>}
           <DialogFooter>
-            <Button variant="secondary" onClick={handleImageManagerCancel}>Cancel</Button>
-            <Button onClick={handleImageManagerSave}>Save</Button>
+            <TooltipProvider>
+              <Tooltip><TooltipTrigger asChild>
+                <Button variant="secondary" size="icon" onClick={handleImageManagerCancel} disabled={imageManagerSaving} aria-label="Cancel">
+                  <X className="w-5 h-5" />
+                </Button>
+              </TooltipTrigger><TooltipContent>Cancel</TooltipContent></Tooltip>
+            </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip><TooltipTrigger asChild>
+                <Button onClick={handleImageManagerSave} size="icon" disabled={imageManagerSaving} aria-label="Save">
+                  <Check className="w-5 h-5" />
+                </Button>
+              </TooltipTrigger><TooltipContent>Save</TooltipContent></Tooltip>
+            </TooltipProvider>
           </DialogFooter>
+          {/* Confirm delete dialog */}
+          {confirmDeleteImg && (
+            <Dialog open={true} onOpenChange={open => { if (!open) setConfirmDeleteImg(null); }}>
+              <DialogContent className="max-w-xs w-full">
+                <DialogHeader>
+                  <DialogTitle>Delete Image?</DialogTitle>
+                </DialogHeader>
+                <div className="mb-2 text-sm text-red-600">Are you sure you want to delete this image? This cannot be undone.</div>
+                <img src={confirmDeleteImg.url} alt="To delete" className="max-h-32 rounded border mb-2" />
+                <DialogFooter>
+                  <Button variant="secondary" onClick={() => setConfirmDeleteImg(null)}>Cancel</Button>
+                  <Button variant="destructive" size="icon" onClick={async () => {
+                    await handleImageManagerRemove(confirmDeleteImg);
+                    setConfirmDeleteImg(null);
+                  }} aria-label="Delete">
+                    <Trash className="w-5 h-5" />
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          )}
+          <div className="flex items-center justify-between mb-2">
+            <TooltipProvider>
+              <Tooltip><TooltipTrigger asChild>
+                <Button
+                  type="button"
+                  size="icon"
+                  variant={deleteMode ? 'destructive' : 'outline'}
+                  onClick={() => setDeleteMode(v => !v)}
+                  aria-label={deleteMode ? 'Exit Delete Mode' : 'Delete Mode'}
+                >
+                  <ShieldAlert className="w-5 h-5" />
+                </Button>
+              </TooltipTrigger><TooltipContent>{deleteMode ? 'Exit Delete Mode' : 'Delete Mode'}</TooltipContent></Tooltip>
+            </TooltipProvider>
+            {deleteMode && (
+              <span className="flex items-center text-xs text-red-600 font-semibold ml-2"><ShieldAlert className="w-4 h-4 mr-1" />Delete Mode is active. Click the cross to delete images.</span>
+            )}
+          </div>
         </DialogContent>
       </Dialog>
     </div>

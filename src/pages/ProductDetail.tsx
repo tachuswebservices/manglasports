@@ -231,7 +231,7 @@ const ProductDetail: React.FC = () => {
               {/* Main Image */}
               <div className="relative aspect-square bg-white rounded-lg overflow-hidden shadow-lg">
                 <img 
-                  src={product.images[currentImageIndex]} 
+                  src={Array.isArray(product.images) ? (typeof product.images[currentImageIndex] === 'string' ? product.images[currentImageIndex] : product.images[currentImageIndex]?.url) : ''} 
                   alt={product.name}
                   className="w-full h-full object-contain p-4"
                 />
@@ -268,27 +268,30 @@ const ProductDetail: React.FC = () => {
               
               {/* Thumbnails */}
               <div className="grid grid-cols-4 gap-3">
-                {product.images.map((image, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentImageIndex(index)}
-                    className={cn(
-                      "aspect-square rounded-md overflow-hidden border-2 transition-all",
-                      currentImageIndex === index 
-                        ? "border-mangla-gold" 
-                        : isDark 
-                          ? "border-gray-700 hover:border-gray-600" 
-                          : "border-gray-200 hover:border-gray-300"
-                    )}
-                    aria-label={`View image ${index + 1}`}
-                  >
-                    <img 
-                      src={image} 
-                      alt={`${product.name} thumbnail ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                ))}
+                {Array.isArray(product.images) && product.images.map((image, index) => {
+                  const url = typeof image === 'string' ? image : image.url;
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentImageIndex(index)}
+                      className={cn(
+                        "aspect-square rounded-md overflow-hidden border-2 transition-all",
+                        currentImageIndex === index 
+                          ? "border-mangla-gold" 
+                          : isDark 
+                            ? "border-gray-700 hover:border-gray-600" 
+                            : "border-gray-200 hover:border-gray-300"
+                      )}
+                      aria-label={`View image ${index + 1}`}
+                    >
+                      <img 
+                        src={url} 
+                        alt={`${product.name} thumbnail ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </button>
+                  );
+                })}
               </div>
             </div>
             

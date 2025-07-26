@@ -241,7 +241,7 @@ const ProductCard: React.FC<ProductCardProps> = (product) => {
         <div className="aspect-square bg-gray-100 dark:bg-gray-800 relative overflow-hidden">
           <div className="relative w-full h-full">
             <img 
-              src={product.images && product.images.length > 0 ? product.images[0] : '/placeholder.png'} 
+              src={product.images && product.images.length > 0 ? (typeof product.images[0] === 'string' ? product.images[0] : product.images[0]?.url) : '/placeholder.png'} 
               alt={product.name}
               className="w-full h-full object-contain p-4 transition-transform duration-300"
               style={{

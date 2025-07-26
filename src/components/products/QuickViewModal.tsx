@@ -132,7 +132,7 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({
               <div className="md:w-1/2 p-6 bg-gray-100 dark:bg-slate-800 flex items-center justify-center">
                 <div className="relative w-full h-80 md:h-96">
                   <img 
-                    src={product.images && product.images.length > 0 ? product.images[0] : '/placeholder.png'} 
+                    src={product.images && product.images.length > 0 ? (typeof product.images[0] === 'string' ? product.images[0] : product.images[0]?.url) : '/placeholder.png'} 
                     alt={product.name} 
                     className="w-full h-full object-contain"
                   />

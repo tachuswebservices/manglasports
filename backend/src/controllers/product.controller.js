@@ -72,6 +72,15 @@ export async function createProduct(req, res) {
       features,
       specifications,
     } = req.body;
+    // Normalize images to array of { url, publicId }
+    let normalizedImages = [];
+    if (Array.isArray(images)) {
+      normalizedImages = images.map(img =>
+        typeof img === 'string'
+          ? { url: img, publicId: '' }
+          : { url: img.url, publicId: img.publicId || '' }
+      );
+    }
     const product = await prisma.product.create({
       data: {
         id,
@@ -79,7 +88,7 @@ export async function createProduct(req, res) {
         price,
         numericPrice,
         originalPrice,
-        images,
+        images: normalizedImages,
         categoryId,
         brandId,
         rating,
@@ -128,6 +137,15 @@ export async function updateProduct(req, res) {
       gst,
       offerPrice,
     } = req.body;
+    // Normalize images to array of { url, publicId }
+    let normalizedImages = [];
+    if (Array.isArray(images)) {
+      normalizedImages = images.map(img =>
+        typeof img === 'string'
+          ? { url: img, publicId: '' }
+          : { url: img.url, publicId: img.publicId || '' }
+      );
+    }
     // Remove old features/specifications and add new ones
     await prisma.feature.deleteMany({ where: { productId: req.params.id } });
     await prisma.specification.deleteMany({ where: { productId: req.params.id } });
@@ -138,7 +156,7 @@ export async function updateProduct(req, res) {
         price,
         numericPrice,
         originalPrice,
-        images,
+        images: normalizedImages,
         categoryId,
         brandId,
         rating,

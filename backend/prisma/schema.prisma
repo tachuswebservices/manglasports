@@ -37,7 +37,7 @@ model Product {
   name             String
   price            String
   numericPrice     Float
-  images           String[]
+  images           Json
   categoryId       Int
   brandId          Int
   rating           Float

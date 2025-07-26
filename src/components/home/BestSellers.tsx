@@ -28,7 +28,7 @@ const item = {
   show: { y: 0, opacity: 1, transition: { duration: 0.5 } }
 };
 
-const BestSellerCard: React.FC<BestSellerProduct> = (product) => {
+const BestSellerCard: React.FC<{ product: BestSellerProduct }> = ({ product }) => {
   const name = product.name || '';
   const { price, images, category, rating, soldCount, inStock } = product;
   const { theme } = useTheme();
@@ -80,7 +80,7 @@ const BestSellerCard: React.FC<BestSellerProduct> = (product) => {
           <div className="w-full h-[260px] flex items-center justify-center bg-white">
             <div className="p-4 flex items-center justify-center w-full h-full">
               <img 
-                src={images && images.length > 0 ? images[0] : '/placeholder.png'} 
+                src={images && images.length > 0 ? (typeof images[0] === 'string' ? images[0] : images[0]?.url) : '/placeholder.png'} 
                 alt={name} 
                 className="transition-transform duration-500 group-hover:scale-110"
                 style={{ 
@@ -245,7 +245,7 @@ const BestSellers = () => {
           {products.map((product) => (
             <BestSellerCard 
               key={product.id}
-              {...product}
+              product={product}
             />
           ))}
         </motion.div>
