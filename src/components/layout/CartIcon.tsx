@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ShoppingCart, Trash } from 'lucide-react';
+import { ShoppingCart, Trash, Image } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '@/contexts/CartContext';
 import { Link } from 'react-router-dom';
@@ -12,7 +12,7 @@ interface CartItemProps {
     id: string;
     name: string;
     price: string;
-    images: string[];
+    images: any[];
     quantity: number;
     offerPrice?: number;
     numericPrice?: number;
@@ -25,11 +25,17 @@ const CartItem = ({ product, onRemove, onUpdateQuantity }: CartItemProps) => {
   return (
     <div className="flex items-center p-3 border-b border-gray-200 dark:border-gray-700 last:border-0">
       <div className="flex-shrink-0 h-16 w-16 bg-white dark:bg-gray-700 rounded-md overflow-hidden">
-        <img 
-          src={product.images && product.images.length > 0 ? product.images[0] : '/placeholder.png'} 
-          alt={product.name}
-          className="h-full w-full object-contain p-1"
-        />
+        {product.images && product.images.length > 0 ? (
+          <img 
+            src={typeof product.images[0] === 'string' ? product.images[0] : product.images[0]?.url} 
+            alt={product.name}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <div className="h-full w-full flex items-center justify-center bg-gray-100 dark:bg-gray-600">
+            <Image className="w-6 h-6 text-gray-400" />
+          </div>
+        )}
       </div>
       <div className="ml-3 flex-1 min-w-0">
         <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
@@ -193,10 +199,10 @@ const CartIcon: React.FC<CartIconProps> = ({ isOpen, setIsOpen }) => {
                     ))}
                   </div>
                   <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-                    <div className="flex justify-between items-center mb-4">
+                    {/* <div className="flex justify-between items-center mb-4">
                       <span className="font-medium text-gray-700 dark:text-gray-300">Total:</span>
                       <span className="font-bold text-lg text-mangla-gold">{formatIndianPrice(totalPrice)}</span>
-                    </div>
+                    </div> */}
                     <Button
                       asChild
                       className="w-full bg-mangla-gold hover:bg-mangla-gold/90 text-mangla-dark-gray font-medium"

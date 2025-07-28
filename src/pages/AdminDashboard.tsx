@@ -36,6 +36,16 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
+// Import new admin components
+import DashboardStats from '../components/admin/DashboardStats';
+import ProductTable from '../components/admin/ProductTable';
+import ProductCardGrid from '../components/admin/ProductCardGrid';
+import ProductEditModal from '../components/admin/ProductEditModal';
+import ProductAddModal from '../components/admin/ProductAddModal';
+import ProductImageManager from '../components/admin/ProductImageManager';
+import CategoryManager from '../components/admin/CategoryManager';
+import BrandManager from '../components/admin/BrandManager';
+
 // Cloudinary config (move to top-level scope)
 const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dvltehb8j/upload';
 const UPLOAD_PRESET = 'unsigned';
@@ -701,10 +711,12 @@ const AdminDashboard = () => {
   // Handle drag end
   const handleImageManagerDragEnd = (event: any) => {
     const { active, over } = event;
+    if (!over) return;
     if (active.id !== over.id) {
       setImageManagerImages((imgs) => {
-        const oldIndex = imgs.findIndex(img => img.publicId === active.id);
-        const newIndex = imgs.findIndex(img => img.publicId === over.id);
+        const getId = (img: any) => img.publicId || img.url;
+        const oldIndex = imgs.findIndex(img => getId(img) === active.id);
+        const newIndex = imgs.findIndex(img => getId(img) === over.id);
         return arrayMove(imgs, oldIndex, newIndex);
       });
     }
@@ -852,20 +864,7 @@ const AdminDashboard = () => {
               ) : statsError ? (
                 <div className="text-center text-red-500 py-12">{statsError}</div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <Card className="p-8 rounded-xl shadow bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-800 text-center border border-mangla-gold">
-                    <div className="text-lg font-semibold mb-2 text-slate-700 dark:text-slate-200">Total Products</div>
-                    <div className="text-4xl font-extrabold text-mangla-gold drop-shadow">{stats.products}</div>
-                  </Card>
-                  <Card className="p-8 rounded-xl shadow bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-800 text-center border border-green-400">
-                    <div className="text-lg font-semibold mb-2 text-slate-700 dark:text-slate-200">Total Orders</div>
-                    <div className="text-4xl font-extrabold text-green-500 drop-shadow">{stats.orders}</div>
-                  </Card>
-                  <Card className="p-8 rounded-xl shadow bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-800 text-center border border-purple-400">
-                    <div className="text-lg font-semibold mb-2 text-slate-700 dark:text-slate-200">Total Users</div>
-                    <div className="text-4xl font-extrabold text-purple-500 drop-shadow">{stats.users}</div>
-                  </Card>
-                </div>
+                <DashboardStats stats={stats} />
               )}
             </div>
           )}
@@ -949,305 +948,18 @@ const AdminDashboard = () => {
                     </TooltipTrigger><TooltipContent>Manage Brands</TooltipContent></Tooltip>
                   </TooltipProvider>
                 </div>
-                <Dialog open={showAddModal} onOpenChange={setShowAddModal}>
-                  <DialogTrigger asChild>
-                    <span />
-                  </DialogTrigger>
-                  <DialogContent className="max-w-lg w-full sm:max-w-xl p-4 sm:p-6 max-h-[90vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-xl border border-mangla-gold">
-                    <DialogHeader>
-                      <DialogTitle className="text-mangla-gold">Add New Product</DialogTitle>
-                    </DialogHeader>
-                    <form
-                      onSubmit={e => {
-                        e.preventDefault();
-                        handleAddProduct();
-                      }}
-                      className="flex flex-col gap-4 w-full"
-                    >
-                      <label className="font-medium">Product Name</label>
-                      <Input
-                        placeholder="Product Name"
-                        value={newProduct.name}
-                        onChange={e => setNewProduct({ ...newProduct, name: e.target.value })}
-                        disabled={addingProduct}
-                        required
-                      />
-                      <label className="font-medium">Price (display string, e.g. ₹1,999)</label>
-                      <Input
-                        placeholder="Price (display string, e.g. ₹1,999)"
-                        value={newProduct.price}
-                        onChange={e => setNewProduct({ ...newProduct, price: e.target.value })}
-                        disabled={addingProduct}
-                        required
-                      />
-                      <label className="font-medium">Numeric Price (number)</label>
-                      <Input
-                        placeholder="Numeric Price (number)"
-                        type="text"
-                        inputMode="numeric"
-                        pattern="[0-9]*"
-                        value={typeof newProduct.numericPrice === 'string' && newProduct.numericPrice === '' ? '' : String(newProduct.numericPrice)}
-                        onChange={e => setNewProduct({ ...newProduct, numericPrice: e.target.value.replace(/[^0-9.]/g, '') })}
-                        disabled={addingProduct}
-                        required
-                      />
-                      <label className="font-medium">Rating (float)</label>
-                      <Input
-                        placeholder="Rating (float)"
-                        type="text"
-                        inputMode="numeric"
-                        pattern="[0-9.]*"
-                        value={typeof newProduct.rating === 'string' && newProduct.rating === '' ? '' : String(newProduct.rating)}
-                        onChange={e => setNewProduct({ ...newProduct, rating: e.target.value.replace(/[^0-9.]/g, '') })}
-                        disabled={addingProduct}
-                        required
-                      />
-                      <label className="font-medium">Review Count (optional)</label>
-                      <Input
-                        placeholder="Review Count (optional)"
-                        type="text"
-                        inputMode="numeric"
-                        pattern="[0-9]*"
-                        value={typeof newProduct.reviewCount === 'string' && newProduct.reviewCount === '' ? '' : String(newProduct.reviewCount)}
-                        onChange={e => setNewProduct({ ...newProduct, reviewCount: e.target.value.replace(/[^0-9]/g, '') })}
-                        disabled={addingProduct}
-                      />
-                      <label className="font-medium">Sold Count (optional)</label>
-                      <Input
-                        placeholder="Sold Count (optional)"
-                        type="text"
-                        inputMode="numeric"
-                        pattern="[0-9]*"
-                        value={typeof newProduct.soldCount === 'string' && newProduct.soldCount === '' ? '' : String(newProduct.soldCount)}
-                        onChange={e => setNewProduct({ ...newProduct, soldCount: e.target.value.replace(/[^0-9]/g, '') })}
-                        disabled={addingProduct}
-                      />
-                      <label className="font-medium">Short Description (optional)</label>
-                      <Textarea
-                        placeholder="Short Description (optional)"
-                        value={newProduct.shortDescription}
-                        onChange={e => setNewProduct({ ...newProduct, shortDescription: e.target.value })}
-                        disabled={addingProduct}
-                        rows={2}
-                      />
-                      <Select
-                        value={newProduct.categoryId || ''}
-                        onValueChange={val => setNewProduct({ ...newProduct, categoryId: val })}
-                        disabled={addingProduct}
-                        required
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {categories.map(cat => (
-                            <SelectItem key={cat.id} value={String(cat.id)}>{cat.name}</SelectItem>
-                          ))}
-                          <div className="p-2 border-t flex items-center gap-2">
-                            <Button type="button" size="sm" variant="outline" onClick={() => setShowAddCategory(true)}>
-                              + Add New
-                            </Button>
-                          </div>
-                        </SelectContent>
-                      </Select>
-                      {/* Add Category Modal */}
-                      <SimpleDialog open={showAddCategory} onOpenChange={setShowAddCategory}>
-                        <DialogContent className="max-w-xs w-full">
-                          <DialogHeader>
-                            <DialogTitle>Add New Category</DialogTitle>
-                          </DialogHeader>
-                          <Input
-                            placeholder="Category Name"
-                            value={newCategoryName}
-                            onChange={e => setNewCategoryName(e.target.value)}
-                            disabled={addingCategory}
-                            autoFocus
-                          />
-                          {categoryError && <div className="text-red-500 text-sm mt-1">{categoryError}</div>}
-                          <DialogFooter>
-                            <Button onClick={handleAddCategory} disabled={addingCategory || !newCategoryName.trim()}>
-                              {addingCategory ? 'Adding...' : 'Add'}
-                            </Button>
-                            <DialogClose asChild>
-                              <Button type="button" variant="secondary" onClick={() => setShowAddCategory(false)}>Cancel</Button>
-                            </DialogClose>
-                          </DialogFooter>
-                        </DialogContent>
-                      </SimpleDialog>
-                      <Select
-                        value={newProduct.brandId || ''}
-                        onValueChange={val => setNewProduct({ ...newProduct, brandId: val })}
-                        disabled={addingProduct}
-                        required
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Brand" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {brands.map(brand => (
-                            <SelectItem key={brand.id} value={String(brand.id)}>{brand.name}</SelectItem>
-                          ))}
-                          <div className="p-2 border-t flex items-center gap-2">
-                            <Button type="button" size="sm" variant="outline" onClick={() => setShowAddBrand(true)}>
-                              + Add New
-                            </Button>
-                          </div>
-                        </SelectContent>
-                      </Select>
-                      {/* Add Brand Modal */}
-                      <SimpleDialog open={showAddBrand} onOpenChange={setShowAddBrand}>
-                        <DialogContent className="max-w-xs w-full">
-                          <DialogHeader>
-                            <DialogTitle>Add New Brand</DialogTitle>
-                          </DialogHeader>
-                          <Input
-                            placeholder="Brand Name"
-                            value={newBrandName}
-                            onChange={e => setNewBrandName(e.target.value)}
-                            disabled={addingBrand}
-                            autoFocus
-                          />
-                          {brandError && <div className="text-red-500 text-sm mt-1">{brandError}</div>}
-                          <DialogFooter>
-                            <Button onClick={handleAddBrand} disabled={addingBrand || !newBrandName.trim()}>
-                              {addingBrand ? 'Adding...' : 'Add'}
-                            </Button>
-                            <DialogClose asChild>
-                              <Button type="button" variant="secondary" onClick={() => setShowAddBrand(false)}>Cancel</Button>
-                            </DialogClose>
-                          </DialogFooter>
-                        </DialogContent>
-                      </SimpleDialog>
-                      <div className="flex flex-col gap-2">
-                        <label className="font-medium">Product Images (.jpg, .png, up to 5)</label>
-                        <input
-                          id="product-image-upload"
-                          type="file"
-                          accept=".jpg,.jpeg,.png"
-                          multiple
-                          onChange={handleImageChange}
-                          disabled={addingProduct}
-                          className="hidden"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => document.getElementById('product-image-upload')?.click()}
-                          className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors w-fit"
-                          disabled={addingProduct || imageFiles.length >= 5}
-                        >
-                          <Upload className="w-4 h-4" /> Upload
-                        </button>
-                        {uploadedImages.length > 0 && (
-                          <div className="flex flex-wrap gap-2 mt-2">
-                            {uploadedImages.map((img, idx) => (
-                              <div key={img.url} className="relative">
-                                <img src={img.url} alt={`Uploaded ${idx + 1}`} className="max-h-32 rounded border" />
-                                <button
-                                  type="button"
-                                  className="absolute top-1 right-1 bg-white/80 rounded-full p-1 hover:bg-red-100"
-                                  onClick={() => setUploadedImages(uploadedImages.filter((_, i) => i !== idx))}
-                                  aria-label="Remove image"
-                                  disabled={addingProduct && imageUploadProgress.length > 0}
-                                >
-                                  <X className="w-4 h-4 text-red-500" />
-                                </button>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                        {imagePreviews.length > 0 && (
-                          <div className="flex flex-wrap gap-2 mt-2">
-                            {imagePreviews.map((preview, idx) => (
-                              <div key={preview} className="relative">
-                                <img src={preview} alt={`Preview ${idx + 1}`} className="max-h-32 rounded border opacity-60" />
-                                <button
-                                  type="button"
-                                  className="absolute top-1 right-1 bg-white/80 rounded-full p-1 hover:bg-red-100"
-                                  onClick={() => handleRemoveImage(idx)}
-                                  aria-label="Remove image"
-                                  disabled={addingProduct && imageUploadProgress.length > 0}
-                                >
-                                  <X className="w-4 h-4 text-red-500" />
-                                </button>
-                                {addingProduct && imageUploadProgress[idx] !== undefined && (
-                                  <div className="absolute left-1 bottom-1 right-1 bg-white/80 rounded px-1 py-0.5 text-xs text-blue-700 font-semibold flex items-center">
-                                    {imageUploadProgress[idx] < 100 ? (
-                                      <>
-                                        <span>Uploading: {imageUploadProgress[idx]}%</span>
-                                        <span className="ml-1 animate-spin"><svg width="12" height="12" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity=".2"/><path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/></svg></span>
-                                      </>
-                                    ) : (
-                                      <span>Uploaded</span>
-                                    )}
-                                  </div>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                      <Input
-                        placeholder="GST (%)"
-                        type="text"
-                        inputMode="numeric"
-                        pattern="[0-9.]*"
-                        value={typeof newProduct.gst === 'string' && newProduct.gst === '' ? '' : String(newProduct.gst)}
-                        onChange={e => setNewProduct({ ...newProduct, gst: e.target.value.replace(/[^0-9.]/g, '') })}
-                        disabled={addingProduct}
-                        required
-                      />
-                      <Input
-                        placeholder="Offer Price"
-                        type="text"
-                        inputMode="numeric"
-                        pattern="[0-9.]*"
-                        value={typeof newProduct.offerPrice === 'string' && newProduct.offerPrice === '' ? '' : String(newProduct.offerPrice)}
-                        onChange={e => setNewProduct({ ...newProduct, offerPrice: e.target.value.replace(/[^0-9.]/g, '') })}
-                        disabled={addingProduct}
-                      />
-                      <div className="flex flex-col sm:flex-row gap-2">
-                        <label className="flex items-center gap-2">
-                          <input
-                            type="checkbox"
-                            checked={!!newProduct.inStock}
-                            onChange={e => setNewProduct({ ...newProduct, inStock: e.target.checked })}
-                            disabled={addingProduct}
-                          />
-                          In Stock
-                        </label>
-                        <label className="flex items-center gap-2">
-                          <input
-                            type="checkbox"
-                            checked={!!newProduct.isNew}
-                            onChange={e => setNewProduct({ ...newProduct, isNew: e.target.checked })}
-                            disabled={addingProduct}
-                          />
-                          New
-                        </label>
-                        <label className="flex items-center gap-2">
-                          <input
-                            type="checkbox"
-                            checked={!!newProduct.isHot}
-                            onChange={e => setNewProduct({ ...newProduct, isHot: e.target.checked })}
-                            disabled={addingProduct}
-                          />
-                          Hot
-                        </label>
-                      </div>
-                      <DialogFooter>
-                        <Button type="submit" disabled={addingProduct || imageUploadProgress.some(p => p > 0 && p < 100)}>
-                          {addingProduct ? 'Adding...' : 'Add Product'}
-                        </Button>
-                        <DialogClose asChild>
-                          <Button type="button" variant="secondary" onClick={() => setShowAddModal(false)}>
-                            Cancel
-                          </Button>
-                        </DialogClose>
-                      </DialogFooter>
-                      {addProductError && <div className="text-red-500 mb-2">{addProductError}</div>}
-                    </form>
-                  </DialogContent>
-                </Dialog>
+                <ProductAddModal
+                  open={showAddModal}
+                  onOpenChange={setShowAddModal}
+                  product={newProduct}
+                  categories={categories}
+                  brands={brands}
+                  loading={addingProduct}
+                  error={addProductError}
+                  onChange={(field, value) => setNewProduct(prev => ({ ...prev, [field]: value }))}
+                  onSave={handleAddProduct}
+                  onCancel={() => setShowAddModal(false)}
+                />
               </div>
               {/* Products Table Section */}
               <section>
@@ -1268,119 +980,53 @@ const AdminDashboard = () => {
                     <div className="text-center py-8">Loading products...</div>
                   ) : productsError ? (
                     <div className="text-center text-red-500 py-8">{productsError}</div>
-                  ) : productView === 'table' ? (
-                    <table className="min-w-full">
-                      <thead>
-                        <tr className="bg-slate-100 dark:bg-slate-800">
-                          <th className="px-4 py-2 text-left w-8">#</th>
-                          <th className="px-4 py-2 text-left">Name</th>
-                          <th className="px-4 py-2 text-left">Category</th>
-                          <th className="px-4 py-2 text-left">Price</th>
-                          <th className="px-4 py-2 text-left">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {filteredProducts.slice((page - 1) * limit, page * limit).map((product, idx) => (
-                          <tr key={product.id} className="border-b hover:bg-accent/30 transition">
-                            <td className="px-4 py-2">
-                              <span
-                                className={
-                                  `inline-block min-w-[2rem] px-2 py-1 text-xs font-bold text-white rounded-md text-center ` +
-                                  (product.inStock
-                                    ? 'bg-green-500/90'
-                                    : 'bg-red-500/90')
-                                }
-                              >
-                                {(page - 1) * limit + idx + 1}
-                              </span>
-                            </td>
-                            <td className="px-4 py-2 font-medium">{product.name}</td>
-                            <td className="px-4 py-2">{categories.find(c => c.id === product.categoryId)?.name || '-'}</td>
-                            <td className="px-4 py-2">₹{product.price}</td>
-                            <td className="px-4 py-2 flex gap-2">
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button size="icon" variant="outline" onClick={() => openEditModal(product)} aria-label="Edit">
-                                      <Pencil className="w-4 h-4" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>Edit</TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button size="icon" variant="destructive" onClick={() => handleRemoveProduct(product.id)} aria-label="Delete">
-                                      <Trash className="w-4 h-4" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>Delete</TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button size="icon" variant="outline" onClick={() => {
-                                      setEditingProduct(product);
-                                      setEditProductState({ ...initialProductState, ...product, categoryId: String(product.categoryId), brandId: String(product.brandId) });
-                                      // Support both array of strings and array of { url, publicId }
-                                      let imgs = Array.isArray(product.images)
-                                        ? product.images.map((img: any) =>
-                                            typeof img === 'string' ? { url: img, publicId: '' } : { url: img.url, publicId: img.publicId || '' }
-                                          )
-                                        : [];
-                                      setEditUploadedImages(imgs);
-                                      setImageManagerImages(imgs);
-                                      setShowImageManager(true);
-                                    }} aria-label="Manage Images">
-                                      <Upload className="w-4 h-4" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>Manage Images</TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4">
-                      {filteredProducts.map(product => (
-                        <div key={product.id} className="rounded-xl shadow border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 flex flex-col gap-2">
-                          <div className="w-full aspect-[4/3] bg-slate-100 dark:bg-slate-800 rounded mb-2 flex items-center justify-center overflow-hidden">
-                            {product.images && product.images.length > 0 ? (
-                              <img src={product.images[0]} alt={product.name} className="object-contain max-h-40 w-full" />
-                            ) : (
-                              <span className="text-slate-400 text-xs">No Image</span>
-                            )}
-                          </div>
-                          <div className="font-semibold text-lg text-slate-800 dark:text-slate-100">{product.name}</div>
-                          <div className="text-mangla-gold font-bold text-xl">₹{product.price}</div>
-                          <div className="flex gap-2 mt-2">
-                            {/* Edit and Remove buttons will go here */}
-                            <Button
-                              variant="outline"
-                              className="px-3 py-1 text-sm mr-2"
-                              onClick={() => openEditModal(product)}
-                              disabled={removingProductId === product.id}
-                            >
-                              Edit
-                            </Button>
-                            <Button
-                              variant="destructive"
-                              onClick={() => handleRemoveProduct(product.id)}
-                              disabled={removingProductId === product.id}
-                              className="px-3 py-1 text-sm"
-                            >
-                              {removingProductId === product.id ? 'Removing...' : 'Remove'}
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                                      ) : productView === 'table' ? (
+                      <ProductTable
+                        products={filteredProducts.slice((page - 1) * limit, page * limit)}
+                        categories={categories}
+                        brands={brands}
+                        page={page}
+                        limit={limit}
+                        totalPages={Math.ceil(filteredProducts.length / limit)}
+                        onEdit={openEditModal}
+                        onDelete={handleRemoveProduct}
+                        onManageImages={(product) => {
+                          setEditingProduct(product);
+                          setEditProductState({ ...initialProductState, ...product, categoryId: String(product.categoryId), brandId: String(product.brandId) });
+                          let imgs = Array.isArray(product.images)
+                            ? product.images.map((img: any) =>
+                                typeof img === 'string' ? { url: img, publicId: '' } : { url: img.url, publicId: img.publicId || '' }
+                              )
+                            : [];
+                          setEditUploadedImages(imgs);
+                          setImageManagerImages(imgs);
+                          setShowImageManager(true);
+                        }}
+                        onPageChange={handlePageChange}
+                        removingProductId={removingProductId}
+                        removeProductError={removeProductError}
+                      />
+                    ) : (
+                      <ProductCardGrid
+                        products={filteredProducts}
+                        categories={categories}
+                        onEdit={openEditModal}
+                        onDelete={handleRemoveProduct}
+                        onManageImages={(product) => {
+                          setEditingProduct(product);
+                          setEditProductState({ ...initialProductState, ...product, categoryId: String(product.categoryId), brandId: String(product.brandId) });
+                          let imgs = Array.isArray(product.images)
+                            ? product.images.map((img: any) =>
+                                typeof img === 'string' ? { url: img, publicId: '' } : { url: img.url, publicId: img.publicId || '' }
+                              )
+                            : [];
+                          setEditUploadedImages(imgs);
+                          setImageManagerImages(imgs);
+                          setShowImageManager(true);
+                        }}
+                        removingProductId={removingProductId}
+                      />
+                    )}
                   {removeProductError && <div className="text-red-500 mt-2 px-4 pb-4">{removeProductError}</div>}
                 </div>
                 {/* Pagination controls */}
@@ -1411,634 +1057,89 @@ const AdminDashboard = () => {
       </main>
       <Footer />
       {/* Edit Product Modal */}
-      <Dialog open={editModalOpen} onOpenChange={setEditModalOpen}>
-        <DialogContent className="max-w-lg w-full sm:max-w-xl p-4 sm:p-6 max-h-[90vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-xl border border-mangla-gold">
-          <DialogHeader>
-            <DialogTitle className="text-mangla-gold">Edit Product</DialogTitle>
-          </DialogHeader>
-          <form
-            onSubmit={e => {
-              e.preventDefault();
-              handleEditProduct();
-            }}
-            className="flex flex-col gap-4 w-full"
-          >
-            <label className="font-medium">Product Name</label>
-            <Input
-              placeholder="Product Name"
-              value={editProductState.name}
-              onChange={e => setEditProductState({ ...editProductState, name: e.target.value })}
-              disabled={editLoading}
-              required
-            />
-            <label className="font-medium">Price (display string, e.g. ₹1,999)</label>
-            <Input
-              placeholder="Price (display string, e.g. ₹1,999)"
-              value={editProductState.price}
-              onChange={e => setEditProductState({ ...editProductState, price: e.target.value })}
-              disabled={editLoading}
-              required
-            />
-            <label className="font-medium">Numeric Price (number)</label>
-            <Input
-              placeholder="Numeric Price (number)"
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              value={typeof editProductState.numericPrice === 'string' && editProductState.numericPrice === '' ? '' : String(editProductState.numericPrice)}
-              onChange={e => setEditProductState({ ...editProductState, numericPrice: e.target.value.replace(/[^0-9.]/g, '') })}
-              disabled={editLoading}
-              required
-            />
-            <label className="font-medium">Rating (float)</label>
-            <Input
-              placeholder="Rating (float)"
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9.]*"
-              value={typeof editProductState.rating === 'string' && editProductState.rating === '' ? '' : String(editProductState.rating)}
-              onChange={e => setEditProductState({ ...editProductState, rating: e.target.value.replace(/[^0-9.]/g, '') })}
-              disabled={editLoading}
-              required
-            />
-            <label className="font-medium">Review Count (optional)</label>
-            <Input
-              placeholder="Review Count (optional)"
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              value={typeof editProductState.reviewCount === 'string' && editProductState.reviewCount === '' ? '' : String(editProductState.reviewCount)}
-              onChange={e => setEditProductState({ ...editProductState, reviewCount: e.target.value.replace(/[^0-9]/g, '') })}
-              disabled={editLoading}
-            />
-            <label className="font-medium">Sold Count (optional)</label>
-            <Input
-              placeholder="Sold Count (optional)"
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              value={typeof editProductState.soldCount === 'string' && editProductState.soldCount === '' ? '' : String(editProductState.soldCount)}
-              onChange={e => setEditProductState({ ...editProductState, soldCount: e.target.value.replace(/[^0-9]/g, '') })}
-              disabled={editLoading}
-            />
-            <label className="font-medium">Short Description (optional)</label>
-            <Textarea
-              placeholder="Short Description (optional)"
-              value={editProductState.shortDescription}
-              onChange={e => setEditProductState({ ...editProductState, shortDescription: e.target.value })}
-              disabled={editLoading}
-              rows={2}
-            />
-            <Select
-              value={editProductState.categoryId || ''}
-              onValueChange={val => setEditProductState({ ...editProductState, categoryId: val })}
-              disabled={editLoading}
-              required
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select Category" />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map(cat => (
-                  <SelectItem key={cat.id} value={String(cat.id)}>{cat.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select
-              value={editProductState.brandId || ''}
-              onValueChange={val => setEditProductState({ ...editProductState, brandId: val })}
-              disabled={editLoading}
-              required
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select Brand" />
-              </SelectTrigger>
-              <SelectContent>
-                {brands.map(brand => (
-                  <SelectItem key={brand.id} value={String(brand.id)}>{brand.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <div className="flex flex-col gap-2">
-              <label className="font-medium">Product Images (.jpg, .png, up to 5)</label>
-              <input
-                ref={editFileInputRef}
-                id="edit-product-image-upload"
-                type="file"
-                accept=".jpg,.jpeg,.png"
-                multiple
-                onChange={handleEditImageChange}
-                disabled={editLoading}
-                className="hidden"
-              />
-              <button
-                type="button"
-                onClick={() => editFileInputRef.current?.click()}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors w-fit"
-                disabled={editLoading || ((editProductState.images?.length || 0) + editImageFiles.length) >= 5}
-              >
-                <Upload className="w-4 h-4" /> Upload
-              </button>
-              {/* Existing images */}
-              {editProductState.images && editProductState.images.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {editProductState.images.map((img: string, idx: number) => (
-                    <div key={idx} className="relative">
-                      <img src={img} alt={`Product ${idx + 1}`} className="max-h-32 rounded border" />
-                      <button
-                        type="button"
-                        className="absolute top-1 right-1 bg-white/80 rounded-full p-1 hover:bg-red-100"
-                        onClick={() => handleRemoveExistingEditImage(idx)}
-                        aria-label="Remove image"
-                      >
-                        <X className="w-4 h-4 text-red-500" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-              {/* New images to be uploaded */}
-              {editImagePreviews.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {editImagePreviews.map((preview, idx) => (
-                    <div key={idx} className="relative">
-                      <img src={preview} alt={`Preview ${idx + 1}`} className="max-h-32 rounded border opacity-60" />
-                      <button
-                        type="button"
-                        className="absolute top-1 right-1 bg-white/80 rounded-full p-1 hover:bg-red-100"
-                        onClick={() => handleRemoveEditImage(idx)}
-                        aria-label="Remove image"
-                        disabled={editLoading && editImageUploadProgress.length > 0}
-                      >
-                        <X className="w-4 h-4 text-red-500" />
-                      </button>
-                      {editLoading && editImageUploadProgress[idx] !== undefined && (
-                        <div className="absolute left-1 bottom-1 right-1 bg-white/80 rounded px-1 py-0.5 text-xs text-blue-700 font-semibold flex items-center">
-                          {editImageUploadProgress[idx] < 100 ? (
-                            <>
-                              <span>Uploading: {editImageUploadProgress[idx]}%</span>
-                              <span className="ml-1 animate-spin"><svg width="12" height="12" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity=".2"/><path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/></svg></span>
-                            </>
-                          ) : (
-                            <span>Uploaded</span>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            <Input
-              placeholder="GST (%)"
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9.]*"
-              value={typeof editProductState.gst === 'string' && editProductState.gst === '' ? '' : String(editProductState.gst)}
-              onChange={e => setEditProductState({ ...editProductState, gst: e.target.value.replace(/[^0-9.]/g, '') })}
-              disabled={editLoading}
-              required
-            />
-            <Input
-              placeholder="Offer Price"
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9.]*"
-              value={typeof editProductState.offerPrice === 'string' && editProductState.offerPrice === '' ? '' : String(editProductState.offerPrice)}
-              onChange={e => setEditProductState({ ...editProductState, offerPrice: e.target.value.replace(/[^0-9.]/g, '') })}
-              disabled={editLoading}
-            />
-            <div className="flex flex-col sm:flex-row gap-2">
-              <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={!!editProductState.inStock}
-                  onChange={e => setEditProductState({ ...editProductState, inStock: e.target.checked })}
-                  disabled={editLoading}
-                />
-                In Stock
-              </label>
-              <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={!!editProductState.isNew}
-                  onChange={e => setEditProductState({ ...editProductState, isNew: e.target.checked })}
-                  disabled={editLoading}
-                />
-                New
-              </label>
-              <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={!!editProductState.isHot}
-                  onChange={e => setEditProductState({ ...editProductState, isHot: e.target.checked })}
-                  disabled={editLoading}
-                />
-                Hot
-              </label>
-            </div>
-            <Button type="button" variant="outline" onClick={openImageManager} className="mb-2">Manage Images</Button>
-            <DialogFooter>
-              <Button type="submit" disabled={editLoading || editImageUploadProgress.some(p => p > 0 && p < 100)}>
-                {editLoading ? 'Saving...' : 'Save Changes'}
-              </Button>
-              <DialogClose asChild>
-                <Button type="button" variant="secondary" onClick={() => setEditModalOpen(false)}>
-                  Cancel
-                </Button>
-              </DialogClose>
-            </DialogFooter>
-            {editError && <div className="text-red-500 mb-2">{editError}</div>}
-          </form>
-        </DialogContent>
-      </Dialog>
+      <ProductEditModal
+        open={editModalOpen}
+        onOpenChange={setEditModalOpen}
+        product={editProductState}
+        categories={categories}
+        brands={brands}
+        loading={editLoading}
+        error={editError}
+        onChange={(field, value) => setEditProductState(prev => ({ ...prev, [field]: value }))}
+        onSave={handleEditProduct}
+        onCancel={() => setEditModalOpen(false)}
+        onManageImages={openImageManager}
+      />
       {/* Manage Categories Modal */}
-      <SimpleDialog open={showManageCategories} onOpenChange={setShowManageCategories}>
-        <DialogContent className="max-w-md w-full">
-          <DialogHeader>
-            <DialogTitle>Manage Categories</DialogTitle>
-          </DialogHeader>
-          <div className="mb-3 flex items-center gap-2">
-            <Input
-              placeholder="Search categories..."
-              value={categorySearch}
-              onChange={e => setCategorySearch(e.target.value)}
-              className="flex-1"
-            />
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button size="icon" variant="outline" onClick={() => setAddingNewCategory(v => !v)} aria-label="Add Category">
-                    <Plus />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Add New Category</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-          {addingNewCategory && (
-            <div className="flex items-center gap-2 mb-3 animate-fade-in">
-              <Input
-                placeholder="Category name"
-                value={newManageCategoryName}
-                onChange={e => setNewManageCategoryName(e.target.value)}
-                disabled={manageCategoryLoading}
-                autoFocus
-              />
-              <Button size="sm" onClick={handleAddNewCategory} disabled={manageCategoryLoading || !newManageCategoryName.trim()}>
-                {manageCategoryLoading ? <span className="animate-spin mr-1"><svg width="16" height="16" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" opacity=".2"/><path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" strokeWidth="4" strokeLinecap="round"/></svg></span> : 'Add'}
-              </Button>
-              <Button size="sm" variant="secondary" onClick={() => { setAddingNewCategory(false); setNewManageCategoryName(''); }} disabled={manageCategoryLoading}>Cancel</Button>
-            </div>
-          )}
-          <div className="space-y-2 max-h-80 overflow-y-auto">
-            {filteredCategories.length === 0 && <div className="text-muted-foreground text-center py-6">No categories found.</div>}
-            {filteredCategories.map(cat => (
-              <div key={cat.id} className="flex items-center gap-2 rounded hover:bg-accent px-2 py-1 transition">
-                {editCategoryId === cat.id ? (
-                  <>
-                    <Input
-                      value={editCategoryName}
-                      onChange={e => setEditCategoryName(e.target.value)}
-                      disabled={manageCategoryLoading}
-                      autoFocus
-                    />
-                    <Button size="sm" onClick={handleSaveEditCategory} disabled={manageCategoryLoading || !editCategoryName.trim()}>
-                      {manageCategoryLoading ? <span className="animate-spin mr-1"><svg width="16" height="16" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" opacity=".2"/><path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" strokeWidth="4" strokeLinecap="round"/></svg></span> : 'Save'}
-                    </Button>
-                    <Button size="sm" variant="secondary" onClick={() => setEditCategoryId(null)} disabled={manageCategoryLoading}>Cancel</Button>
-                  </>
-                ) : (
-                  <>
-                    <span className="flex-1 truncate font-medium">{cat.name}</span>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button size="icon" variant="ghost" onClick={() => handleEditCategory(cat)} disabled={manageCategoryLoading} aria-label="Edit">
-                            <Pencil className="w-4 h-4" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Edit</TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button size="icon" variant="ghost" onClick={() => setDeleteCategoryId(cat.id)} aria-label="Delete">
-                                <Trash className="w-4 h-4 text-destructive" />
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Delete Category</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  <div className="text-destructive font-semibold mb-2">Warning: This will delete <b>all products</b> in this category. This action cannot be undone.</div>
-                                  <div>To confirm, type <span className="font-mono bg-muted px-1 rounded">Yes Delete</span> below:</div>
-                                  <Input
-                                    className="mt-2"
-                                    placeholder="Type Yes Delete to confirm"
-                                    value={deleteCategoryInput}
-                                    onChange={e => setDeleteCategoryInput(e.target.value)}
-                                    autoFocus
-                                  />
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel onClick={() => { setDeleteCategoryId(null); setDeleteCategoryInput(''); }}>Cancel</AlertDialogCancel>
-                                <AlertDialogAction
-                                  disabled={deleteCategoryInput !== 'Yes Delete'}
-                                  onClick={async () => {
-                                    if (deleteCategoryInput !== 'Yes Delete') {
-                                      toast({ title: 'Confirmation failed', description: 'You must type Yes Delete to confirm.', variant: 'destructive' });
-                                      return;
-                                    }
-                                    setDeleteCategoryId(null);
-                                    setDeleteCategoryInput('');
-                                    await handleDeleteCategory(cat.id);
-                                    toast({ title: 'Category deleted', description: cat.name + ' and all related products deleted.' });
-                                  }}
-                                >Delete</AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                        </TooltipTrigger>
-                        <TooltipContent>Delete</TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </>
-                )}
-              </div>
-            ))}
-          </div>
-          {manageCategoryError && <div className="text-red-500 text-sm mt-2">{manageCategoryError}</div>}
-          <DialogFooter>
-            <Button variant="secondary" onClick={() => setShowManageCategories(false)}>Close</Button>
-          </DialogFooter>
-        </DialogContent>
-      </SimpleDialog>
+      <CategoryManager
+        categories={categories}
+        loading={manageCategoryLoading}
+        error={manageCategoryError}
+        addModalOpen={showManageCategories}
+        editModalOpen={editCategoryId !== null}
+        editingCategory={categories.find(c => c.id === editCategoryId)}
+        newCategoryName={newManageCategoryName}
+        onAddModalOpen={() => setShowManageCategories(true)}
+        onAddModalClose={() => setShowManageCategories(false)}
+        onEditModalOpen={(category) => handleEditCategory(category)}
+        onEditModalClose={() => setEditCategoryId(null)}
+        onNewCategoryChange={setNewManageCategoryName}
+        onAddCategory={handleAddNewCategory}
+        onEditCategory={handleSaveEditCategory}
+        onDeleteCategory={(id) => handleDeleteCategory(Number(id))}
+      />
       {/* Manage Brands Modal */}
-      <SimpleDialog open={showManageBrands} onOpenChange={setShowManageBrands}>
-        <DialogContent className="max-w-md w-full">
-          <DialogHeader>
-            <DialogTitle>Manage Brands</DialogTitle>
-          </DialogHeader>
-          <div className="mb-3 flex items-center gap-2">
-            <Input
-              placeholder="Search brands..."
-              value={brandSearch}
-              onChange={e => setBrandSearch(e.target.value)}
-              className="flex-1"
-            />
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button size="icon" variant="outline" onClick={() => setAddingNewBrand(v => !v)} aria-label="Add Brand">
-                    <Plus />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Add New Brand</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-          {addingNewBrand && (
-            <div className="flex items-center gap-2 mb-3 animate-fade-in">
-              <Input
-                placeholder="Brand name"
-                value={newManageBrandName}
-                onChange={e => setNewManageBrandName(e.target.value)}
-                disabled={manageBrandLoading}
-                autoFocus
-              />
-              <Button size="sm" onClick={handleAddNewBrand} disabled={manageBrandLoading || !newManageBrandName.trim()}>
-                {manageBrandLoading ? <span className="animate-spin mr-1"><svg width="16" height="16" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" opacity=".2"/><path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" strokeWidth="4" strokeLinecap="round"/></svg></span> : 'Add'}
-              </Button>
-              <Button size="sm" variant="secondary" onClick={() => { setAddingNewBrand(false); setNewManageBrandName(''); }} disabled={manageBrandLoading}>Cancel</Button>
-            </div>
-          )}
-          <div className="space-y-2 max-h-80 overflow-y-auto">
-            {filteredBrands.length === 0 && <div className="text-muted-foreground text-center py-6">No brands found.</div>}
-            {filteredBrands.map(brand => (
-              <div key={brand.id} className="flex items-center gap-2 rounded hover:bg-accent px-2 py-1 transition">
-                {editBrandId === brand.id ? (
-                  <>
-                    <Input
-                      value={editBrandName}
-                      onChange={e => setEditBrandName(e.target.value)}
-                      disabled={manageBrandLoading}
-                      autoFocus
-                    />
-                    <Button size="sm" onClick={handleSaveEditBrand} disabled={manageBrandLoading || !editBrandName.trim()}>
-                      {manageBrandLoading ? <span className="animate-spin mr-1"><svg width="16" height="16" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" opacity=".2"/><path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" strokeWidth="4" strokeLinecap="round"/></svg></span> : 'Save'}
-                    </Button>
-                    <Button size="sm" variant="secondary" onClick={() => setEditBrandId(null)} disabled={manageBrandLoading}>Cancel</Button>
-                  </>
-                ) : (
-                  <>
-                    <span className="flex-1 truncate font-medium">{brand.name}</span>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button size="icon" variant="ghost" onClick={() => setDeleteBrandId(brand.id)} aria-label="Delete">
-                                <Trash className="w-4 h-4 text-destructive" />
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Delete Brand</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  <div className="text-destructive font-semibold mb-2">Warning: This will delete <b>all products</b> in this brand. This action cannot be undone.</div>
-                                  <div>To confirm, type <span className="font-mono bg-muted px-1 rounded">Yes Delete</span> below:</div>
-                                  <Input
-                                    className="mt-2"
-                                    placeholder="Type Yes Delete to confirm"
-                                    value={deleteBrandInput}
-                                    onChange={e => setDeleteBrandInput(e.target.value)}
-                                    autoFocus
-                                  />
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel onClick={() => { setDeleteBrandId(null); setDeleteBrandInput(''); }}>Cancel</AlertDialogCancel>
-                                <AlertDialogAction
-                                  disabled={deleteBrandInput !== 'Yes Delete'}
-                                  onClick={async () => {
-                                    if (deleteBrandInput !== 'Yes Delete') {
-                                      toast({ title: 'Confirmation failed', description: 'You must type Yes Delete to confirm.', variant: 'destructive' });
-                                      return;
-                                    }
-                                    setDeleteBrandId(null);
-                                    setDeleteBrandInput('');
-                                    await handleDeleteBrand(brand.id);
-                                    toast({ title: 'Brand deleted', description: brand.name + ' and all related products deleted.' });
-                                  }}
-                                >Delete</AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                        </TooltipTrigger>
-                        <TooltipContent>Delete</TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </>
-                )}
-              </div>
-            ))}
-          </div>
-          {manageBrandError && <div className="text-red-500 text-sm mt-2">{manageBrandError}</div>}
-          <DialogFooter>
-            <Button variant="secondary" onClick={() => setShowManageBrands(false)}>Close</Button>
-          </DialogFooter>
-        </DialogContent>
-      </SimpleDialog>
+      <BrandManager
+        brands={brands}
+        loading={manageBrandLoading}
+        error={manageBrandError}
+        addModalOpen={showManageBrands}
+        editModalOpen={editBrandId !== null}
+        editingBrand={brands.find(b => b.id === editBrandId)}
+        newBrandName={newManageBrandName}
+        onAddModalOpen={() => setShowManageBrands(true)}
+        onAddModalClose={() => setShowManageBrands(false)}
+        onEditModalOpen={(brand) => handleEditBrand(brand)}
+        onEditModalClose={() => setEditBrandId(null)}
+        onNewBrandChange={setNewManageBrandName}
+        onAddBrand={handleAddNewBrand}
+        onEditBrand={handleSaveEditBrand}
+        onDeleteBrand={(id) => handleDeleteBrand(Number(id))}
+      />
       {/* Image Manager Modal */}
-      <Dialog open={showImageManager} onOpenChange={setShowImageManager}>
-        <DialogContent className="max-w-lg w-full">
-          <DialogHeader>
-            <DialogTitle>Manage Product Images</DialogTitle>
-          </DialogHeader>
-          <div className="mb-2 text-sm text-muted-foreground">Drag to reorder. Add or remove images as needed.</div>
-          {deleteMode ? (
-            <div className="flex flex-wrap gap-2 mb-4">
-              {imageManagerImages.map((img, idx) => (
-                <SortableImage
-                  key={img.publicId || img.url}
-                  img={img}
-                  idx={idx}
-                  deleteMode={deleteMode}
-                  onRemove={img => setConfirmDeleteImg(img)}
-                />
-              ))}
-            </div>
-          ) : (
-            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleImageManagerDragEnd}>
-              <SortableContext items={imageManagerImages.map(img => img.publicId)} strategy={verticalListSortingStrategy}>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {imageManagerImages.map((img, idx) => (
-                    <SortableImage
-                      key={img.publicId || img.url}
-                      img={img}
-                      idx={idx}
-                      deleteMode={deleteMode}
-                      onRemove={img => setConfirmDeleteImg(img)}
-                    />
-                  ))}
-                </div>
-              </SortableContext>
-            </DndContext>
-          )}
-          {/* Add new images */}
-          <div className="mb-2">
-            <input
-              id="image-manager-upload"
-              type="file"
-              accept=".jpg,.jpeg,.png"
-              multiple
-              className="hidden"
-              onChange={e => {
-                const files = Array.from(e.target.files || []).filter(
-                  file => file.type === 'image/jpeg' || file.type === 'image/png'
-                );
-                setImageManagerFiles(files);
-                setImageManagerPreviews(files.map(file => URL.createObjectURL(file)));
-              }}
-            />
-            <TooltipProvider>
-              <Tooltip><TooltipTrigger asChild>
-                <Button type="button" size="icon" onClick={() => document.getElementById('image-manager-upload')?.click()} disabled={imageManagerFiles.length > 0 || imageManagerProgress.some(p => p > 0 && p < 100)} aria-label="Add Images">
-                  <Plus className="w-5 h-5" />
-                </Button>
-              </TooltipTrigger><TooltipContent>Add Images</TooltipContent></Tooltip>
-            </TooltipProvider>
-          </div>
-          {/* Show previews and upload progress for new images */}
-          {imageManagerPreviews.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-2">
-              {imageManagerPreviews.map((preview, idx) => (
-                <div key={preview} className="relative">
-                  <img src={preview} alt={`Preview ${idx + 1}`} className="max-h-32 rounded border opacity-60" />
-                  {imageManagerProgress[idx] !== undefined && (
-                    <div className="absolute left-1 bottom-1 right-1 bg-white/80 rounded px-1 py-0.5 text-xs text-blue-700 font-semibold flex items-center">
-                      {imageManagerProgress[idx] < 100 ? (
-                        <>
-                          <span>Uploading: {imageManagerProgress[idx]}%</span>
-                          <span className="ml-1 animate-spin"><svg width="12" height="12" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity=".2"/><path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/></svg></span>
-                        </>
-                      ) : (
-                        <span>Uploaded</span>
-                      )}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-          {imageManagerFiles.length > 0 && (
-            <Button type="button" onClick={handleImageManagerAdd} disabled={imageManagerProgress.some(p => p > 0 && p < 100)}>
-              Upload Selected Images
-            </Button>
-          )}
-          {imageManagerError && <div className="text-red-500 text-sm mt-2">{imageManagerError}</div>}
-          <DialogFooter>
-            <TooltipProvider>
-              <Tooltip><TooltipTrigger asChild>
-                <Button variant="secondary" size="icon" onClick={handleImageManagerCancel} disabled={imageManagerSaving} aria-label="Cancel">
-                  <X className="w-5 h-5" />
-                </Button>
-              </TooltipTrigger><TooltipContent>Cancel</TooltipContent></Tooltip>
-            </TooltipProvider>
-            <TooltipProvider>
-              <Tooltip><TooltipTrigger asChild>
-                <Button onClick={handleImageManagerSave} size="icon" disabled={imageManagerSaving} aria-label="Save">
-                  <Check className="w-5 h-5" />
-                </Button>
-              </TooltipTrigger><TooltipContent>Save</TooltipContent></Tooltip>
-            </TooltipProvider>
-          </DialogFooter>
-          {/* Confirm delete dialog */}
-          {confirmDeleteImg && (
-            <Dialog open={true} onOpenChange={open => { if (!open) setConfirmDeleteImg(null); }}>
-              <DialogContent className="max-w-xs w-full">
-                <DialogHeader>
-                  <DialogTitle>Delete Image?</DialogTitle>
-                </DialogHeader>
-                <div className="mb-2 text-sm text-red-600">Are you sure you want to delete this image? This cannot be undone.</div>
-                <img src={confirmDeleteImg.url} alt="To delete" className="max-h-32 rounded border mb-2" />
-                <DialogFooter>
-                  <Button variant="secondary" onClick={() => setConfirmDeleteImg(null)}>Cancel</Button>
-                  <Button variant="destructive" size="icon" onClick={async () => {
-                    await handleImageManagerRemove(confirmDeleteImg);
-                    setConfirmDeleteImg(null);
-                  }} aria-label="Delete">
-                    <Trash className="w-5 h-5" />
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          )}
-          <div className="flex items-center justify-between mb-2">
-            <TooltipProvider>
-              <Tooltip><TooltipTrigger asChild>
-                <Button
-                  type="button"
-                  size="icon"
-                  variant={deleteMode ? 'destructive' : 'outline'}
-                  onClick={() => setDeleteMode(v => !v)}
-                  aria-label={deleteMode ? 'Exit Delete Mode' : 'Delete Mode'}
-                >
-                  <ShieldAlert className="w-5 h-5" />
-                </Button>
-              </TooltipTrigger><TooltipContent>{deleteMode ? 'Exit Delete Mode' : 'Delete Mode'}</TooltipContent></Tooltip>
-            </TooltipProvider>
-            {deleteMode && (
-              <span className="flex items-center text-xs text-red-600 font-semibold ml-2"><ShieldAlert className="w-4 h-4 mr-1" />Delete Mode is active. Click the cross to delete images.</span>
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
+      <ProductImageManager
+        open={showImageManager}
+        onOpenChange={setShowImageManager}
+        images={imageManagerImages}
+        loading={imageManagerSaving}
+        error={imageManagerError}
+        onUpload={(files) => {
+          const fileArray = Array.from(files).filter(
+            file => file.type === 'image/jpeg' || file.type === 'image/png'
+          );
+          setImageManagerFiles(fileArray);
+          setImageManagerPreviews(fileArray.map(file => URL.createObjectURL(file)));
+        }}
+        onDelete={(index) => {
+          const img = imageManagerImages[index];
+          setConfirmDeleteImg(img);
+        }}
+        onSave={handleImageManagerSave}
+        onCancel={handleImageManagerCancel}
+        onDragEnd={handleImageManagerDragEnd}
+        onAddImages={handleImageManagerAdd}
+        onRemoveImage={handleImageManagerRemove}
+        imageManagerFiles={imageManagerFiles}
+        imageManagerPreviews={imageManagerPreviews}
+        imageManagerProgress={imageManagerProgress}
+        imageManagerDeleting={imageManagerDeleting}
+        imageManagerSaving={imageManagerSaving}
+        imageManagerError={imageManagerError}
+        setImageManagerFiles={setImageManagerFiles}
+        setImageManagerPreviews={setImageManagerPreviews}
+        setImageManagerProgress={setImageManagerProgress}
+        setImageManagerError={setImageManagerError}
+      />
     </div>
   );
 };

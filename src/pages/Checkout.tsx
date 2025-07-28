@@ -6,7 +6,7 @@ import AddressModal, { Address } from '@/components/checkout/AddressModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/components/theme/ThemeProvider';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Image } from 'lucide-react';
 
 const API_BASE = 'http://localhost:4000/api/addresses';
 
@@ -177,12 +177,30 @@ const Checkout: React.FC = () => {
                 const gst = typeof item.gst === 'number' ? item.gst : 18;
                 const gstAmount = (mainPrice * item.quantity * gst) / 100;
                 return (
-                  <li key={item.id} className="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <div>
-                      <div className="font-medium text-base sm:text-lg">{item.name || 'Product'}</div>
+                  <li key={item.id} className="py-4 flex items-center gap-4">
+                    {/* Product Image */}
+                    <div className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
+                      {item.images && item.images.length > 0 ? (
+                        <img 
+                          src={typeof item.images[0] === 'string' ? item.images[0] : item.images[0]?.url} 
+                          alt={item.name} 
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Image className="w-6 h-6 text-gray-400" />
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Product Details */}
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium text-base sm:text-lg truncate">{item.name || 'Product'}</div>
                       <div className="text-sm text-gray-500">Qty: {item.quantity}</div>
                       <div className="text-xs text-gray-500">GST: {gst}%</div>
                     </div>
+                    
+                    {/* Price */}
                     <div className="flex flex-col items-end">
                       <div className="flex items-baseline gap-2">
                         <span className="font-semibold text-lg">₹{(mainPrice * item.quantity).toLocaleString()}</span>

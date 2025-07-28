@@ -1,9 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { toast } from 'sonner';
 import { Product } from '@/data/products';
-
-// TODO: Replace with real user authentication
-const USER_ID = 1;
+import { useAuth } from './AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const API_BASE = 'http://localhost:4000/api/wishlist';
 
@@ -27,21 +26,34 @@ export const useWishlist = () => {
 
 export const WishlistProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [wishlist, setWishlist] = useState<Product[]>([]);
+  const { user, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
-  // Load wishlist from backend on initial render
+  // Load wishlist from backend when user is authenticated
   useEffect(() => {
-    fetch(`${API_BASE}?userId=${USER_ID}`)
-      .then(res => res.json())
-      .then(data => setWishlist(data))
-      .catch(() => setWishlist([]));
-  }, []);
+    if (isAuthenticated && user?.id) {
+      fetch(`${API_BASE}?userId=${user.id}`)
+        .then(res => res.json())
+        .then(data => setWishlist(data))
+        .catch(() => setWishlist([]));
+    } else {
+      // Clear wishlist when user is not authenticated
+      setWishlist([]);
+    }
+  }, [isAuthenticated, user?.id]);
 
   const addToWishlist = async (product: Product): Promise<boolean> => {
+    if (!isAuthenticated || !user?.id) {
+      toast.error('Please login to add items to wishlist');
+      navigate('/login');
+      return false;
+    }
+    
     try {
       const res = await fetch(API_BASE, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: USER_ID, productId: product.id })
+        body: JSON.stringify({ userId: user.id, productId: product.id })
       });
       if (res.ok) {
         setWishlist(prev => [...prev, product]);
@@ -58,11 +70,17 @@ export const WishlistProvider: React.FC<{ children: ReactNode }> = ({ children }
   };
 
   const removeFromWishlist = async (productId: string): Promise<boolean> => {
+    if (!isAuthenticated || !user?.id) {
+      toast.error('Please login to manage wishlist');
+      navigate('/login');
+      return false;
+    }
+    
     try {
       const res = await fetch(`${API_BASE}/${productId}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: USER_ID })
+        body: JSON.stringify({ userId: user.id })
       });
       if (res.ok) {
         setWishlist(prev => prev.filter(item => item.id !== productId));
@@ -83,11 +101,16 @@ export const WishlistProvider: React.FC<{ children: ReactNode }> = ({ children }
   };
 
   const clearWishlist = async () => {
+    if (!isAuthenticated || !user?.id) {
+      setWishlist([]);
+      return;
+    }
+    
     try {
       const res = await fetch(API_BASE, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: USER_ID })
+        body: JSON.stringify({ userId: user.id })
       });
       if (res.ok) {
         setWishlist([]);
@@ -101,15 +124,13 @@ export const WishlistProvider: React.FC<{ children: ReactNode }> = ({ children }
   };
 
   return (
-    <WishlistContext.Provider 
-      value={{ 
-        wishlist, 
-        addToWishlist, 
-        removeFromWishlist, 
-        isInWishlist,
-        clearWishlist 
-      }}
-    >
+    <WishlistContext.Provider value={{
+      wishlist,
+      addToWishlist,
+      removeFromWishlist,
+      isInWishlist,
+      clearWishlist,
+    }}>
       {children}
     </WishlistContext.Provider>
   );

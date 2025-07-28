@@ -270,7 +270,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
           {/* Image container with fixed aspect ratio */}
           <div className="relative w-full pt-[100%] bg-white overflow-hidden">
             <img
-              src={product.images && product.images.length > 0 ? product.images[0] : '/placeholder.png'}
+              src={product.images && product.images.length > 0 ? (typeof product.images[0] === 'string' ? product.images[0] : product.images[0]?.url) : '/placeholder.png'}
               alt={product.name}
               className="absolute inset-0 w-full h-full object-contain p-4 transition-transform duration-300 group-hover:scale-110"
             />
@@ -377,8 +377,17 @@ const ProductsContent: React.FC = () => {
     setIsLoading(true);
     fetch('http://localhost:4000/api/products')
       .then(res => res.json())
-      .then(data => setProducts(data.products))
-      .catch(() => setProducts([]))
+      .then(data => {
+        console.log('Fetched products:', data.products);
+        console.log('Product categories:', data.products.map(p => p.category?.name));
+        console.log('Product brands:', data.products.map(p => p.brand?.name));
+        console.log('Product prices:', data.products.map(p => p.numericPrice));
+        setProducts(data.products);
+      })
+      .catch((error) => {
+        console.error('Error fetching products:', error);
+        setProducts([]);
+      })
       .finally(() => setIsLoading(false));
   }, []);
   
@@ -447,6 +456,7 @@ const ProductsContent: React.FC = () => {
   // Apply filters to products
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
+    console.log('Initial products count:', filtered.length);
     
     // Apply search query filter if provided
     if (searchQuery) {
@@ -457,12 +467,21 @@ const ProductsContent: React.FC = () => {
         p.brand.name.toLowerCase().includes(query) ||
         p.category.name.toLowerCase().includes(query)
       );
+      console.log('After search filter:', filtered.length);
     }
     // Apply category filter if provided (only if no search query)
     else if (category) {
       // Get category title from slug
       const categoryTitle = currentCategory?.title || '';
-      filtered = filtered.filter(p => p.category.name === categoryTitle);
+      console.log('Filtering by category:', categoryTitle);
+      filtered = filtered.filter(p => {
+        const matches = p.category.name === categoryTitle;
+        if (!matches) {
+          console.log('Product excluded - category mismatch:', p.name, 'Expected:', categoryTitle, 'Got:', p.category.name);
+        }
+        return matches;
+      });
+      console.log('After category filter:', filtered.length);
     } 
     // Otherwise apply multiple category filters if selected
     else if (filters.categories.length > 0) {
@@ -479,8 +498,13 @@ const ProductsContent: React.FC = () => {
     
     // Apply price filter
     filtered = filtered.filter(p => {
-      return p.numericPrice >= filters.priceRange[0] && p.numericPrice <= filters.priceRange[1];
+      const inRange = p.numericPrice >= filters.priceRange[0] && p.numericPrice <= filters.priceRange[1];
+      if (!inRange) {
+        console.log('Product excluded - price out of range:', p.name, 'Price:', p.numericPrice, 'Range:', filters.priceRange);
+      }
+      return inRange;
     });
+    console.log('After price filter:', filtered.length);
     
     // Apply brand filter
     if (filters.brands.length > 0) {
@@ -514,6 +538,7 @@ const ProductsContent: React.FC = () => {
       filtered = [...filtered].sort(sortOption.sortFn);
     }
     
+    console.log('Final filtered products count:', filtered.length);
     return filtered;
   }, [category, filters, sortBy, currentCategory]);
   

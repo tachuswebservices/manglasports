@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { toast } from 'sonner';
 import { Product } from '@/data/products';
+import { useAuth } from './AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 type CartItem = Product & {
   quantity: number;
@@ -8,8 +10,6 @@ type CartItem = Product & {
   gst?: number;
 };
 
-// TODO: Replace with real user authentication
-const USER_ID = 1;
 const API_BASE = 'http://localhost:4000/api/cart';
 
 type CartContextType = {
@@ -35,22 +35,35 @@ export const useCart = () => {
 
 export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
+  const { user, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
-  // Load cart from backend on initial render
+  // Load cart from backend when user is authenticated
   useEffect(() => {
-    fetch(`${API_BASE}?userId=${USER_ID}`)
-      .then(res => res.json())
-      .then(data => setCart(data.map((item: any) => ({ ...item.product, quantity: item.quantity }))))
-      .catch(() => setCart([]));
-  }, []);
+    if (isAuthenticated && user?.id) {
+      fetch(`${API_BASE}?userId=${user.id}`)
+        .then(res => res.json())
+        .then(data => setCart(data.map((item: any) => ({ ...item.product, quantity: item.quantity }))))
+        .catch(() => setCart([]));
+    } else {
+      // Clear cart when user is not authenticated
+      setCart([]);
+    }
+  }, [isAuthenticated, user?.id]);
 
   const addToCart = async (product: Product, quantity: number = 1): Promise<boolean> => {
+    if (!isAuthenticated || !user?.id) {
+      toast.error('Please login to add items to cart');
+      navigate('/login');
+      return false;
+    }
+    
     if (quantity < 1) return false;
     try {
       const res = await fetch(API_BASE, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: USER_ID, productId: product.id, quantity })
+        body: JSON.stringify({ userId: user.id, productId: product.id, quantity })
       });
       if (res.ok) {
         setCart(prev => {
@@ -74,11 +87,17 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const removeFromCart = async (productId: string): Promise<boolean> => {
+    if (!isAuthenticated || !user?.id) {
+      toast.error('Please login to manage cart');
+      navigate('/login');
+      return false;
+    }
+    
     try {
       const res = await fetch(`${API_BASE}/${productId}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: USER_ID })
+        body: JSON.stringify({ userId: user.id })
       });
       if (res.ok) {
         setCart(prev => prev.filter(item => item.id !== productId));
@@ -95,6 +114,12 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const updateQuantity = async (productId: string, quantity: number) => {
+    if (!isAuthenticated || !user?.id) {
+      toast.error('Please login to manage cart');
+      navigate('/login');
+      return;
+    }
+    
     if (quantity < 1) {
       await removeFromCart(productId);
       return;
@@ -103,7 +128,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const res = await fetch(`${API_BASE}/${productId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: USER_ID, quantity })
+        body: JSON.stringify({ userId: user.id, quantity })
       });
       if (res.ok) {
         setCart(prev => prev.map(item => item.id === productId ? { ...item, quantity } : item));
@@ -120,11 +145,16 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const clearCart = async () => {
+    if (!isAuthenticated || !user?.id) {
+      setCart([]);
+      return;
+    }
+    
     try {
       const res = await fetch(API_BASE, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: USER_ID })
+        body: JSON.stringify({ userId: user.id })
       });
       if (res.ok) {
         setCart([]);
@@ -139,12 +169,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const getCartTotal = () => {
     return cart.reduce((total, item) => {
-      const price = (typeof item.offerPrice === 'number' && item.offerPrice > 0)
-        ? item.offerPrice
-        : (typeof item.numericPrice === 'number' && !isNaN(item.numericPrice)
-            ? item.numericPrice
-            : (typeof item.price === 'string' ? parseFloat(item.price.replace(/[^\d.]/g, '')) : (typeof item.price === 'number' ? item.price : 0))
-          );
+      const price = item.offerPrice || item.numericPrice || 0;
       return total + (price * item.quantity);
     }, 0);
   };
@@ -154,18 +179,16 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   return (
-    <CartContext.Provider
-      value={{
-        cart,
-        addToCart,
-        removeFromCart,
-        updateQuantity,
-        isInCart,
-        clearCart,
-        getCartTotal,
-        getCartItemCount,
-      }}
-    >
+    <CartContext.Provider value={{
+      cart,
+      addToCart,
+      removeFromCart,
+      updateQuantity,
+      isInCart,
+      clearCart,
+      getCartTotal,
+      getCartItemCount,
+    }}>
       {children}
     </CartContext.Provider>
   );
