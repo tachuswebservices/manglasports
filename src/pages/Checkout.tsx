@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AddressModal, { Address } from '@/components/checkout/AddressModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
@@ -13,14 +13,16 @@ const API_BASE = 'http://localhost:4000/api/addresses';
 declare global {
   interface Window {
     Razorpay: any;
+    RAZORPAY_KEY_ID?: string;
   }
 }
 
 const Checkout: React.FC = () => {
-  const { cart, getCartTotal } = useCart();
+  const { cart, getCartTotal, clearCart } = useCart();
   const { user } = useAuth();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  const navigate = useNavigate();
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<number | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -109,7 +111,7 @@ const Checkout: React.FC = () => {
     }
     // 2. Open Razorpay modal
     const options = {
-      key: import.meta.env.VITE_RAZORPAY_KEY_ID || window.RAZORPAY_KEY_ID || '', // Set your key in env or window
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID || window.RAZORPAY_KEY_ID || '',
       amount: order.amount,
       currency: order.currency,
       name: 'Mangla Sports',
@@ -124,8 +126,31 @@ const Checkout: React.FC = () => {
         });
         const verifyData = await verifyRes.json();
         if (verifyData.success) {
-          alert('Payment successful!');
-          // TODO: Place order, clear cart, redirect, etc.
+          // 4. Place order in backend
+          const orderRes = await fetch('http://localhost:4000/api/orders', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userId: user.id,
+              addressId: selectedAddressId,
+              products: cart.map(item => ({
+                productId: item.id,
+                quantity: item.quantity,
+                price: item.offerPrice || item.numericPrice || 0,
+                name: item.name,
+              })),
+              totalAmount: getCartTotal(),
+              paymentId: response.razorpay_payment_id,
+              status: 'completed',
+            }),
+          });
+          if (orderRes.ok) {
+            await clearCart();
+            alert('Order placed successfully!');
+            navigate('/profile?tab=orders');
+          } else {
+            alert('Payment succeeded but failed to store order. Please contact support.');
+          }
         } else {
           alert('Payment verification failed.');
         }
@@ -171,6 +196,7 @@ const Checkout: React.FC = () => {
           <div className="mb-6">
             <ul className="divide-y divide-gray-200 dark:divide-gray-700">
               {cart.map(item => {
+                const images = item.images as any[];
                 const hasOffer = typeof item.offerPrice === 'number' && item.offerPrice > 0;
                 const mainPrice = hasOffer ? item.offerPrice : (typeof item.numericPrice === 'number' && !isNaN(item.numericPrice) ? item.numericPrice : (typeof item.price === 'string' ? parseFloat(item.price.replace(/[^\d.]/g, '')) : (typeof item.price === 'number' ? item.price : 0)));
                 const crossedPrice = hasOffer ? (typeof item.numericPrice === 'number' && !isNaN(item.numericPrice) ? item.numericPrice : (typeof item.price === 'string' ? parseFloat(item.price.replace(/[^\d.]/g, '')) : (typeof item.price === 'number' ? item.price : 0))) : null;
@@ -180,9 +206,9 @@ const Checkout: React.FC = () => {
                   <li key={item.id} className="py-4 flex items-center gap-4">
                     {/* Product Image */}
                     <div className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
-                      {item.images && item.images.length > 0 ? (
+                      {images && images.length > 0 ? (
                         <img 
-                          src={typeof item.images[0] === 'string' ? item.images[0] : item.images[0]?.url} 
+                          src={typeof images[0] === 'string' ? images[0] : images[0]?.url} 
                           alt={item.name} 
                           className="w-full h-full object-cover"
                         />

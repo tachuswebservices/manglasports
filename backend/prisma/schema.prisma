@@ -51,11 +51,11 @@ model Product {
   offerPrice       Float           @default(0)
   cart             Cart[]
   features         Feature[]
-  orders           Order[]
   brand            Brand           @relation(fields: [brandId], references: [id], onDelete: Cascade)
   category         Category        @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   specifications   Specification[]
   wishlist         Wishlist[]
+  orderItems       OrderItem[]
 }
 
 model Feature {
@@ -93,14 +93,30 @@ model Cart {
 }
 
 model Order {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  productId String
-  quantity  Int
-  createdAt DateTime @default(now())
-  status    Int?
-  product   Product  @relation(fields: [productId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+  id          Int         @id @default(autoincrement())
+  userId      Int
+  addressId   Int
+  totalAmount Float
+  paymentId   String?
+  createdAt   DateTime    @default(now())
+  user        User        @relation(fields: [userId], references: [id])
+  address     Address     @relation(fields: [addressId], references: [id])
+  orderItems  OrderItem[]
+}
+
+model OrderItem {
+  id             Int      @id @default(autoincrement())
+  orderId        Int
+  productId      String
+  quantity       Int
+  price          Float
+  name           String
+  status         String   @default("pending")
+  expectedDate   DateTime?
+  courierPartner String?
+  trackingId     String?
+  order          Order    @relation(fields: [orderId], references: [id])
+  product        Product  @relation(fields: [productId], references: [id])
 }
 
 model Address {
@@ -117,4 +133,5 @@ model Address {
   phone       String?
   isDefault   Boolean  @default(false)
   createdAt   DateTime @default(now())
+  orders      Order[]
 }

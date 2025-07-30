@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
 import AdminNavbar from '../components/layout/AdminNavbar';
-import Footer from '../components/layout/Footer';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import {
@@ -45,6 +44,7 @@ import ProductAddModal from '../components/admin/ProductAddModal';
 import ProductImageManager from '../components/admin/ProductImageManager';
 import CategoryManager from '../components/admin/CategoryManager';
 import BrandManager from '../components/admin/BrandManager';
+import OrderCardGrid from '../components/admin/OrderCardGrid';
 
 // Cloudinary config (move to top-level scope)
 const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dvltehb8j/upload';
@@ -163,13 +163,36 @@ const AdminDashboard = () => {
   const [deleteMode, setDeleteMode] = useState(false);
   const [confirmDeleteImg, setConfirmDeleteImg] = useState<{ url: string, publicId: string } | null>(null);
 
+  // Orders state
+  const [orders, setOrders] = useState([]);
+  const [loadingOrders, setLoadingOrders] = useState(false);
+  const [ordersError, setOrdersError] = useState('');
+  const [ordersPagination, setOrdersPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalOrders: 0,
+    limit: 10,
+    hasNextPage: false,
+    hasPrevPage: false
+  });
+  
+  // Orders filter state
+  const [currentOrderSearch, setCurrentOrderSearch] = useState('');
+  const [currentOrderStatusFilter, setCurrentOrderStatusFilter] = useState('all');
+  const [currentOrderDateFilter, setCurrentOrderDateFilter] = useState('all');
+
   // DnD sensors
   const sensors = useSensors(useSensor(PointerSensor));
 
-  useEffect(() => {
+  const fetchStats = (startDate?: string, endDate?: string) => {
     setLoadingStats(true);
     setStatsError('');
-    fetch('http://localhost:4000/api/users/admin/stats')
+    
+    const params = new URLSearchParams();
+    if (startDate) params.append('startDate', startDate);
+    if (endDate) params.append('endDate', endDate);
+    
+    fetch(`http://localhost:4000/api/orders/stats?${params}`)
       .then(res => {
         if (!res.ok) throw new Error('Failed to fetch stats');
         return res.json();
@@ -177,6 +200,10 @@ const AdminDashboard = () => {
       .then(data => setStats(data))
       .catch(err => setStatsError(err.message))
       .finally(() => setLoadingStats(false));
+  };
+
+  useEffect(() => {
+    fetchStats();
     setLoadingProducts(true);
     setProductsError('');
     fetch('http://localhost:4000/api/products')
@@ -203,6 +230,73 @@ const AdminDashboard = () => {
       .then(res => res.json())
       .then(setBrands);
   }, []);
+
+  const fetchOrders = (page = 1, limit = 10, search = '', status = '', dateFilter = '') => {
+    setLoadingOrders(true);
+    setOrdersError('');
+    
+    // Update current filter state
+    setCurrentOrderSearch(search);
+    setCurrentOrderStatusFilter(status || 'all');
+    setCurrentOrderDateFilter(dateFilter || 'all');
+    
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      search: search,
+      status: status,
+      dateFilter: dateFilter
+    });
+    
+    fetch(`http://localhost:4000/api/orders?${params}`)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Failed to fetch orders: ${res.status} ${res.statusText}`);
+        }
+        return res.json();
+      })
+      .then(data => {
+        // Validate the response structure
+        if (!data || typeof data !== 'object') {
+          throw new Error('Invalid response format from server');
+        }
+        
+        // Ensure orders is an array
+        const ordersArray = Array.isArray(data.orders) ? data.orders : [];
+        setOrders(ordersArray);
+        
+        // Ensure pagination object exists and has required fields
+        const pagination = data.pagination || {};
+        setOrdersPagination({
+          currentPage: pagination.currentPage || 1,
+          totalPages: pagination.totalPages || 1,
+          totalOrders: pagination.totalOrders || 0,
+          limit: pagination.limit || 10,
+          hasNextPage: pagination.hasNextPage || false,
+          hasPrevPage: pagination.hasPrevPage || false
+        });
+      })
+      .catch(err => {
+        console.error('Error fetching orders:', err);
+        setOrdersError(err.message || 'Failed to fetch orders');
+        setOrders([]);
+        setOrdersPagination({
+          currentPage: 1,
+          totalPages: 1,
+          totalOrders: 0,
+          limit: 10,
+          hasNextPage: false,
+          hasPrevPage: false
+        });
+      })
+      .finally(() => setLoadingOrders(false));
+  };
+
+  useEffect(() => {
+    if (activeTab === 'orders') {
+      fetchOrders();
+    }
+  }, [activeTab]);
 
   // Handle multiple image file selection
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -853,6 +947,12 @@ const AdminDashboard = () => {
             >
               Products
             </button>
+            <button
+              className={`px-6 py-2 rounded-t-lg font-semibold shadow-sm border-b-2 transition-all duration-150 ${activeTab === 'orders' ? 'bg-white dark:bg-slate-900 border-mangla-gold text-mangla-gold' : 'bg-slate-100 dark:bg-slate-800 border-transparent text-slate-500 hover:text-mangla-gold hover:border-mangla-gold'}`}
+              onClick={() => setActiveTab('orders')}
+            >
+              Orders
+            </button>
           </div>
 
           {/* Dashboard Tab - Statistics */}
@@ -864,7 +964,11 @@ const AdminDashboard = () => {
               ) : statsError ? (
                 <div className="text-center text-red-500 py-12">{statsError}</div>
               ) : (
-                <DashboardStats stats={stats} />
+                <DashboardStats 
+                  stats={stats} 
+                  loading={loadingStats}
+                  onDateRangeChange={fetchStats}
+                />
               )}
             </div>
           )}
@@ -1053,9 +1157,42 @@ const AdminDashboard = () => {
               </section>
             </div>
           )}
+
+          {/* Orders Tab - Order Management */}
+          {activeTab === 'orders' && (
+            <div>
+              <h2 className="text-2xl font-bold mb-6 text-slate-800 dark:text-slate-100">Order Management</h2>
+              
+              {/* Orders Section */}
+              <section>
+                <div className="overflow-x-auto rounded-xl shadow bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                  {loadingOrders ? (
+                    <div className="text-center py-8">Loading orders...</div>
+                  ) : ordersError ? (
+                    <div className="text-center text-red-500 py-8">{ordersError}</div>
+                  ) : (
+                    <OrderCardGrid
+                      orders={orders}
+                      loading={loadingOrders}
+                      error={ordersError}
+                      onOrderUpdate={() => fetchOrders(ordersPagination.currentPage, ordersPagination.limit, currentOrderSearch, currentOrderStatusFilter === 'all' ? '' : currentOrderStatusFilter, currentOrderDateFilter === 'all' ? '' : currentOrderDateFilter)}
+                      pagination={ordersPagination}
+                      onPageChange={(newPage) => fetchOrders(newPage, ordersPagination.limit, currentOrderSearch, currentOrderStatusFilter === 'all' ? '' : currentOrderStatusFilter, currentOrderDateFilter === 'all' ? '' : currentOrderDateFilter)}
+                      onLimitChange={(newLimit) => fetchOrders(1, newLimit, currentOrderSearch, currentOrderStatusFilter === 'all' ? '' : currentOrderStatusFilter, currentOrderDateFilter === 'all' ? '' : currentOrderDateFilter)}
+                      onSearchChange={(search) => fetchOrders(1, ordersPagination.limit, search)}
+                      onStatusFilterChange={(status) => fetchOrders(1, ordersPagination.limit, '', status)}
+                      onDateFilterChange={(dateFilter) => fetchOrders(1, ordersPagination.limit, '', '', dateFilter)}
+                      currentSearch={currentOrderSearch}
+                      currentStatusFilter={currentOrderStatusFilter}
+                      currentDateFilter={currentOrderDateFilter}
+                    />
+                  )}
+                </div>
+              </section>
+            </div>
+          )}
         </div>
       </main>
-      <Footer />
       {/* Edit Product Modal */}
       <ProductEditModal
         open={editModalOpen}

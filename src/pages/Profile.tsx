@@ -53,9 +53,23 @@ const Profile: React.FC = () => {
   useEffect(() => {
     if (active === 'orders' && user) {
       setOrdersLoading(true);
-      fetch(`http://localhost:4000/api/orders?userId=${user.id}`)
+      fetch(`http://localhost:4000/api/orders/user?userId=${user.id}`)
         .then(res => res.json())
-        .then(data => setOrders(data))
+        .then(data => {
+          // Handle new API response format with pagination
+          if (data && data.orders) {
+            setOrders(data.orders);
+          } else if (Array.isArray(data)) {
+            // Fallback for old format
+            setOrders(data);
+          } else {
+            setOrders([]);
+          }
+        })
+        .catch(err => {
+          console.error('Error fetching orders:', err);
+          setOrders([]);
+        })
         .finally(() => setOrdersLoading(false));
     }
   }, [active, user]);
@@ -267,21 +281,36 @@ const Profile: React.FC = () => {
                         <div className="font-medium text-mangla-gold">Order #{order.id}</div>
                         <div className="text-xs text-gray-500">{new Date(order.createdAt).toLocaleString()}</div>
                         <div className={cn('text-xs font-semibold px-2 py-1 rounded',
-                          order.status === 1 ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700')}
+                          order.orderItems?.every((item: any) => item.status === 'completed') ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700')}
                         >
-                          {order.status === 1 ? 'Completed' : 'Pending'}
+                          {order.orderItems?.every((item: any) => item.status === 'completed') ? 'Completed' : 'In Progress'}
                         </div>
                       </div>
-                      <div className="mb-2 text-sm text-gray-500">Total: <span className="font-bold text-mangla-gold">₹{order.product?.numericPrice ? (order.product.numericPrice * order.quantity).toLocaleString() : 0}</span></div>
+                      <div className="mb-2 text-sm text-gray-500">Total: <span className="font-bold text-mangla-gold">₹{order.totalAmount?.toLocaleString('en-IN') || 0}</span></div>
+                      <div className="mb-2 text-xs text-gray-500">Address: {order.address ? `${order.address.line1}, ${order.address.city}, ${order.address.state}, ${order.address.postalCode}` : 'N/A'}</div>
                       <div className="text-sm">
                         <div className="font-semibold mb-1">Items:</div>
-                        <div className="flex items-center gap-2">
-                          <img src={order.product?.images?.[0] || '/placeholder.png'} alt={order.product?.name} className="w-12 h-12 object-contain rounded" />
-                          <div>
-                            <div className="font-medium">{order.product?.name}</div>
-                            <div className="text-xs text-gray-500">Qty: {order.quantity}</div>
-                          </div>
-                        </div>
+                        <ul className="space-y-2">
+                          {order.orderItems?.map((item: any) => (
+                            <li key={item.id} className="border rounded p-2 bg-slate-50 dark:bg-slate-800">
+                              <div className="flex flex-col gap-1">
+                                <div className="font-medium text-mangla-gold">{item.name}</div>
+                                <div className="text-xs text-gray-500">Qty: {item.quantity} | Price: ₹{item.price}</div>
+                                <div className="flex gap-2 items-center text-xs">
+                                  <span>Status:</span>
+                                  <span className={
+                                    item.status === 'completed' ? 'text-green-600' :
+                                    item.status === 'cancelled' ? 'text-red-500' :
+                                    'text-yellow-500'
+                                  }>{item.status || 'pending'}</span>
+                                </div>
+                                <div className="text-xs">Expected Date: {item.expectedDate ? new Date(item.expectedDate).toLocaleDateString() : 'N/A'}</div>
+                                <div className="text-xs">Courier: {item.courierPartner || 'N/A'}</div>
+                                <div className="text-xs">Tracking ID: {item.trackingId || 'N/A'}</div>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
                     </div>
                   ))}
