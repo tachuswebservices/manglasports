@@ -419,6 +419,8 @@ const AdminDashboard = () => {
       features: Array.isArray(newProduct.features) ? newProduct.features.filter(f => f && f.value).map(f => ({ value: f.value })) : [],
       specifications: Array.isArray(newProduct.specifications) ? newProduct.specifications.filter(s => s && s.key && s.value).map(s => ({ key: s.key, value: s.value })) : [],
     };
+    console.log('ADD PRODUCT - Features being sent:', payload.features);
+    console.log('ADD PRODUCT - Full payload:', payload);
     try {
       const res = await fetch('http://localhost:4000/api/products', {
         method: 'POST',
@@ -557,6 +559,8 @@ const AdminDashboard = () => {
       features: Array.isArray(editProductState.features) ? editProductState.features.filter(f => f && f.value).map(f => ({ value: f.value })) : [],
       specifications: Array.isArray(editProductState.specifications) ? editProductState.specifications.filter(s => s && s.key && s.value).map(s => ({ key: s.key, value: s.value })) : [],
     };
+    console.log('EDIT PRODUCT - Features being sent:', payload.features);
+    console.log('EDIT PRODUCT - Full payload:', payload);
     try {
       const res = await fetch(`http://localhost:4000/api/products/${editingProduct.id}`, {
         method: 'PUT',

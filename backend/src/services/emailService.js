@@ -16,12 +16,30 @@ function generateInvoiceHTML(order, user, address) {
   const orderDate = new Date(order.createdAt).toLocaleDateString('en-IN');
   const orderTime = new Date(order.createdAt).toLocaleTimeString('en-IN');
   
+  // Calculate subtotal, tax, and total
+  const subtotal = order.orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const tax = subtotal * 0.18; // 18% GST
+  const total = subtotal + tax;
+  
+  // Safely handle address fields with fallbacks
+  const addressLine1 = address?.line1 || 'Address not available';
+  const addressLine2 = address?.line2 || '';
+  const addressCity = address?.city || 'City not available';
+  const addressState = address?.state || 'State not available';
+  const addressPostalCode = address?.postalCode || 'Postal code not available';
+  const addressPhone = address?.phone || 'Phone not available';
+  const userName = user?.name || 'Customer';
+  const userEmail = user?.email || 'Email not available';
+  
   const itemsHTML = order.orderItems.map(item => `
     <tr>
-      <td style="padding: 12px; border-bottom: 1px solid #eee;">${item.name}</td>
-      <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: center;">${item.quantity}</td>
-      <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right;">₹${item.price.toLocaleString('en-IN')}</td>
-      <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right;">₹${(item.price * item.quantity).toLocaleString('en-IN')}</td>
+      <td style="padding: 12px; border-bottom: 1px solid #eee;">
+        <div style="font-weight: 500;">${item.name}</div>
+        <div style="font-size: 12px; color: #666; margin-top: 2px;">SKU: ${item.id}</div>
+      </td>
+      <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: center; font-weight: 500;">${item.quantity}</td>
+      <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right; font-weight: 500;">₹${item.price.toLocaleString('en-IN')}</td>
+      <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right; font-weight: 500;">₹${(item.price * item.quantity).toLocaleString('en-IN')}</td>
     </tr>
   `).join('');
 
@@ -30,85 +48,160 @@ function generateInvoiceHTML(order, user, address) {
     <html>
     <head>
       <meta charset="utf-8">
-      <title>Order Invoice - Mangla Sports</title>
+      <title>Order Confirmation - Invoice #${order.id} - Mangla Sports</title>
       <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { text-align: center; border-bottom: 2px solid #1e40af; padding-bottom: 20px; margin-bottom: 30px; }
-        .logo { font-size: 24px; font-weight: bold; color: #1e40af; }
-        .invoice-details { display: flex; justify-content: space-between; margin-bottom: 30px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f8fafc; }
+        .container { max-width: 700px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+        .header { text-align: center; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 30px 20px; }
+                 .logo { text-align: center; margin-bottom: 8px; }
+        .tagline { font-size: 16px; opacity: 0.9; }
+        .content { padding: 30px; }
+        .invoice-details { display: flex; justify-content: space-between; margin-bottom: 30px; gap: 20px; }
         .customer-info, .order-info { flex: 1; }
-        .order-info { text-align: right; }
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-        th { background-color: #f8fafc; padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0; }
-        .total-row { font-weight: bold; background-color: #f1f5f9; }
-        .footer { margin-top: 40px; text-align: center; color: #64748b; font-size: 14px; }
-        .status { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-        .status-pending { background-color: #fef3c7; color: #92400e; }
-        .status-completed { background-color: #d1fae5; color: #065f46; }
+        .customer-info { background-color: #f8fafc; padding: 20px; border-radius: 8px; }
+        .order-info { background-color: #f0f9ff; padding: 20px; border-radius: 8px; text-align: right; }
+        .section-title { font-size: 18px; font-weight: 600; margin-bottom: 15px; color: #1e40af; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+        th { background-color: #1e40af; color: white; padding: 15px 12px; text-align: left; font-weight: 600; }
+        td { padding: 12px; border-bottom: 1px solid #e2e8f0; }
+        .total-section { background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .total-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .total-row.final { font-weight: bold; font-size: 18px; color: #1e40af; border-top: 2px solid #e2e8f0; padding-top: 12px; margin-top: 12px; }
+        .status { display: inline-block; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: bold; background-color: #10b981; color: white; }
+        .info-box { background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #3b82f6; }
+        .footer { background-color: #1e293b; color: white; text-align: center; padding: 30px 20px; }
+        .footer a { color: #60a5fa; text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+        .product-image { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; margin-right: 10px; }
+        .product-details { display: flex; align-items: center; }
       </style>
     </head>
     <body>
       <div class="container">
-        <div class="header">
-          <div class="logo">🏹 Mangla Sports</div>
-          <p>Your Premier Shooting Sports Equipment Store</p>
-        </div>
+                 <div class="header">
+           <div class="logo">
+             <img src="https://res.cloudinary.com/dvltehb8j/image/upload/v1753353064/msa-logo_ln09co.png" alt="Mangla Sports" style="height: 60px; width: auto; margin-bottom: 10px;">
+           </div>
+           <div class="tagline">Your Premier Shooting Sports Equipment Store</div>
+         </div>
 
-        <div class="invoice-details">
-          <div class="customer-info">
-            <h3>Bill To:</h3>
-            <p><strong>${user.name}</strong></p>
-            <p>${address.street}</p>
-            <p>${address.city}, ${address.state} ${address.pincode}</p>
-            <p>Phone: ${address.phone}</p>
+        <div class="content">
+          <!-- Order Confirmation Message -->
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #1e40af; margin-bottom: 10px;">🎉 Order Confirmed!</h1>
+            <p style="font-size: 16px; color: #64748b;">Thank you for your order. We're excited to fulfill your shooting sports needs!</p>
           </div>
-          <div class="order-info">
-            <h3>Order Details:</h3>
-            <p><strong>Order ID:</strong> #${order.id}</p>
-            <p><strong>Date:</strong> ${orderDate}</p>
-            <p><strong>Time:</strong> ${orderTime}</p>
-            <p><strong>Status:</strong> <span class="status status-${order.orderItems[0]?.status || 'pending'}">${order.orderItems[0]?.status || 'pending'}</span></p>
+
+                     <div class="invoice-details">
+             <div class="customer-info">
+               <div class="section-title">📋 Billing & Shipping Address</div>
+               <p style="margin: 8px 0;"><strong>${userName}</strong></p>
+               <p style="margin: 8px 0; color: #64748b;">${addressLine1}</p>
+               ${addressLine2 ? `<p style="margin: 8px 0; color: #64748b;">${addressLine2}</p>` : ''}
+               <p style="margin: 8px 0; color: #64748b;">${addressCity}, ${addressState} ${addressPostalCode}</p>
+               <p style="margin: 8px 0; color: #64748b;">📞 ${addressPhone}</p>
+               <p style="margin: 8px 0; color: #64748b;">📧 ${userEmail}</p>
+             </div>
+            <div class="order-info">
+              <div class="section-title">📦 Order Details</div>
+              <p style="margin: 8px 0;"><strong>Order ID:</strong> #${order.id}</p>
+              <p style="margin: 8px 0;"><strong>Order Date:</strong> ${orderDate}</p>
+              <p style="margin: 8px 0;"><strong>Order Time:</strong> ${orderTime}</p>
+              <p style="margin: 8px 0;"><strong>Status:</strong> <span class="status">✓ Confirmed</span></p>
+              <p style="margin: 8px 0;"><strong>Items:</strong> ${order.orderItems.length} product(s)</p>
+            </div>
+          </div>
+
+          <!-- Products Table -->
+          <div class="section-title">🛍️ Ordered Products</div>
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 50%;">Product Details</th>
+                <th style="text-align: center; width: 15%;">Quantity</th>
+                <th style="text-align: right; width: 17.5%;">Unit Price</th>
+                <th style="text-align: right; width: 17.5%;">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${itemsHTML}
+            </tbody>
+          </table>
+
+          <!-- Order Summary -->
+          <div class="total-section">
+            <div class="section-title">💰 Order Summary</div>
+            <div class="total-row">
+              <span>Subtotal (${order.orderItems.length} items):</span>
+              <span>₹${subtotal.toLocaleString('en-IN')}</span>
+            </div>
+            <div class="total-row">
+              <span>GST (18%):</span>
+              <span>₹${tax.toLocaleString('en-IN')}</span>
+            </div>
+            <div class="total-row">
+              <span>Shipping:</span>
+              <span>₹0.00 (Free)</span>
+            </div>
+            <div class="total-row final">
+              <span>Total Amount:</span>
+              <span>₹${total.toLocaleString('en-IN')}</span>
+            </div>
+          </div>
+
+          <!-- Payment Information -->
+          <div class="info-box">
+            <div class="section-title">💳 Payment Information</div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <p style="margin: 8px 0;"><strong>Payment Method:</strong> Online Payment (Razorpay)</p>
+                <p style="margin: 8px 0;"><strong>Payment Status:</strong> <span style="color: #059669; font-weight: bold;">✓ Successfully Paid</span></p>
+                <p style="margin: 8px 0;"><strong>Transaction ID:</strong> ${order.paymentId || 'N/A'}</p>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 24px; color: #059669;">✓</div>
+                <div style="font-size: 12px; color: #64748b;">Payment Confirmed</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Shipping Information -->
+          <div class="info-box">
+            <div class="section-title">🚚 Shipping Information</div>
+            <p style="margin: 8px 0;"><strong>Processing Time:</strong> 1-2 business days</p>
+            <p style="margin: 8px 0;"><strong>Estimated Delivery:</strong> 3-5 business days</p>
+            <p style="margin: 8px 0;"><strong>Shipping Method:</strong> Standard Delivery</p>
+            <p style="margin: 8px 0; color: #64748b;">You will receive tracking information via email once your order is shipped.</p>
+          </div>
+
+          <!-- Next Steps -->
+          <div class="info-box">
+            <div class="section-title">📋 What's Next?</div>
+            <div style="display: flex; align-items: center; margin: 12px 0;">
+              <div style="background-color: #3b82f6; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 12px; font-weight: bold;">1</div>
+              <span>Order processing and quality check</span>
+            </div>
+            <div style="display: flex; align-items: center; margin: 12px 0;">
+              <div style="background-color: #3b82f6; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 12px; font-weight: bold;">2</div>
+              <span>Shipping confirmation with tracking details</span>
+            </div>
+            <div style="display: flex; align-items: center; margin: 12px 0;">
+              <div style="background-color: #3b82f6; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 12px; font-weight: bold;">3</div>
+              <span>Delivery to your doorstep</span>
+            </div>
           </div>
         </div>
 
-        <table>
-          <thead>
-            <tr>
-              <th>Product</th>
-              <th style="text-align: center;">Qty</th>
-              <th style="text-align: right;">Price</th>
-              <th style="text-align: right;">Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${itemsHTML}
-          </tbody>
-          <tfoot>
-            <tr class="total-row">
-              <td colspan="3" style="text-align: right; padding: 12px;"><strong>Total Amount:</strong></td>
-              <td style="text-align: right; padding: 12px;"><strong>₹${order.totalAmount.toLocaleString('en-IN')}</strong></td>
-            </tr>
-          </tfoot>
-        </table>
-
-        <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h4>📦 Shipping Information:</h4>
-          <p>Your order will be processed and shipped within 2-3 business days. You will receive tracking information once your order is shipped.</p>
-        </div>
-
-        <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h4>💳 Payment Information:</h4>
-          <p><strong>Payment Method:</strong> Online Payment (Razorpay)</p>
-          <p><strong>Payment Status:</strong> <span style="color: #059669; font-weight: bold;">✓ Paid</span></p>
-          <p><strong>Transaction ID:</strong> ${order.paymentId || 'N/A'}</p>
-        </div>
-
-        <div class="footer">
-          <p>Thank you for choosing Mangla Sports!</p>
-          <p>For any queries, please contact us at support@manglasports.com</p>
-          <p>© 2024 Mangla Sports. All rights reserved.</p>
-        </div>
+                 <div class="footer">
+           <div style="margin-bottom: 15px;">
+             <img src="https://res.cloudinary.com/dvltehb8j/image/upload/v1753353064/msa-logo_ln09co.png" alt="Mangla Sports" style="height: 40px; width: auto; filter: brightness(0) invert(1);">
+           </div>
+           <p style="margin-bottom: 8px;">Your Premier Shooting Sports Equipment Store</p>
+           <p style="margin-bottom: 8px;">📧 <a href="mailto:support@manglasports.com">support@manglasports.com</a></p>
+           <p style="margin-bottom: 8px;">📞 <a href="tel:+91-XXXXXXXXXX">+91-XXXXXXXXXX</a></p>
+           <p style="margin-top: 20px; font-size: 12px; opacity: 0.8;">© 2024 Mangla Sports. All rights reserved.</p>
+           <p style="font-size: 12px; opacity: 0.8;">Thank you for choosing Mangla Sports for your shooting sports needs!</p>
+         </div>
       </div>
     </body>
     </html>
@@ -118,9 +211,21 @@ function generateInvoiceHTML(order, user, address) {
 // Send invoice email
 export async function sendInvoiceEmail(order, user, address) {
   try {
+    // Debug logging to help troubleshoot address issues
+    console.log('Sending invoice email for order:', order.id);
+    console.log('User data:', { name: user?.name, email: user?.email });
+    console.log('Address data:', {
+      line1: address?.line1,
+      line2: address?.line2,
+      city: address?.city,
+      state: address?.state,
+      postalCode: address?.postalCode,
+      phone: address?.phone
+    });
+
     const mailOptions = {
-      from: process.env.EMAIL_USER || 'your-email@gmail.com',
-      to: user.email,
+      from: process.env.EMAIL_USER || 'your-email@yourdomain.com',
+      to: user?.email || 'customer@example.com',
       subject: `Order Confirmation - Invoice #${order.id} - Mangla Sports`,
       html: generateInvoiceHTML(order, user, address),
       attachments: [
@@ -152,8 +257,8 @@ export async function sendOrderStatusUpdateEmail(order, user, newStatus) {
     };
 
     const mailOptions = {
-      from: process.env.EMAIL_USER || 'your-email@gmail.com',
-      to: user.email,
+      from: process.env.EMAIL_USER || 'your-email@yourdomain.com',
+      to: user?.email || 'customer@example.com',
       subject: `Order Status Update - Order #${order.id} - Mangla Sports`,
       html: `
         <!DOCTYPE html>
@@ -174,7 +279,9 @@ export async function sendOrderStatusUpdateEmail(order, user, newStatus) {
         <body>
           <div class="container">
             <div class="header">
-              <div class="logo">🏹 Mangla Sports</div>
+              <div class="logo">
+                <img src="https://res.cloudinary.com/dvltehb8j/image/upload/v1753353064/msa-logo_ln09co.png" alt="Mangla Sports" style="height: 50px; width: auto; margin-bottom: 10px;">
+              </div>
               <p>Your Premier Shooting Sports Equipment Store</p>
             </div>
 
@@ -234,7 +341,9 @@ export async function testEmailConfiguration(userEmail) {
         <body>
           <div class="container">
             <div class="header">
-              <div class="logo">🏹 Mangla Sports</div>
+              <div class="logo">
+                <img src="https://res.cloudinary.com/dvltehb8j/image/upload/v1753353064/msa-logo_ln09co.png" alt="Mangla Sports" style="height: 50px; width: auto; margin-bottom: 10px;">
+              </div>
               <p>Your Premier Shooting Sports Equipment Store</p>
             </div>
 

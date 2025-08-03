@@ -53,6 +53,9 @@ export async function getProductById(req, res) {
 
 export async function createProduct(req, res) {
   try {
+    console.log('CREATE PRODUCT - Features received:', req.body.features);
+    console.log('CREATE PRODUCT - Features type:', typeof req.body.features);
+    console.log('CREATE PRODUCT - Features isArray:', Array.isArray(req.body.features));
     const {
       id,
       name,
@@ -98,7 +101,11 @@ export async function createProduct(req, res) {
         isNew,
         isHot,
         shortDescription,
-        features: features ? { create: features.map((value) => ({ value })) } : undefined,
+        features: features && Array.isArray(features) && features.length > 0 ? { 
+          create: features.map((feature) => ({ 
+            value: typeof feature === 'string' ? feature : feature.value 
+          })).filter(f => f.value && f.value.trim())
+        } : undefined,
         specifications: specifications ? { create: specifications.map(({ key, value }) => ({ key, value })) } : undefined,
       },
       include: {
@@ -116,6 +123,9 @@ export async function createProduct(req, res) {
 
 export async function updateProduct(req, res) {
   try {
+    console.log('UPDATE PRODUCT - Features received:', req.body.features);
+    console.log('UPDATE PRODUCT - Features type:', typeof req.body.features);
+    console.log('UPDATE PRODUCT - Features isArray:', Array.isArray(req.body.features));
     
     const {
       name,
@@ -168,7 +178,11 @@ export async function updateProduct(req, res) {
         shortDescription,
         gst,
         offerPrice,
-        features: features ? { create: features.map((value) => ({ value })) } : undefined,
+        features: features && Array.isArray(features) && features.length > 0 ? { 
+          create: features.map((feature) => ({ 
+            value: typeof feature === 'string' ? feature : feature.value 
+          })).filter(f => f.value && f.value.trim())
+        } : undefined,
         specifications: specifications ? { create: specifications.map(({ key, value }) => ({ key, value })) } : undefined,
       },
       include: {

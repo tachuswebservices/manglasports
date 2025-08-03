@@ -6,7 +6,18 @@ import AddressModal, { Address } from '@/components/checkout/AddressModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/components/theme/ThemeProvider';
-import { ArrowLeft, Image } from 'lucide-react';
+import { useToast } from '@/components/ui/use-toast';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { ArrowLeft, Image, CheckCircle } from 'lucide-react';
 
 const API_BASE = 'http://localhost:4000/api/addresses';
 
@@ -21,6 +32,7 @@ const Checkout: React.FC = () => {
   const { cart, getCartTotal, clearCart } = useCart();
   const { user } = useAuth();
   const { theme } = useTheme();
+  const { toast } = useToast();
   const isDark = theme === 'dark';
   const navigate = useNavigate();
   const [addresses, setAddresses] = useState<Address[]>([]);
@@ -28,6 +40,8 @@ const Checkout: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [editAddress, setEditAddress] = useState<Address | null>(null);
   const [loading, setLoading] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [addressToDelete, setAddressToDelete] = useState<number | null>(null);
 
   // Fetch addresses for the user
   useEffect(() => {
@@ -55,10 +69,35 @@ const Checkout: React.FC = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (!window.confirm('Delete this address?')) return;
-    await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
-    setAddresses(addresses.filter(a => a.id !== id));
-    if (selectedAddressId === id) setSelectedAddressId(addresses[0]?.id || null);
+    setAddressToDelete(id);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!addressToDelete) return;
+    
+    try {
+      await fetch(`${API_BASE}/${addressToDelete}`, { method: 'DELETE' });
+      setAddresses(addresses.filter(a => a.id !== addressToDelete));
+      if (selectedAddressId === addressToDelete) {
+        setSelectedAddressId(addresses[0]?.id || null);
+      }
+      
+      toast({
+        title: "Address Deleted",
+        description: "Address has been successfully deleted.",
+        variant: "default"
+      });
+    } catch (error) {
+      toast({
+        title: "Delete Failed",
+        description: "Failed to delete address. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setDeleteDialogOpen(false);
+      setAddressToDelete(null);
+    }
   };
 
   const handleSave = async (address: Address) => {
@@ -106,7 +145,11 @@ const Checkout: React.FC = () => {
     });
     const order = await res.json();
     if (!order.id) {
-      alert('Failed to create payment order.');
+      toast({
+        title: "Payment Error",
+        description: "Failed to create payment order. Please try again.",
+        variant: "destructive"
+      });
       return;
     }
     // 2. Open Razorpay modal
@@ -146,13 +189,26 @@ const Checkout: React.FC = () => {
           });
           if (orderRes.ok) {
             await clearCart();
-            alert('Order placed successfully!');
+            toast({
+              title: "Order Placed Successfully! 🎉",
+              description: "Your order has been confirmed and an email has been sent to you with the invoice.",
+              variant: "default",
+              duration: 5000
+            });
             navigate('/profile?tab=orders');
           } else {
-            alert('Payment succeeded but failed to store order. Please contact support.');
+            toast({
+              title: "Order Error",
+              description: "Payment succeeded but failed to store order. Please contact support.",
+              variant: "destructive"
+            });
           }
         } else {
-          alert('Payment verification failed.');
+          toast({
+            title: "Payment Verification Failed",
+            description: "Payment verification failed. Please contact support if you were charged.",
+            variant: "destructive"
+          });
         }
       },
       prefill: {
@@ -309,6 +365,24 @@ const Checkout: React.FC = () => {
         </Button>
       </div>
       <AddressModal open={modalOpen} onClose={() => { setModalOpen(false); setEditAddress(null); }} onSave={handleSave} initialAddress={editAddress} />
+      
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Address</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this address? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-red-600 hover:bg-red-700">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

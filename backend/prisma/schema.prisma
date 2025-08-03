@@ -8,16 +8,18 @@ datasource db {
 }
 
 model User {
-  id        Int        @id @default(autoincrement())
-  email     String     @unique
-  password  String
-  name      String?
-  role      String     @default("user") // 'user' or 'admin'
-  createdAt DateTime   @default(now())
-  cart      Cart[]
-  orders    Order[]
-  wishlist  Wishlist[]
-  addresses Address[]
+  id                    Int        @id @default(autoincrement())
+  email                 String     @unique
+  password              String
+  name                  String?
+  createdAt             DateTime   @default(now())
+  role                  String     @default("user")
+  resetToken            String?    @unique
+  resetTokenExpiry      DateTime?
+  addresses             Address[]
+  cart                  Cart[]
+  orders                Order[]
+  wishlist              Wishlist[]
 }
 
 model Category {
@@ -37,7 +39,6 @@ model Product {
   name             String
   price            String
   numericPrice     Float
-  images           Json
   categoryId       Int
   brandId          Int
   rating           Float
@@ -48,14 +49,15 @@ model Product {
   isHot            Boolean?
   shortDescription String?
   gst              Float           @default(18)
+  images           Json
   offerPrice       Float           @default(0)
   cart             Cart[]
   features         Feature[]
+  orderItems       OrderItem[]
   brand            Brand           @relation(fields: [brandId], references: [id], onDelete: Cascade)
   category         Category        @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   specifications   Specification[]
   wishlist         Wishlist[]
-  orderItems       OrderItem[]
 }
 
 model Feature {
@@ -95,43 +97,43 @@ model Cart {
 model Order {
   id          Int         @id @default(autoincrement())
   userId      Int
-  addressId   Int
-  totalAmount Float
-  paymentId   String?
   createdAt   DateTime    @default(now())
-  user        User        @relation(fields: [userId], references: [id])
+  addressId   Int
+  paymentId   String?
+  totalAmount Float
   address     Address     @relation(fields: [addressId], references: [id])
+  user        User        @relation(fields: [userId], references: [id])
   orderItems  OrderItem[]
 }
 
 model OrderItem {
-  id             Int      @id @default(autoincrement())
+  id             Int       @id @default(autoincrement())
   orderId        Int
   productId      String
   quantity       Int
   price          Float
   name           String
-  status         String   @default("pending")
+  status         String    @default("pending")
   expectedDate   DateTime?
   courierPartner String?
   trackingId     String?
-  order          Order    @relation(fields: [orderId], references: [id])
-  product        Product  @relation(fields: [productId], references: [id])
+  order          Order     @relation(fields: [orderId], references: [id])
+  product        Product   @relation(fields: [productId], references: [id])
 }
 
 model Address {
-  id          Int      @id @default(autoincrement())
-  userId      Int
-  user        User     @relation(fields: [userId], references: [id])
-  name        String   // e.g., "Home", "Office"
-  line1       String
-  line2       String?
-  city        String
-  state       String
-  postalCode  String
-  country     String
-  phone       String?
-  isDefault   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  orders      Order[]
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  name       String
+  line1      String
+  line2      String?
+  city       String
+  state      String
+  postalCode String
+  country    String
+  phone      String?
+  isDefault  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+  orders     Order[]
 }
