@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { sendInvoiceEmail, sendOrderStatusUpdateEmail } from '../services/emailService.js';
 const prisma = new PrismaClient();
 
 export async function getAllOrders(req, res) {
@@ -174,6 +175,19 @@ export async function createOrder(req, res) {
       },
     });
 
+    // Send invoice email to customer
+    try {
+      const emailResult = await sendInvoiceEmail(order, order.user, order.address);
+      if (emailResult.success) {
+        console.log(`Invoice email sent successfully for order #${order.id}`);
+      } else {
+        console.error(`Failed to send invoice email for order #${order.id}:`, emailResult.error);
+      }
+    } catch (emailError) {
+      console.error('Error sending invoice email:', emailError);
+      // Don't fail the order creation if email fails
+    }
+
     res.status(201).json(order);
   } catch (err) {
     console.error(err);
@@ -232,6 +246,19 @@ export async function updateOrderItem(req, res) {
       }
     });
     
+    // Send status update email to customer
+    try {
+      const emailResult = await sendOrderStatusUpdateEmail(orderItem.order, orderItem.order.user, status);
+      if (emailResult.success) {
+        console.log(`Status update email sent successfully for order #${orderItem.order.id}`);
+      } else {
+        console.error(`Failed to send status update email for order #${orderItem.order.id}:`, emailResult.error);
+      }
+    } catch (emailError) {
+      console.error('Error sending status update email:', emailError);
+      // Don't fail the order update if email fails
+    }
+    
     res.json(orderItem);
   } catch (err) {
     console.error('Error updating order item:', err);
@@ -243,26 +270,42 @@ export async function updateOrderItem(req, res) {
 export async function getDashboardStats(req, res) {
   try {
     const { startDate, endDate } = req.query;
+    console.log('Dashboard stats request:', { startDate, endDate });
     
     // Build date filter
     let dateFilter = {};
     if (startDate && endDate) {
-      dateFilter = {
-        createdAt: {
-          gte: new Date(startDate),
-          lte: new Date(endDate + 'T23:59:59.999Z')
+      try {
+        const startDateTime = new Date(startDate);
+        const endDateTime = new Date(endDate + 'T23:59:59.999Z');
+        
+        // Validate dates
+        if (isNaN(startDateTime.getTime()) || isNaN(endDateTime.getTime())) {
+          return res.status(400).json({ error: 'Invalid date format' });
         }
-      };
+        
+        dateFilter = {
+          createdAt: {
+            gte: startDateTime,
+            lte: endDateTime
+          }
+        };
+      } catch (error) {
+        console.error('Date parsing error:', error);
+        return res.status(400).json({ error: 'Invalid date format' });
+      }
     }
 
     // Get basic counts
     const totalProducts = await prisma.product.count();
     const totalUsers = await prisma.user.count();
-    const totalOrders = await prisma.order.count(dateFilter);
+    const totalOrders = await prisma.order.count({
+      where: Object.keys(dateFilter).length > 0 ? dateFilter : {}
+    });
     
     // Get order statistics
     const orders = await prisma.order.findMany({
-      where: dateFilter,
+      where: Object.keys(dateFilter).length > 0 ? dateFilter : {},
       include: {
         orderItems: true,
         user: true
@@ -429,7 +472,7 @@ export async function getDashboardStats(req, res) {
       ).length
     };
 
-    res.json({
+    const response = {
       products: totalProducts,
       orders: totalOrders,
       users: totalUsers,
@@ -453,7 +496,10 @@ export async function getDashboardStats(req, res) {
         itemsCount: order.orderItems.length
       })),
       topProducts: topProductDetails
-    });
+    };
+    
+    console.log('Dashboard stats response:', response);
+    res.json(response);
   } catch (err) {
     console.error('Error fetching dashboard stats:', err);
     res.status(500).json({ error: 'Failed to fetch dashboard statistics' });

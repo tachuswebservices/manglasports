@@ -81,6 +81,7 @@ const AdminDashboard = () => {
   const [newProduct, setNewProduct] = useState(initialProductState);
   const [loadingStats, setLoadingStats] = useState(true);
   const [statsError, setStatsError] = useState('');
+  const [currentDateRange, setCurrentDateRange] = useState('thisMonth');
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [productsError, setProductsError] = useState('');
   const [addingProduct, setAddingProduct] = useState(false);
@@ -192,14 +193,58 @@ const AdminDashboard = () => {
     if (startDate) params.append('startDate', startDate);
     if (endDate) params.append('endDate', endDate);
     
-    fetch(`http://localhost:4000/api/orders/stats?${params}`)
+    fetch(`http://localhost:4000/api/users/admin/stats?${params}`)
       .then(res => {
-        if (!res.ok) throw new Error('Failed to fetch stats');
+        if (!res.ok) {
+          return res.json().then(errorData => {
+            throw new Error(errorData.error || `HTTP ${res.status}: Failed to fetch stats`);
+          });
+        }
         return res.json();
       })
       .then(data => setStats(data))
-      .catch(err => setStatsError(err.message))
+      .catch(err => {
+        console.error('Stats fetch error:', err);
+        setStatsError(err.message);
+      })
       .finally(() => setLoadingStats(false));
+  };
+
+  // Add a wrapper function to update both stats and current date range
+  const handleDateRangeChange = (startDate: string, endDate: string) => {
+    // Determine the range based on the dates
+    const today = new Date();
+    const startDateObj = new Date(startDate);
+    const endDateObj = new Date(endDate);
+    
+    let range = 'custom';
+    
+    // Check if it matches predefined ranges
+    if (startDate === endDate && startDate === today.toISOString().split('T')[0]) {
+      range = 'today';
+    } else if (startDate === new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0] && 
+               endDate === today.toISOString().split('T')[0]) {
+      range = 'thisMonth';
+    } else if (startDate === new Date(today.getFullYear(), 0, 1).toISOString().split('T')[0] && 
+               endDate === today.toISOString().split('T')[0]) {
+      range = 'thisYear';
+    } else if (startDate === new Date(today.getFullYear(), today.getMonth() - 1, 1).toISOString().split('T')[0] && 
+               endDate === new Date(today.getFullYear(), today.getMonth(), 0).toISOString().split('T')[0]) {
+      range = 'lastMonth';
+    } else {
+      // Check for thisWeek - start of current week to today
+      const startOfWeek = new Date(today);
+      startOfWeek.setDate(today.getDate() - today.getDay());
+      const startOfWeekStr = startOfWeek.toISOString().split('T')[0];
+      const todayStr = today.toISOString().split('T')[0];
+      
+      if (startDate === startOfWeekStr && endDate === todayStr) {
+        range = 'thisWeek';
+      }
+    }
+    
+    setCurrentDateRange(range);
+    fetchStats(startDate, endDate);
   };
 
   useEffect(() => {
@@ -967,7 +1012,8 @@ const AdminDashboard = () => {
                 <DashboardStats 
                   stats={stats} 
                   loading={loadingStats}
-                  onDateRangeChange={fetchStats}
+                  onDateRangeChange={handleDateRangeChange}
+                  currentDateRange={currentDateRange}
                 />
               )}
             </div>

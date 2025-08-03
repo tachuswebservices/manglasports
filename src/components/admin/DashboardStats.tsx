@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
+import { useAuth } from '../../contexts/AuthContext';
 import { 
   Package, 
   ShoppingCart, 
@@ -17,7 +18,8 @@ import {
   Filter,
   Download,
   BarChart3,
-  PieChart
+  PieChart,
+  Mail
 } from 'lucide-react';
 
 interface DashboardStatsProps {
@@ -35,13 +37,24 @@ interface DashboardStatsProps {
   };
   onDateRangeChange?: (startDate: string, endDate: string) => void;
   loading?: boolean;
+  currentDateRange?: string; // Add this prop to track current date range
 }
 
-export default function DashboardStats({ stats, onDateRangeChange, loading }: DashboardStatsProps) {
-  const [dateRange, setDateRange] = useState('thisMonth');
+export default function DashboardStats({ stats, onDateRangeChange, loading, currentDateRange }: DashboardStatsProps) {
+  const { user } = useAuth();
+  const [dateRange, setDateRange] = useState(currentDateRange || 'thisMonth');
   const [customStartDate, setCustomStartDate] = useState('');
   const [customEndDate, setCustomEndDate] = useState('');
   const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
+  const [emailTestLoading, setEmailTestLoading] = useState(false);
+  const [emailTestResult, setEmailTestResult] = useState<{ success: boolean; message: string } | null>(null);
+
+  // Update dateRange when currentDateRange prop changes
+  useEffect(() => {
+    if (currentDateRange) {
+      setDateRange(currentDateRange);
+    }
+  }, [currentDateRange]);
 
   const handleDateRangeChange = (range: string) => {
     setDateRange(range);
@@ -91,13 +104,48 @@ export default function DashboardStats({ stats, onDateRangeChange, loading }: Da
     }
 
     if (onDateRangeChange && startDate) {
+      console.log('Date range change:', { startDate, endDate, range });
       onDateRangeChange(startDate, endDate);
+      // Update the current date range immediately for UI feedback
+      setDateRange(range);
     }
   };
 
   const handleCustomDateSubmit = () => {
     if (customStartDate && customEndDate) {
       handleDateRangeChange('custom');
+    }
+  };
+
+  const handleTestEmail = async () => {
+    if (!user?.email) {
+      setEmailTestResult({ success: false, message: 'User email not found. Please log in again.' });
+      return;
+    }
+
+    setEmailTestLoading(true);
+    setEmailTestResult(null);
+    
+    try {
+      const response = await fetch('http://localhost:4000/api/email/test', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userEmail: user.email }),
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        setEmailTestResult({ success: true, message: `Test email sent successfully to ${user.email}! Check your inbox.` });
+      } else {
+        setEmailTestResult({ success: false, message: `Failed to send test email: ${result.error}` });
+      }
+    } catch (error) {
+      setEmailTestResult({ success: false, message: 'Error testing email configuration. Please check your email settings.' });
+    } finally {
+      setEmailTestLoading(false);
     }
   };
 
@@ -256,7 +304,31 @@ export default function DashboardStats({ stats, onDateRangeChange, loading }: Da
             <Download className="w-4 h-4" />
             Export
           </Button>
+
+          {/* Test Email Button */}
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="flex items-center gap-2"
+            onClick={handleTestEmail}
+            disabled={emailTestLoading}
+            title={user?.email ? `Send test email to ${user.email}` : 'Send test email'}
+          >
+            <Mail className="w-4 h-4" />
+            {emailTestLoading ? 'Testing...' : `Test Email${user?.email ? ` (${user.email})` : ''}`}
+          </Button>
         </div>
+
+        {/* Email Test Result */}
+        {emailTestResult && (
+          <div className={`mt-4 p-3 rounded-lg text-sm ${
+            emailTestResult.success 
+              ? 'bg-green-50 text-green-800 border border-green-200' 
+              : 'bg-red-50 text-red-800 border border-red-200'
+          }`}>
+            {emailTestResult.message}
+          </div>
+        )}
       </div>
 
       {/* Main Statistics Cards */}
