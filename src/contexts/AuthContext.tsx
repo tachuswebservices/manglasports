@@ -6,6 +6,7 @@ interface User {
   email: string;
   name?: string;
   role?: string;
+  isEmailVerified?: boolean;
 }
 
 interface AuthContextType {
@@ -43,7 +44,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       body: JSON.stringify({ email, password }),
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Login failed');
+    if (!res.ok) {
+      const error = new Error(data.error || 'Login failed');
+      (error as any).needsVerification = data.needsVerification;
+      throw error;
+    }
     localStorage.setItem('token', data.token);
     localStorage.setItem('user', JSON.stringify(data.user));
     setToken(data.token);
@@ -59,11 +64,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Signup failed');
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('user', JSON.stringify(data.user));
-    setToken(data.token);
-    setUser(data.user);
-    navigate('/');
+    // Don't automatically log in after signup - user needs to verify email first
+    // The signup page will handle the success message
   };
 
   const logout = () => {

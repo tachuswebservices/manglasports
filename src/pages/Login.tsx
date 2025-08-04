@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
-import { Lock, Mail, Eye, EyeOff } from 'lucide-react';
+import { Lock, Mail, Eye, EyeOff, AlertCircle } from 'lucide-react';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -12,16 +12,23 @@ const Login: React.FC = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [needsVerification, setNeedsVerification] = useState(false);
   const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setNeedsVerification(false);
     setLoading(true);
     try {
       await login(email, password);
     } catch (err: any) {
+      if (err.needsVerification) {
+        setNeedsVerification(true);
+        setError('Please verify your email address before logging in.');
+      } else {
       setError(err.message || 'Login failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -59,9 +66,32 @@ const Login: React.FC = () => {
               <motion.div 
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3"
+                className={`rounded-lg p-3 ${
+                  needsVerification 
+                    ? 'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800' 
+                    : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'
+                }`}
               >
-                <p className="text-red-600 dark:text-red-400 text-sm text-center">{error}</p>
+                <div className="flex items-center justify-center space-x-2">
+                  <AlertCircle className={`h-4 w-4 ${
+                    needsVerification ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400'
+                  }`} />
+                  <p className={`text-sm text-center ${
+                    needsVerification ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400'
+                  }`}>
+                    {error}
+                  </p>
+                </div>
+                {needsVerification && (
+                  <div className="mt-3 text-center">
+                    <Link 
+                      to="/resend-verification" 
+                      className="text-sm text-mangla-gold hover:text-mangla-blue font-medium transition-colors duration-200"
+                    >
+                      Resend verification email
+                    </Link>
+                  </div>
+                )}
               </motion.div>
             )}
 

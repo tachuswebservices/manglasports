@@ -14,6 +14,9 @@ model User {
   name                  String?
   createdAt             DateTime   @default(now())
   role                  String     @default("user")
+  isEmailVerified       Boolean    @default(false)
+  emailVerificationToken String?   @unique
+  emailVerificationExpiry DateTime?
   resetToken            String?    @unique
   resetTokenExpiry      DateTime?
   addresses             Address[]

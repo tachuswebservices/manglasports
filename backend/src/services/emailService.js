@@ -208,6 +208,105 @@ function generateInvoiceHTML(order, user, address) {
   `;
 }
 
+// Generate email verification HTML template
+function generateEmailVerificationHTML(userName, verificationToken) {
+  const verificationUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/verify-email?token=${verificationToken}`;
+  
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <title>Email Verification - Mangla Sports</title>
+      <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f8fafc; }
+        .container { max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+        .header { text-align: center; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 30px 20px; }
+        .logo { text-align: center; margin-bottom: 8px; }
+        .tagline { font-size: 16px; opacity: 0.9; }
+        .content { padding: 30px; }
+        .verify-button { display: inline-block; background-color: #10b981; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 20px 0; }
+        .verify-button:hover { background-color: #059669; }
+        .warning { background-color: #fef3c7; border: 1px solid #f59e0b; padding: 15px; border-radius: 8px; margin: 20px 0; }
+        .footer { background-color: #1e293b; color: white; text-align: center; padding: 30px 20px; }
+        .footer a { color: #60a5fa; text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+        .info-box { background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #3b82f6; }
+        .welcome-box { background-color: #ecfdf5; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #10b981; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <div class="logo">
+            <img src="https://res.cloudinary.com/dvltehb8j/image/upload/v1753353064/msa-logo_ln09co.png" alt="Mangla Sports" style="height: 60px; width: auto; margin-bottom: 10px;">
+          </div>
+          <div class="tagline">Your Premier Shooting Sports Equipment Store</div>
+        </div>
+
+        <div class="content">
+          <h1 style="color: #1e40af; margin-bottom: 20px;">🎉 Welcome to Mangla Sports!</h1>
+          
+          <div class="welcome-box">
+            <h3 style="margin-top: 0; color: #059669;">Welcome aboard, <strong>${userName || 'there'}</strong>!</h3>
+            <p>Thank you for creating an account with Mangla Sports. We're excited to have you as part of our shooting sports community!</p>
+          </div>
+          
+          <p>To complete your registration and start shopping for premium shooting sports equipment, please verify your email address by clicking the button below:</p>
+          
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${verificationUrl}" class="verify-button">Verify My Email Address</a>
+          </div>
+          
+          <div class="warning">
+            <h3 style="margin-top: 0; color: #92400e;">⚠️ Important Security Notice</h3>
+            <ul style="margin: 10px 0; padding-left: 20px;">
+              <li>This verification link will expire in <strong>24 hours</strong></li>
+              <li>Only click the verify button if you created this account</li>
+              <li>If you didn't create this account, you can safely ignore this email</li>
+            </ul>
+          </div>
+          
+          <div class="info-box">
+            <h3 style="margin-top: 0; color: #1e40af;">🔗 Can't click the button?</h3>
+            <p>If the button above doesn't work, copy and paste this link into your browser:</p>
+            <p style="word-break: break-all; background-color: #f1f5f9; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 12px;">
+              ${verificationUrl}
+            </p>
+          </div>
+          
+          <div class="info-box">
+            <h3 style="margin-top: 0; color: #1e40af;">🎯 What's Next?</h3>
+            <p>Once you verify your email, you'll be able to:</p>
+            <ul style="margin: 10px 0; padding-left: 20px;">
+              <li>Browse our complete catalog of shooting sports equipment</li>
+              <li>Add items to your wishlist and cart</li>
+              <li>Complete purchases with secure payment</li>
+              <li>Track your orders and receive updates</li>
+              <li>Write reviews for products you've purchased</li>
+            </ul>
+          </div>
+          
+          <p>If you have any questions or need assistance, please don't hesitate to contact our support team.</p>
+          
+          <p>Best regards,<br>The Mangla Sports Team</p>
+        </div>
+
+        <div class="footer">
+          <div style="margin-bottom: 15px;">
+            <img src="https://res.cloudinary.com/dvltehb8j/image/upload/v1753353064/msa-logo_ln09co.png" alt="Mangla Sports" style="height: 40px; width: auto; filter: brightness(0) invert(1);">
+          </div>
+          <p style="margin-bottom: 8px;">Your Premier Shooting Sports Equipment Store</p>
+          <p style="margin-bottom: 8px;">📧 <a href="mailto:support@manglasports.com">support@manglasports.com</a></p>
+          <p style="margin-bottom: 8px;">📞 <a href="tel:+91-XXXXXXXXXX">+91-XXXXXXXXXX</a></p>
+          <p style="margin-top: 20px; font-size: 12px; opacity: 0.8;">© 2024 Mangla Sports. All rights reserved.</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+}
+
 // Generate password reset HTML template
 function generatePasswordResetHTML(userName, resetToken) {
   const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password?token=${resetToken}`;
@@ -324,6 +423,25 @@ export async function sendInvoiceEmail(order, user, address) {
     return { success: true, messageId: info.messageId };
   } catch (error) {
     console.error('Error sending invoice email:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Send email verification
+export async function sendEmailVerification(email, verificationToken, userName) {
+  try {
+    const mailOptions = {
+      from: process.env.EMAIL_USER || 'your-email@yourdomain.com',
+      to: email,
+      subject: 'Verify Your Email - Welcome to Mangla Sports',
+      html: generateEmailVerificationHTML(userName, verificationToken)
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Email verification sent successfully to:', email, 'Message ID:', info.messageId);
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error('Error sending email verification:', error);
     return { success: false, error: error.message };
   }
 }

@@ -16,10 +16,8 @@ import {
   CheckCircle,
   AlertCircle,
   Filter,
-  Download,
   BarChart3,
-  PieChart,
-  Mail
+  PieChart
 } from 'lucide-react';
 
 interface DashboardStatsProps {
@@ -46,8 +44,6 @@ export default function DashboardStats({ stats, onDateRangeChange, loading, curr
   const [customStartDate, setCustomStartDate] = useState('');
   const [customEndDate, setCustomEndDate] = useState('');
   const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
-  const [emailTestLoading, setEmailTestLoading] = useState(false);
-  const [emailTestResult, setEmailTestResult] = useState<{ success: boolean; message: string } | null>(null);
 
   // Update dateRange when currentDateRange prop changes
   useEffect(() => {
@@ -117,37 +113,7 @@ export default function DashboardStats({ stats, onDateRangeChange, loading, curr
     }
   };
 
-  const handleTestEmail = async () => {
-    if (!user?.email) {
-      setEmailTestResult({ success: false, message: 'User email not found. Please log in again.' });
-      return;
-    }
 
-    setEmailTestLoading(true);
-    setEmailTestResult(null);
-    
-    try {
-      const response = await fetch('http://localhost:4000/api/email/test', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userEmail: user.email }),
-      });
-      
-      const result = await response.json();
-      
-      if (result.success) {
-        setEmailTestResult({ success: true, message: `Test email sent successfully to ${user.email}! Check your inbox.` });
-      } else {
-        setEmailTestResult({ success: false, message: `Failed to send test email: ${result.error}` });
-      }
-    } catch (error) {
-      setEmailTestResult({ success: false, message: 'Error testing email configuration. Please check your email settings.' });
-    } finally {
-      setEmailTestLoading(false);
-    }
-  };
 
   const getGrowthPercentage = (current: number, previous: number) => {
     if (previous === 0) return current > 0 ? 100 : 0;
@@ -299,36 +265,10 @@ export default function DashboardStats({ stats, onDateRangeChange, loading, curr
             )}
           </div>
 
-          {/* Export Button */}
-          <Button variant="outline" size="sm" className="flex items-center gap-2">
-            <Download className="w-4 h-4" />
-            Export
-          </Button>
-
-          {/* Test Email Button */}
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="flex items-center gap-2"
-            onClick={handleTestEmail}
-            disabled={emailTestLoading}
-            title={user?.email ? `Send test email to ${user.email}` : 'Send test email'}
-          >
-            <Mail className="w-4 h-4" />
-            {emailTestLoading ? 'Testing...' : `Test Email${user?.email ? ` (${user.email})` : ''}`}
-          </Button>
+          
         </div>
 
-        {/* Email Test Result */}
-        {emailTestResult && (
-          <div className={`mt-4 p-3 rounded-lg text-sm ${
-            emailTestResult.success 
-              ? 'bg-green-50 text-green-800 border border-green-200' 
-              : 'bg-red-50 text-red-800 border border-red-200'
-          }`}>
-            {emailTestResult.message}
-          </div>
-        )}
+        
       </div>
 
       {/* Main Statistics Cards */}
@@ -439,7 +379,7 @@ export default function DashboardStats({ stats, onDateRangeChange, loading, curr
       </div>
 
       {/* Additional Statistics Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Order Status */}
         <Card className="p-6 rounded-xl shadow-lg bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900/20 dark:to-slate-800/20 border border-slate-200 dark:border-slate-700">
           <div className="flex items-center gap-3 mb-4">
@@ -491,30 +431,6 @@ export default function DashboardStats({ stats, onDateRangeChange, loading, curr
                 {stats.lastMonthOrders || 0} orders
               </span>
             </div>
-          </div>
-        </Card>
-
-        {/* Quick Actions */}
-        <Card className="p-6 rounded-xl shadow-lg bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/20 dark:to-emerald-800/20 border border-emerald-200 dark:border-emerald-700">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-emerald-500 rounded-lg">
-              <Eye className="w-5 h-5 text-white" />
-            </div>
-            <h3 className="font-semibold text-slate-800 dark:text-slate-100">Quick Actions</h3>
-          </div>
-          <div className="space-y-2">
-            <Button variant="outline" size="sm" className="w-full justify-start">
-              <Package className="w-4 h-4 mr-2" />
-              View Products
-            </Button>
-            <Button variant="outline" size="sm" className="w-full justify-start">
-              <ShoppingCart className="w-4 h-4 mr-2" />
-              View Orders
-            </Button>
-            <Button variant="outline" size="sm" className="w-full justify-start">
-              <Users className="w-4 h-4 mr-2" />
-              View Users
-            </Button>
           </div>
         </Card>
       </div>
