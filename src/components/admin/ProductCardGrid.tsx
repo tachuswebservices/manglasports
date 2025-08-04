@@ -87,7 +87,7 @@ export default function ProductCardGrid({
             <div className="flex items-center gap-2">
               <IndianRupee className="w-5 h-5 text-mangla-gold" />
               <span className="text-mangla-gold font-bold text-xl">
-                {product.price?.toLocaleString('en-IN')}
+                {product.numericPrice?.toLocaleString('en-IN')}
               </span>
             </div>
 

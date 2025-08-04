@@ -47,7 +47,7 @@ export default function ProductTable({
               </td>
               <td className="px-4 py-2 font-medium">{product.name}</td>
               <td className="px-4 py-2">{categories.find(c => c.id === product.categoryId)?.name || '-'}</td>
-              <td className="px-4 py-2">₹{product.price}</td>
+              <td className="px-4 py-2">₹{product.numericPrice}</td>
               <td className="px-4 py-2 flex gap-2">
                 <TooltipProvider>
                   <Tooltip>

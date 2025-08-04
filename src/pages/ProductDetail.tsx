@@ -10,6 +10,9 @@ import { cn, formatIndianPrice } from '@/lib/utils';
 import { useTheme } from '@/components/theme/ThemeProvider';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import ReviewModal from '@/components/products/ReviewModal';
+import ReviewList from '@/components/products/ReviewList';
+import { useAuth } from '@/contexts/AuthContext';
 // import { Product as BaseProduct, products } from '@/data/products';
 import { useCart } from '@/contexts/CartContext';
 
@@ -41,6 +44,18 @@ interface DetailedProduct extends Product {
   sku: string;
 }
 
+interface Review {
+  id: number;
+  rating: number;
+  comment: string;
+  createdAt: string;
+  user: {
+    id: number;
+    name: string;
+    email: string;
+  };
+}
+
 const fetchProduct = async (productId: string): Promise<DetailedProduct | null> => {
   try {
     const res = await fetch(`http://localhost:4000/api/products/${productId}`);
@@ -65,11 +80,18 @@ const ProductDetail: React.FC = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  const { user, token } = useAuth();
   
   const [product, setProduct] = useState<DetailedProduct | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [userReview, setUserReview] = useState<Review | null>(null);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [editingReview, setEditingReview] = useState<Review | null>(null);
+  const [canReview, setCanReview] = useState<boolean | null>(null);
   
   // Handle share functionality
   const handleShare = async () => {
@@ -109,6 +131,70 @@ const ProductDetail: React.FC = () => {
     }
   };
 
+  // Fetch reviews for the product
+  const fetchReviews = async () => {
+    if (!productId) return;
+    
+    setReviewsLoading(true);
+    try {
+      const response = await fetch(`http://localhost:4000/api/reviews/product/${productId}`);
+      if (response.ok) {
+        const reviewsData = await response.json();
+        setReviews(reviewsData);
+      }
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
+    } finally {
+      setReviewsLoading(false);
+    }
+  };
+
+  // Fetch user's review for the product
+  const fetchUserReview = async () => {
+    if (!productId || !user || !token) return;
+    
+    try {
+      const response = await fetch(`http://localhost:4000/api/reviews/product/${productId}/user`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        const userReviewData = await response.json();
+        setUserReview(userReviewData);
+      } else if (response.status === 404) {
+        setUserReview(null);
+      }
+    } catch (error) {
+      console.error('Error fetching user review:', error);
+    }
+  };
+
+  // Check if user can review the product
+  const checkCanReview = async () => {
+    if (!productId || !user || !token) {
+      setCanReview(false);
+      return;
+    }
+    
+    try {
+      const response = await fetch(`http://localhost:4000/api/reviews/product/${productId}/can-review`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setCanReview(data.canReview);
+      } else {
+        setCanReview(false);
+      }
+    } catch (error) {
+      console.error('Error checking review eligibility:', error);
+      setCanReview(false);
+    }
+  };
+
   useEffect(() => {
     const loadProduct = async () => {
       if (!productId) {
@@ -140,6 +226,14 @@ const ProductDetail: React.FC = () => {
     loadProduct();
   }, [productId, navigate]);
 
+  useEffect(() => {
+    if (productId) {
+      fetchReviews();
+      fetchUserReview();
+      checkCanReview();
+    }
+  }, [productId, user, token]);
+
   const handleQuantityChange = (newQuantity: number) => {
     if (newQuantity < 1) return;
     setQuantity(newQuantity);
@@ -157,6 +251,40 @@ const ProductDetail: React.FC = () => {
     setCurrentImageIndex((prevIndex) =>
       prevIndex === 0 ? product.images.length - 1 : prevIndex - 1
     );
+  };
+
+  const handleReviewSubmitted = () => {
+    fetchReviews();
+    fetchUserReview();
+    // Refresh product data to update rating and review count
+    if (productId) {
+      fetchProduct(productId).then(setProduct);
+    }
+  };
+
+  const handleWriteReview = () => {
+    if (!user) {
+      toast.error('Please login to write a review');
+      return;
+    }
+    
+    if (canReview === false) {
+      toast.error('You need to purchase this product first to write a review');
+      return;
+    }
+    
+    setEditingReview(null);
+    setIsReviewModalOpen(true);
+  };
+
+  const handleEditReview = (review: Review) => {
+    setEditingReview(review);
+    setIsReviewModalOpen(true);
+  };
+
+  const handleDeleteReview = (review: Review) => {
+    // This will be handled by the ReviewModal component
+    handleReviewSubmitted();
   };
 
   if (loading) {
@@ -329,7 +457,7 @@ const ProductDetail: React.FC = () => {
                   ))}
                 </div>
                 <span className="ml-2 text-sm opacity-75">
-                  {product.rating} ({product.reviewCount} reviews)
+                  {product.rating} ({product.reviewCount || 0} reviews)
                 </span>
               </div>
               
@@ -470,7 +598,7 @@ const ProductDetail: React.FC = () => {
                       : "data-[state=active]:bg-transparent data-[state=active]:text-gray-900"
                   )}
                 >
-                  Reviews (0)
+                  Reviews ({product.reviewCount || 0})
                 </TabsTrigger>
               </TabsList>
               
@@ -497,17 +625,45 @@ const ProductDetail: React.FC = () => {
                 </TabsContent>
                 
                 <TabsContent value="reviews">
-                  <div className="text-center py-8">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 mb-4">
-                      <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
-                      </svg>
+                  <div className="space-y-6">
+                    {/* Review Header */}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-lg font-semibold mb-1">Customer Reviews</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          {product.reviewCount || 0} reviews • {product.rating} average rating
+                        </p>
+                      </div>
+                                             {user ? (
+                         canReview === null ? (
+                           <Button disabled className="bg-gray-400 text-white">
+                             Loading...
+                           </Button>
+                         ) : canReview && !userReview ? (
+                           <Button 
+                             onClick={handleWriteReview}
+                             className="bg-mangla-gold hover:bg-mangla-blue text-white"
+                           >
+                             Write a Review
+                           </Button>
+                         ) : null
+                       ) : (
+                         <Button 
+                           onClick={handleWriteReview}
+                           className="bg-mangla-gold hover:bg-mangla-blue text-white"
+                         >
+                           Login to Review
+                         </Button>
+                       )}
                     </div>
-                    <h3 className="text-lg font-medium mb-2">No reviews yet</h3>
-                    <p className="text-gray-500 dark:text-gray-400 mb-6">Be the first to review this product</p>
-                    <Button className="bg-mangla-gold hover:bg-mangla-gold/90 text-mangla">
-                      Write a Review
-                    </Button>
+
+                    {/* Reviews List */}
+                    <ReviewList
+                      reviews={reviews}
+                      onEditReview={handleEditReview}
+                      onDeleteReview={handleDeleteReview}
+                      loading={reviewsLoading}
+                    />
                   </div>
                 </TabsContent>
               </div>
@@ -517,6 +673,16 @@ const ProductDetail: React.FC = () => {
       </main>
       
       <Footer />
+
+      {/* Review Modal */}
+      <ReviewModal
+        isOpen={isReviewModalOpen}
+        onClose={() => setIsReviewModalOpen(false)}
+        productId={productId!}
+        productName={product.name}
+        existingReview={editingReview}
+        onReviewSubmitted={handleReviewSubmitted}
+      />
     </motion.div>
   );
 };

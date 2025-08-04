@@ -11,6 +11,7 @@ import authRoutes from './routes/auth.routes.js';
 import addressRoutes from './routes/address.routes.js';
 import paymentRoutes from './routes/payment.routes.js';
 import emailRoutes from './routes/email.routes.js';
+import reviewRoutes from './routes/review.routes.js';
 import adminOnly from './middleware/adminOnly.js';
 
 const app = express();
@@ -33,6 +34,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/addresses', addressRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/email', emailRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 // Example protected admin API route
 app.get('/admin', adminOnly, (req, res) => {

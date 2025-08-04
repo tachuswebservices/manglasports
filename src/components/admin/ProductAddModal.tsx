@@ -72,15 +72,7 @@ export default function ProductAddModal({
             disabled={loading}
             required
           />
-          <label className="font-medium">Price (display string, e.g. ₹1,999)</label>
-          <Input
-            placeholder="Price (display string, e.g. ₹1,999)"
-            value={product.price}
-            onChange={e => onChange('price', e.target.value)}
-            disabled={loading}
-            required
-          />
-          <label className="font-medium">Numeric Price (number)</label>
+          <label className="font-medium">Price (number)</label>
           <Input
             placeholder="Numeric Price (number)"
             type="text"
@@ -91,27 +83,7 @@ export default function ProductAddModal({
             disabled={loading}
             required
           />
-          <label className="font-medium">Rating (float)</label>
-          <Input
-            placeholder="Rating (float)"
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9.]*"
-            value={typeof product.rating === 'string' && product.rating === '' ? '' : String(product.rating)}
-            onChange={e => onChange('rating', e.target.value.replace(/[^0-9.]/g, ''))}
-            disabled={loading}
-            required
-          />
-          <label className="font-medium">Review Count (optional)</label>
-          <Input
-            placeholder="Review Count (optional)"
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            value={typeof product.reviewCount === 'string' && product.reviewCount === '' ? '' : String(product.reviewCount)}
-            onChange={e => onChange('reviewCount', e.target.value.replace(/[^0-9]/g, ''))}
-            disabled={loading}
-          />
+
           <label className="font-medium">Sold Count (optional)</label>
           <Input
             placeholder="Sold Count (optional)"

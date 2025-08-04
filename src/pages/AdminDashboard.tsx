@@ -55,13 +55,10 @@ const AdminDashboard = () => {
   const [products, setProducts] = useState([]);
   const initialProductState = {
     name: '',
-    price: '',
     numericPrice: '',
     images: [],
     categoryId: '',
     brandId: '',
-    rating: '',
-    reviewCount: '',
     soldCount: '',
     inStock: false,
     isNew: false,
@@ -393,7 +390,7 @@ const AdminDashboard = () => {
     }
     const imageUrls = imageObjs.map(img => img.url);
     // Validate required fields
-    if (!newProduct.name || !newProduct.price || !newProduct.numericPrice || !newProduct.categoryId || !newProduct.brandId || !newProduct.rating) {
+    if (!newProduct.name || !newProduct.numericPrice || !newProduct.categoryId || !newProduct.brandId) {
       setAddProductError('Please fill all required fields.');
       setAddingProduct(false);
       return;
@@ -402,13 +399,11 @@ const AdminDashboard = () => {
     const payload = {
       id: uuidv4(),
       name: newProduct.name,
-      price: newProduct.price,
       numericPrice: typeof newProduct.numericPrice === 'string' && newProduct.numericPrice === '' ? undefined : Number(newProduct.numericPrice),
       images: imageUrls,
       categoryId: typeof newProduct.categoryId === 'string' && newProduct.categoryId === '' ? undefined : Number(newProduct.categoryId),
       brandId: typeof newProduct.brandId === 'string' && newProduct.brandId === '' ? undefined : Number(newProduct.brandId),
-      rating: typeof newProduct.rating === 'string' && newProduct.rating === '' ? undefined : Number(newProduct.rating),
-      reviewCount: typeof newProduct.reviewCount === 'string' && newProduct.reviewCount === '' ? undefined : Number(newProduct.reviewCount),
+
       soldCount: typeof newProduct.soldCount === 'string' && newProduct.soldCount === '' ? undefined : Number(newProduct.soldCount),
       gst: typeof newProduct.gst === 'string' && newProduct.gst === '' ? 18 : Number(newProduct.gst),
       offerPrice: typeof newProduct.offerPrice === 'string' && newProduct.offerPrice === '' ? 0 : Number(newProduct.offerPrice),
@@ -535,7 +530,7 @@ const AdminDashboard = () => {
     imageObjsEdit = imageObjsEdit.filter(img => !imagesToDelete.includes(img.publicId));
     const imageUrls = imageObjsEdit.map(img => img.url);
     // Validate required fields
-    if (!editProductState.name || !editProductState.price || !editProductState.numericPrice || !editProductState.categoryId || !editProductState.brandId || !editProductState.rating) {
+    if (!editProductState.name || !editProductState.numericPrice || !editProductState.categoryId || !editProductState.brandId) {
       setEditError('Please fill all required fields.');
       setEditLoading(false);
       return;
@@ -547,8 +542,7 @@ const AdminDashboard = () => {
       categoryId: typeof editProductState.categoryId === 'string' && editProductState.categoryId === '' ? undefined : Number(editProductState.categoryId),
       brandId: typeof editProductState.brandId === 'string' && editProductState.brandId === '' ? undefined : Number(editProductState.brandId),
       numericPrice: typeof editProductState.numericPrice === 'string' && editProductState.numericPrice === '' ? undefined : Number(editProductState.numericPrice),
-      rating: typeof editProductState.rating === 'string' && editProductState.rating === '' ? undefined : Number(editProductState.rating),
-      reviewCount: typeof editProductState.reviewCount === 'string' && editProductState.reviewCount === '' ? undefined : Number(editProductState.reviewCount),
+
       soldCount: typeof editProductState.soldCount === 'string' && editProductState.soldCount === '' ? undefined : Number(editProductState.soldCount),
       gst: typeof editProductState.gst === 'string' && editProductState.gst === '' ? 18 : Number(editProductState.gst),
       offerPrice: typeof editProductState.offerPrice === 'string' && editProductState.offerPrice === '' ? 0 : Number(editProductState.offerPrice),
