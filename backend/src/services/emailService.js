@@ -208,6 +208,89 @@ function generateInvoiceHTML(order, user, address) {
   `;
 }
 
+// Generate password reset HTML template
+function generatePasswordResetHTML(userName, resetToken) {
+  const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password?token=${resetToken}`;
+  
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <title>Password Reset - Mangla Sports</title>
+      <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f8fafc; }
+        .container { max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+        .header { text-align: center; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 30px 20px; }
+        .logo { text-align: center; margin-bottom: 8px; }
+        .tagline { font-size: 16px; opacity: 0.9; }
+        .content { padding: 30px; }
+        .reset-button { display: inline-block; background-color: #1e40af; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 20px 0; }
+        .reset-button:hover { background-color: #1e3a8a; }
+        .warning { background-color: #fef3c7; border: 1px solid #f59e0b; padding: 15px; border-radius: 8px; margin: 20px 0; }
+        .footer { background-color: #1e293b; color: white; text-align: center; padding: 30px 20px; }
+        .footer a { color: #60a5fa; text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+        .info-box { background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #3b82f6; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <div class="logo">
+            <img src="https://res.cloudinary.com/dvltehb8j/image/upload/v1753353064/msa-logo_ln09co.png" alt="Mangla Sports" style="height: 60px; width: auto; margin-bottom: 10px;">
+          </div>
+          <div class="tagline">Your Premier Shooting Sports Equipment Store</div>
+        </div>
+
+        <div class="content">
+          <h1 style="color: #1e40af; margin-bottom: 20px;">🔐 Password Reset Request</h1>
+          
+          <p>Hello <strong>${userName || 'there'}</strong>,</p>
+          
+          <p>We received a request to reset your password for your Mangla Sports account. If you didn't make this request, you can safely ignore this email.</p>
+          
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${resetUrl}" class="reset-button">Reset My Password</a>
+          </div>
+          
+          <div class="warning">
+            <h3 style="margin-top: 0; color: #92400e;">⚠️ Important Security Notice</h3>
+            <ul style="margin: 10px 0; padding-left: 20px;">
+              <li>This link will expire in <strong>1 hour</strong></li>
+              <li>Only click the reset button if you requested this password reset</li>
+              <li>If you didn't request this, your password will remain unchanged</li>
+            </ul>
+          </div>
+          
+          <div class="info-box">
+            <h3 style="margin-top: 0; color: #1e40af;">🔗 Can't click the button?</h3>
+            <p>If the button above doesn't work, copy and paste this link into your browser:</p>
+            <p style="word-break: break-all; background-color: #f1f5f9; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 12px;">
+              ${resetUrl}
+            </p>
+          </div>
+          
+          <p>If you have any questions or need assistance, please don't hesitate to contact our support team.</p>
+          
+          <p>Best regards,<br>The Mangla Sports Team</p>
+        </div>
+
+        <div class="footer">
+          <div style="margin-bottom: 15px;">
+            <img src="https://res.cloudinary.com/dvltehb8j/image/upload/v1753353064/msa-logo_ln09co.png" alt="Mangla Sports" style="height: 40px; width: auto; filter: brightness(0) invert(1);">
+          </div>
+          <p style="margin-bottom: 8px;">Your Premier Shooting Sports Equipment Store</p>
+          <p style="margin-bottom: 8px;">📧 <a href="mailto:support@manglasports.com">support@manglasports.com</a></p>
+          <p style="margin-bottom: 8px;">📞 <a href="tel:+91-XXXXXXXXXX">+91-XXXXXXXXXX</a></p>
+          <p style="margin-top: 20px; font-size: 12px; opacity: 0.8;">© 2024 Mangla Sports. All rights reserved.</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+}
+
 // Send invoice email
 export async function sendInvoiceEmail(order, user, address) {
   try {
@@ -241,6 +324,25 @@ export async function sendInvoiceEmail(order, user, address) {
     return { success: true, messageId: info.messageId };
   } catch (error) {
     console.error('Error sending invoice email:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Send password reset email
+export async function sendPasswordResetEmail(email, resetToken, userName) {
+  try {
+    const mailOptions = {
+      from: process.env.EMAIL_USER || 'your-email@yourdomain.com',
+      to: email,
+      subject: 'Password Reset Request - Mangla Sports',
+      html: generatePasswordResetHTML(userName, resetToken)
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Password reset email sent successfully to:', email, 'Message ID:', info.messageId);
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error('Error sending password reset email:', error);
     return { success: false, error: error.message };
   }
 }
