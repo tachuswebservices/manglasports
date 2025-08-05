@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
 import productRoutes from './routes/product.routes.js';
 import userRoutes from './routes/user.routes.js';
 import orderRoutes from './routes/order.routes.js';
@@ -12,12 +13,14 @@ import addressRoutes from './routes/address.routes.js';
 import paymentRoutes from './routes/payment.routes.js';
 import emailRoutes from './routes/email.routes.js';
 import reviewRoutes from './routes/review.routes.js';
+import blogRoutes from './routes/blog.routes.js';
 import adminOnly from './middleware/adminOnly.js';
 
 const app = express();
 
 app.use(cors()); // Allow all origins for development
 app.use(express.json());
+app.use('/lovable-uploads', express.static(path.join(process.cwd(), 'public', 'lovable-uploads')));
 
 app.get('/', (req, res) => {
   res.send('Mangla Sports Backend API');
@@ -35,6 +38,7 @@ app.use('/api/addresses', addressRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/email', emailRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/blog', blogRoutes);
 
 // Example protected admin API route
 app.get('/admin', adminOnly, (req, res) => {

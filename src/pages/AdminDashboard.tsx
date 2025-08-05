@@ -45,6 +45,7 @@ import ProductImageManager from '../components/admin/ProductImageManager';
 import CategoryManager from '../components/admin/CategoryManager';
 import BrandManager from '../components/admin/BrandManager';
 import OrderCardGrid from '../components/admin/OrderCardGrid';
+import BlogManager from '../components/admin/BlogManager';
 
 // Cloudinary config (move to top-level scope)
 const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dvltehb8j/upload';
@@ -996,6 +997,12 @@ const AdminDashboard = () => {
             >
               Orders
             </button>
+            <button
+              className={`px-6 py-2 rounded-t-lg font-semibold shadow-sm border-b-2 transition-all duration-150 ${activeTab === 'blog' ? 'bg-white dark:bg-slate-900 border-mangla-gold text-mangla-gold' : 'bg-slate-100 dark:bg-slate-800 border-transparent text-slate-500 hover:text-mangla-gold hover:border-mangla-gold'}`}
+              onClick={() => setActiveTab('blog')}
+            >
+              Blog
+            </button>
           </div>
 
           {/* Dashboard Tab - Statistics */}
@@ -1233,6 +1240,13 @@ const AdminDashboard = () => {
                   )}
                 </div>
               </section>
+            </div>
+          )}
+
+          {/* Blog Tab - Blog Management */}
+          {activeTab === 'blog' && (
+            <div>
+              <BlogManager />
             </div>
           )}
         </div>

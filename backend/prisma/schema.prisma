@@ -24,6 +24,7 @@ model User {
   orders                Order[]
   wishlist              Wishlist[]
   reviews               Review[]
+  blogComments          BlogComment[]
 }
 
 model Category {
@@ -155,4 +156,41 @@ model Review {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([productId, userId])
+}
+
+model BlogPost {
+  id          Int           @id @default(autoincrement())
+  title       String
+  slug        String        @unique
+  excerpt     String
+  content     String        @db.Text
+  featuredImage String?
+  category    String
+  tags        String[]      @default([])
+  authorName  String?
+  status      String        @default("draft") // draft, published, archived
+  readTime    Int           @default(5) // in minutes
+  views       Int           @default(0)
+  isFeatured  Boolean       @default(false)
+  seoTitle    String?
+  seoDescription String?
+  publishedAt DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  comments    BlogComment[]
+}
+
+model BlogComment {
+  id        Int      @id @default(autoincrement())
+  postId    Int
+  userId    Int
+  content   String
+  parentId  Int?     // For nested comments
+  isApproved Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  post      BlogPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent    BlogComment? @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   BlogComment[] @relation("CommentReplies")
 }
