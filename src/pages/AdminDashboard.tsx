@@ -14,7 +14,7 @@ import {
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '../components/ui/select';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
-import { X, Upload, Search, Plus, Pencil, Trash, Eye, Image as ImageIcon, Check, ChevronLeft, ChevronRight, ShieldAlert, LayoutGrid, List, Tag } from 'lucide-react';
+import { X, Upload, Search, Plus, Pencil, Trash, Eye, Image as ImageIcon, Check, ChevronLeft, ChevronRight, ShieldAlert, LayoutGrid, List, Tag, ChartBarIcon, Frame } from 'lucide-react';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '../components/ui/tooltip';
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction, AlertDialogCancel } from '../components/ui/alert-dialog';
 import { useToast } from '../components/ui/use-toast';
@@ -978,7 +978,7 @@ const AdminDashboard = () => {
         <div className="max-w-5xl mx-auto">
           <h1 className="text-3xl md:text-4xl font-extrabold mb-8 tracking-tight text-mangla-gold drop-shadow-sm">Admin Dashboard</h1>
           {/* Tab Navigation */}
-          <div className="flex gap-2 mb-8">
+          <div className="flex gap-2 mb-8 flex-wrap">
             <button
               className={`px-6 py-2 rounded-t-lg font-semibold shadow-sm border-b-2 transition-all duration-150 ${activeTab === 'dashboard' ? 'bg-white dark:bg-slate-900 border-mangla-gold text-mangla-gold' : 'bg-slate-100 dark:bg-slate-800 border-transparent text-slate-500 hover:text-mangla-gold hover:border-mangla-gold'}`}
               onClick={() => setActiveTab('dashboard')}
@@ -1008,7 +1008,6 @@ const AdminDashboard = () => {
           {/* Dashboard Tab - Statistics */}
           {activeTab === 'dashboard' && (
             <div>
-              <h2 className="text-2xl font-bold mb-6 text-slate-800 dark:text-slate-100">Statistics Overview</h2>
               {loadingStats ? (
                 <div className="text-center py-12">Loading statistics...</div>
               ) : statsError ? (
@@ -1091,14 +1090,14 @@ const AdminDashboard = () => {
                   <TooltipProvider>
                     <Tooltip><TooltipTrigger asChild>
                       <Button size="icon" variant="outline" className="rounded-full" onClick={() => setShowManageCategories(true)} aria-label="Manage Categories">
-                        <ImageIcon className="w-5 h-5" />
+                        <ChartBarIcon className="w-5 h-5" />
                       </Button>
                     </TooltipTrigger><TooltipContent>Manage Categories</TooltipContent></Tooltip>
                   </TooltipProvider>
                   <TooltipProvider>
                     <Tooltip><TooltipTrigger asChild>
                       <Button size="icon" variant="outline" className="rounded-full" onClick={() => setShowManageBrands(true)} aria-label="Manage Brands">
-                        <Tag className="w-5 h-5" />
+                        <Frame className="w-5 h-5" />
                       </Button>
                     </TooltipTrigger><TooltipContent>Manage Brands</TooltipContent></Tooltip>
                   </TooltipProvider>
@@ -1216,7 +1215,7 @@ const AdminDashboard = () => {
               
               {/* Orders Section */}
               <section>
-                <div className="overflow-x-auto rounded-xl shadow bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                <div className="overflow-x-auto rounded-xl shadow bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4">
                   {loadingOrders ? (
                     <div className="text-center py-8">Loading orders...</div>
                   ) : ordersError ? (

@@ -1,6 +1,6 @@
 import { Button } from '../ui/button';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '../ui/tooltip';
-import { Pencil, Trash, Upload, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Pencil, Trash, Upload, ChevronLeft, ChevronRight, Image } from 'lucide-react';
 
 interface ProductTableProps {
   products: any[];
@@ -73,7 +73,7 @@ export default function ProductTable({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button size="icon" variant="outline" onClick={() => onManageImages(product)} aria-label="Manage Images">
-                        <Upload className="w-4 h-4" />
+                        <Image className="w-4 h-4" />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>Manage Images</TooltipContent>
