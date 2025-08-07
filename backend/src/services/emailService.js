@@ -198,8 +198,8 @@ function generateInvoiceHTML(order, user, address) {
            </div>
            <p style="margin-bottom: 8px;">Your Premier Shooting Sports Equipment Store</p>
            <p style="margin-bottom: 8px;">📧 <a href="mailto:support@manglasports.com">support@manglasports.com</a></p>
-           <p style="margin-bottom: 8px;">📞 <a href="tel:+91-XXXXXXXXXX">+91-XXXXXXXXXX</a></p>
-           <p style="margin-top: 20px; font-size: 12px; opacity: 0.8;">© 2024 Mangla Sports. All rights reserved.</p>
+           <p style="margin-bottom: 8px;">📞 <a href="tel:+91 92569 30009">+91 92569 30009</a></p>
+           <p style="margin-top: 20px; font-size: 12px; opacity: 0.8;">© 2025 Mangla Sports. All rights reserved.</p>
            <p style="font-size: 12px; opacity: 0.8;">Thank you for choosing Mangla Sports for your shooting sports needs!</p>
          </div>
       </div>
@@ -298,8 +298,8 @@ function generateEmailVerificationHTML(userName, verificationToken) {
           </div>
           <p style="margin-bottom: 8px;">Your Premier Shooting Sports Equipment Store</p>
           <p style="margin-bottom: 8px;">📧 <a href="mailto:support@manglasports.com">support@manglasports.com</a></p>
-          <p style="margin-bottom: 8px;">📞 <a href="tel:+91-XXXXXXXXXX">+91-XXXXXXXXXX</a></p>
-          <p style="margin-top: 20px; font-size: 12px; opacity: 0.8;">© 2024 Mangla Sports. All rights reserved.</p>
+          <p style="margin-bottom: 8px;">📞 <a href="tel:+91 92569 30009">+91 92569 30009</a></p>
+          <p style="margin-top: 20px; font-size: 12px; opacity: 0.8;">© 2025 Mangla Sports. All rights reserved.</p>
         </div>
       </div>
     </body>
@@ -381,8 +381,8 @@ function generatePasswordResetHTML(userName, resetToken) {
           </div>
           <p style="margin-bottom: 8px;">Your Premier Shooting Sports Equipment Store</p>
           <p style="margin-bottom: 8px;">📧 <a href="mailto:support@manglasports.com">support@manglasports.com</a></p>
-          <p style="margin-bottom: 8px;">📞 <a href="tel:+91-XXXXXXXXXX">+91-XXXXXXXXXX</a></p>
-          <p style="margin-top: 20px; font-size: 12px; opacity: 0.8;">© 2024 Mangla Sports. All rights reserved.</p>
+          <p style="margin-bottom: 8px;">📞 <a href="tel:+91 92569 30009">+91 92569 30009</a></p>
+          <p style="margin-top: 20px; font-size: 12px; opacity: 0.8;">© 2025 Mangla Sports. All rights reserved.</p>
         </div>
       </div>
     </body>
@@ -518,7 +518,7 @@ export async function sendOrderStatusUpdateEmail(order, user, newStatus) {
             <div class="footer">
               <p>Thank you for choosing Mangla Sports!</p>
               <p>For any queries, please contact us at support@manglasports.com</p>
-              <p>© 2024 Mangla Sports. All rights reserved.</p>
+              <p>© 2025 Mangla Sports. All rights reserved.</p>
             </div>
           </div>
         </body>
@@ -582,7 +582,7 @@ export async function testEmailConfiguration(userEmail) {
             <div class="footer">
               <p>Thank you for choosing Mangla Sports!</p>
               <p>For any queries, please contact us at support@manglasports.com</p>
-              <p>© 2024 Mangla Sports. All rights reserved.</p>
+              <p>© 2025 Mangla Sports. All rights reserved.</p>
             </div>
           </div>
         </body>

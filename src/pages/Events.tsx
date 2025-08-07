@@ -1,89 +1,56 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ChevronLeft, MapPin, Calendar as CalendarIcon, Clock, Filter, X } from 'lucide-react';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
+import Navbar from '../components/layout/Navbar';
+import Footer from '../components/layout/Footer';
 
-type Event = {
+interface Event {
   id: number;
   title: string;
+  slug: string;
+  description: string;
   date: string;
   time: string;
   location: string;
-  description: string;
   category: string;
-  image: string;
-  isFeatured?: boolean;
-};
+  image?: { url: string; publicId: string } | string | null;
+  isFeatured: boolean;
+  isPublished: boolean;
+  createdAt: string;
+}
 
 const Events = () => {
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
 
-  const events: Event[] = [
-    {
-      id: 1,
-      title: 'National Shooting Championship 2025',
-      date: 'June 15-20, 2025',
-      time: '9:00 AM - 6:00 PM',
-      location: 'Karni Singh Shooting Range, New Delhi',
-      description: 'The most prestigious national shooting competition featuring top shooters from across the country. Categories include Air Rifle, Air Pistol, and more.',
-      category: 'competition',
-      image: '/images/events/national-championship.jpg',
-      isFeatured: true
-    },
-    {
-      id: 2,
-      title: 'Beginner\'s Guide to Air Rifle Shooting',
-      date: 'May 28, 2025',
-      time: '2:00 PM - 5:00 PM',
-      location: 'Mangla Sports Academy, Mumbai',
-      description: 'A comprehensive workshop for beginners covering safety, stance, breathing techniques, and basic marksmanship.',
-      category: 'workshop',
-      image: '/images/events/beginner-workshop.jpg'
-    },
-    {
-      id: 3,
-      title: 'Advanced Precision Shooting Masterclass',
-      date: 'June 5, 2025',
-      time: '10:00 AM - 4:00 PM',
-      location: 'Pune Marksmanship Club, Pune',
-      description: 'Learn advanced techniques from Olympic medalists. Topics include wind reading, mental preparation, and competition strategies.',
-      category: 'masterclass',
-      image: '/images/events/masterclass.jpg'
-    },
-    {
-      id: 4,
-      title: 'State Level Air Pistol Competition',
-      date: 'June 12, 2025',
-      time: '8:00 AM - 7:00 PM',
-      location: 'Karnataka State Shooting Association, Bengaluru',
-      description: 'Open competition for all age groups. Categories include Men, Women, and Junior divisions.',
-      category: 'competition',
-      image: '/images/events/state-competition.jpg'
-    },
-    {
-      id: 5,
-      title: 'Firearm Maintenance Workshop',
-      date: 'June 8, 2025',
-      time: '11:00 AM - 2:00 PM',
-      location: 'Mangla Sports Store, Delhi',
-      description: 'Hands-on workshop covering cleaning, maintenance, and storage of firearms. All necessary equipment will be provided.',
-      category: 'workshop',
-      image: '/images/events/maintenance-workshop.jpg'
-    },
-    {
-      id: 6,
-      title: 'Youth Shooting Camp',
-      date: 'June 25-30, 2025',
-      time: '8:00 AM - 5:00 PM',
-      location: 'National Rifle Association Complex, Bhopal',
-      description: 'A 5-day intensive camp for young shooters aged 12-18. Focus on fundamentals, discipline, and sportsmanship.',
-      category: 'camp',
-      image: '/images/events/youth-camp.jpg'
-    }
-  ];
+  // Fetch events from API
+  useEffect(() => {
+    const fetchEvents = async () => {
+      setLoading(true);
+      setError('');
+      
+      try {
+        const response = await fetch('http://localhost:4000/api/events');
+        if (!response.ok) {
+          throw new Error('Failed to fetch events');
+        }
+        
+        const data = await response.json();
+        setEvents(data.events);
+      } catch (err: any) {
+        setError(err.message);
+        console.error('Error fetching events:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   const categories = [
     { id: 'all', name: 'All Events' },
@@ -96,6 +63,14 @@ const Events = () => {
   const filteredEvents = activeFilter === 'all' 
     ? events 
     : events.filter(event => event.category === activeFilter);
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
 
   const getCategoryColor = (category: string) => {
     switch (category) {
@@ -216,7 +191,17 @@ const Events = () => {
 
             {/* Events List */}
             <div className="flex-1">
-              {filteredEvents.length === 0 ? (
+              {loading ? (
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-mangla-gold mx-auto mb-4"></div>
+                  <p className="text-gray-500 dark:text-gray-400">Loading events...</p>
+                </div>
+              ) : error ? (
+                <div className="text-center py-12">
+                  <h3 className="text-lg font-medium text-red-600 dark:text-red-400 mb-2">Error loading events</h3>
+                  <p className="text-gray-500 dark:text-gray-400">{error}</p>
+                </div>
+              ) : filteredEvents.length === 0 ? (
                 <div className="text-center py-12">
                   <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No events found</h3>
                   <p className="text-gray-500 dark:text-gray-400">There are no events in this category at the moment.</p>
@@ -237,7 +222,7 @@ const Events = () => {
                         <div className="md:flex-shrink-0 md:w-1/3">
                           <div className="relative h-48 md:h-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
                             <img 
-                              src={event.image} 
+                              src={typeof event.image === 'string' ? event.image : event.image?.url} 
                               alt={event.title}
                               className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                               onError={(e) => {
@@ -279,7 +264,7 @@ const Events = () => {
                               <div className="space-y-2">
                                 <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
                                   <CalendarIcon className="w-4 h-4 mr-2" />
-                                  {event.date}
+                                  {formatDate(event.date)}
                                 </div>
                                 <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
                                   <Clock className="w-4 h-4 mr-2" />
@@ -291,7 +276,7 @@ const Events = () => {
                                 </div>
                               </div>
                               <Link 
-                                to={`/events/${event.id}`}
+                                to={`/events/${event.slug}`}
                                 className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-mangla-gold hover:bg-mangla-gold-dark shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mangla-gold transition-colors"
                               >
                                 View Details

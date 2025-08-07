@@ -44,6 +44,14 @@ const TopBar = () => {
             FAQs
           </Link>
           
+          {/* Events Link */}
+          <Link 
+            to="/events" 
+            className={`${isDark ? 'text-white' : 'text-slate-700'} hover:text-mangla-gold transition-colors whitespace-nowrap`}
+          >
+            Events
+          </Link>
+          
           {/* Blog Link */}
           <Link 
             to="/blog" 

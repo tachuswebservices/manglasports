@@ -46,6 +46,7 @@ import CategoryManager from '../components/admin/CategoryManager';
 import BrandManager from '../components/admin/BrandManager';
 import OrderCardGrid from '../components/admin/OrderCardGrid';
 import BlogManager from '../components/admin/BlogManager';
+import EventManager from '../components/admin/EventManager';
 
 // Cloudinary config (move to top-level scope)
 const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dvltehb8j/upload';
@@ -1003,6 +1004,12 @@ const AdminDashboard = () => {
             >
               Blog
             </button>
+            <button
+              className={`px-6 py-2 rounded-t-lg font-semibold shadow-sm border-b-2 transition-all duration-150 ${activeTab === 'events' ? 'bg-white dark:bg-slate-900 border-mangla-gold text-mangla-gold' : 'bg-slate-100 dark:bg-slate-800 border-transparent text-slate-500 hover:text-mangla-gold hover:border-mangla-gold'}`}
+              onClick={() => setActiveTab('events')}
+            >
+              Events
+            </button>
           </div>
 
           {/* Dashboard Tab - Statistics */}
@@ -1246,6 +1253,13 @@ const AdminDashboard = () => {
           {activeTab === 'blog' && (
             <div>
               <BlogManager />
+            </div>
+          )}
+
+          {/* Events Tab - Event Management */}
+          {activeTab === 'events' && (
+            <div>
+              <EventManager />
             </div>
           )}
         </div>

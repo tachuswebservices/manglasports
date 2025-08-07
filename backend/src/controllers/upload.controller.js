@@ -33,9 +33,9 @@ export async function uploadImage(req, res) {
     const b64 = Buffer.from(req.file.buffer).toString('base64');
     const dataURI = `data:${req.file.mimetype};base64,${b64}`;
 
-    // Upload to Cloudinary
+    // Upload to Cloudinary with event-images folder
     const result = await cloudinary.v2.uploader.upload(dataURI, {
-      folder: 'blog-images',
+      folder: 'event-images',
       resource_type: 'auto',
     });
 

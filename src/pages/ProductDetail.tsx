@@ -575,20 +575,9 @@ const ProductDetail: React.FC = () => {
           
           {/* Product Tabs */}
           <div className="mt-16">
-            <Tabs defaultValue="specifications" className="w-full">
+            <Tabs defaultValue="reviews" className="w-full">
               <TabsList className={cn("w-full justify-start p-0 border-b rounded-none", isDark ? "bg-mangla border-gray-800" : "bg-transparent border-gray-200")}>
                 
-                <TabsTrigger 
-                  value="specifications" 
-                  className={cn(
-                    "py-4 px-6 rounded-none border-b-2 border-transparent data-[state=active]:border-mangla-gold data-[state=active]:shadow-none",
-                    isDark 
-                      ? "data-[state=active]:bg-transparent data-[state=active]:text-white" 
-                      : "data-[state=active]:bg-transparent data-[state=active]:text-gray-900"
-                  )}
-                >
-                  Specifications
-                </TabsTrigger>
                 <TabsTrigger 
                   value="reviews" 
                   className={cn(
@@ -604,26 +593,6 @@ const ProductDetail: React.FC = () => {
               
               <div className="py-8">
                 
-                
-                <TabsContent value="specifications">
-                  <div className="overflow-hidden">
-                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                      <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                        {product.specifications.map((spec, index) => (
-                          <tr key={index}>
-                            <td className="py-3 px-4 text-sm font-medium whitespace-nowrap" style={isDark ? { color: '#9ca3af' } : { color: '#6b7280' }}>
-                              {spec.key}
-                            </td>
-                            <td className="py-3 px-4 text-sm" style={isDark ? { color: '#e5e7eb' } : { color: '#111827' }}>
-                              {spec.value}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </TabsContent>
-                
                 <TabsContent value="reviews">
                   <div className="space-y-6">
                     {/* Review Header */}
@@ -635,40 +604,40 @@ const ProductDetail: React.FC = () => {
                         </p>
                       </div>
                                              {user ? (
-                         canReview === null ? (
-                           <Button disabled className="bg-gray-400 text-white">
-                             Loading...
-                           </Button>
-                         ) : canReview && !userReview ? (
-                           <Button 
-                             onClick={handleWriteReview}
-                             className="bg-mangla-gold hover:bg-mangla-blue text-white"
-                           >
-                             Write a Review
-                           </Button>
-                         ) : null
-                       ) : (
-                         <Button 
-                           onClick={handleWriteReview}
-                           className="bg-mangla-gold hover:bg-mangla-blue text-white"
-                         >
-                           Login to Review
-                         </Button>
-                       )}
-                    </div>
+                          canReview === null ? (
+                            <Button disabled className="bg-gray-400 text-white">
+                              Loading...
+                            </Button>
+                          ) : canReview && !userReview ? (
+                            <Button 
+                              onClick={handleWriteReview}
+                              className="bg-mangla-gold hover:bg-mangla-blue text-white"
+                            >
+                              Write a Review
+                            </Button>
+                          ) : null
+                        ) : (
+                          <Button 
+                            onClick={handleWriteReview}
+                            className="bg-mangla-gold hover:bg-mangla-blue text-white"
+                          >
+                            Login to Review
+                          </Button>
+                        )}
+                     </div>
 
-                    {/* Reviews List */}
-                    <ReviewList
-                      reviews={reviews}
-                      onEditReview={handleEditReview}
-                      onDeleteReview={handleDeleteReview}
-                      loading={reviewsLoading}
-                    />
-                  </div>
-                </TabsContent>
-              </div>
-            </Tabs>
-          </div>
+                     {/* Reviews List */}
+                     <ReviewList
+                       reviews={reviews}
+                       onEditReview={handleEditReview}
+                       onDeleteReview={handleDeleteReview}
+                       loading={reviewsLoading}
+                     />
+                   </div>
+                 </TabsContent>
+               </div>
+             </Tabs>
+           </div>
         </div>
       </main>
       
