@@ -151,6 +151,7 @@ model Review {
   rating    Int      @db.SmallInt
   comment   String
   createdAt DateTime @default(now())
+<<<<<<< HEAD
   updatedAt DateTime @updatedAt
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -210,3 +211,6 @@ model Event {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+=======
+} 
+>>>>>>> 40f4a6eeb2a63be8e3449e8c0a75146d8e14254f
