@@ -144,3 +144,10 @@ src/
   - Cart to order conversion
   - Payment integration with Razorpay
   - Order status tracking
+  - **Advanced Order Management**:
+    - Real-time order status updates (pending, shipped, delivered, rejected, cancelled)
+    - Email confirmation system for critical status changes
+    - Professional email templates for shipped, delivered, and rejected orders
+    - Shipping charges calculation and display
+    - Order tracking with courier partner and tracking ID support
+    - Admin dashboard with order fulfillment workflow

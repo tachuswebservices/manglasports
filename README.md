@@ -144,6 +144,14 @@ The Mangla Sports & Associates website is a professional e-commerce platform for
   - Order history and details view
   - Razorpay payment gateway integration
   - Email notifications for order confirmations
+  - **Advanced Order Management**:
+    - Real-time order status updates (pending, shipped, delivered, rejected, cancelled)
+    - Email confirmation popups for critical status changes
+    - Automated email notifications for shipped, delivered, and rejected orders
+    - Professional email templates with status-specific messaging
+    - Admin dashboard with order fulfillment workflow
+    - Shipping charges calculation and display
+    - Order tracking with courier partner and tracking ID support
 
 - **Admin Dashboard**:
   - Product management interface

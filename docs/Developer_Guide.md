@@ -870,7 +870,50 @@ Orders follow this status progression:
 2. **Processing**: Payment confirmed, order being prepared
 3. **Shipped**: Order has been shipped to customer
 4. **Delivered**: Order has been received by customer
-5. **Cancelled**: Order was cancelled (can occur at any step before shipping)
+5. **Rejected**: Order was rejected by admin (can occur at any step)
+6. **Cancelled**: Order was cancelled (can occur at any step before shipping)
+
+### Order Status Email Notifications
+
+The system includes an advanced email confirmation system for critical order status changes:
+
+#### Email Confirmation Workflow
+- **Admin Dashboard**: When updating order status to shipped, delivered, or rejected, admins see a confirmation dialog
+- **Email Confirmation**: Admins can choose whether to send notification emails to customers
+- **Status-Specific Templates**: Professional email templates tailored for each status:
+  - **Shipped**: Shipping confirmation with tracking information
+  - **Delivered**: Delivery confirmation with thank you message
+  - **Rejected**: Professional rejection notification with support contact
+
+#### Technical Implementation
+```typescript
+// Order status update with email confirmation
+PUT /api/orders/items/:id/with-email
+
+// Request body includes email confirmation flag
+{
+  "status": "shipped" | "delivered" | "rejected",
+  "sendEmail": boolean,
+  "expectedDate"?: Date,        // For shipped status
+  "courierPartner"?: string,    // For shipped status
+  "trackingId"?: string         // For shipped status
+}
+
+// Response includes email sending result
+{
+  "orderItem": OrderItem,
+  "emailResult": {
+    "success": boolean,
+    "message": string
+  }
+}
+```
+
+#### Email Service Integration
+- **Nodemailer**: SMTP-based email delivery
+- **Template System**: Dynamic HTML templates with status-specific content
+- **Error Handling**: Graceful fallback if email sending fails
+- **Professional Styling**: Consistent branding and responsive design
 
 ### Payment Processing
 
@@ -1013,6 +1056,21 @@ export const emailTemplates = {
     subject: 'Your Order Has Been Shipped - {{orderNumber}}',
     template: 'order-shipped',
     variables: ['orderNumber', 'trackingNumber', 'carrier', 'estimatedDelivery']
+  },
+  orderDelivered: {
+    subject: 'Your Order Has Been Delivered - {{orderNumber}}',
+    template: 'order-delivered',
+    variables: ['orderNumber', 'deliveryDate', 'items']
+  },
+  orderRejected: {
+    subject: 'Order Status Update - {{orderNumber}}',
+    template: 'order-rejected',
+    variables: ['orderNumber', 'rejectionReason', 'supportContact']
+  },
+  orderStatusUpdate: {
+    subject: '{{statusTitle}} - {{orderNumber}}',
+    template: 'order-status-update',
+    variables: ['orderNumber', 'status', 'statusTitle', 'statusMessage', 'statusDetails']
   },
   passwordReset: {
     subject: 'Reset Your Password',
@@ -1160,6 +1218,49 @@ Admins can manage products through a dedicated admin interface:
 2. **Add Product**: Create new products with all required information
 3. **Edit Product**: Update product details, images, specifications
 4. **Manage Categories**: Add, edit, or remove product categories
+
+### Admin Order Management
+
+The admin interface includes comprehensive order management with email confirmation capabilities:
+
+#### Order Status Management
+- **Real-time Updates**: View and update order statuses in real-time
+- **Status Workflow**: Manage orders through the complete lifecycle (pending → shipped → delivered)
+- **Rejection Handling**: Process rejected orders with professional customer communication
+
+#### Email Confirmation System
+- **Smart Dialogs**: When updating status to shipped, delivered, or rejected, admins see confirmation dialogs
+- **Email Templates**: Professional email templates for each status type
+- **Customer Communication**: Automated customer notifications with status-specific messaging
+- **Tracking Support**: For shipped orders, include courier partner and tracking ID
+
+#### Order Fulfillment Features
+- **Shipping Charges**: Display and manage product-specific shipping charges
+- **Order Tracking**: Add courier partner and tracking information for shipped orders
+- **Expected Delivery**: Set and communicate expected delivery dates
+- **Customer Support**: Provide contact information for rejected orders
+
+#### Technical Implementation
+```typescript
+// Order status update with email confirmation
+interface OrderStatusUpdate {
+  status: 'shipped' | 'delivered' | 'rejected';
+  sendEmail: boolean;
+  expectedDate?: Date;
+  courierPartner?: string;
+  trackingId?: string;
+}
+
+// Email confirmation dialog component
+interface EmailConfirmationDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  status: 'shipped' | 'delivered' | 'rejected';
+  orderId: number;
+  loading?: boolean;
+}
+```
 
 ### Analytics Dashboard
 

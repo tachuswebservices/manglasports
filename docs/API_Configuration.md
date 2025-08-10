@@ -93,6 +93,7 @@ API_CONFIG.WISHLIST.BY_ID(id)            // /wishlist/{id}
 API_CONFIG.ORDERS.BASE                   // /orders
 API_CONFIG.ORDERS.USER_ORDERS            // /orders/user
 API_CONFIG.ORDERS.ITEMS(itemId)          // /orders/items/{itemId}
+API_CONFIG.ORDERS.ITEMS_WITH_EMAIL(itemId) // /orders/items/{itemId}/with-email
 ```
 
 ### Reviews

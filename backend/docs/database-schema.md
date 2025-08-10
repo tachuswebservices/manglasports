@@ -27,6 +27,7 @@ The backend uses Prisma ORM. Here are the main models:
 - `isNew` (Bool?)
 - `isHot` (Bool?)
 - `shortDescription` (String?)
+- `shippingCharges` (Float?) - Shipping charges for the product
 - `features` (Feature[])
 - `specifications` (Specification[])
 
@@ -43,8 +44,26 @@ The backend uses Prisma ORM. Here are the main models:
 ## Order
 - `id` (Int, PK)
 - `userId` (FK to User)
+- `totalAmount` (Float)
+- `status` (String) - Overall order status
+- `addressId` (FK to Address)
 - `items` (OrderItem[])
 - `createdAt` (DateTime)
+- `updatedAt` (DateTime)
+
+## OrderItem
+- `id` (Int, PK)
+- `orderId` (FK to Order)
+- `productId` (FK to Product)
+- `name` (String)
+- `price` (Float)
+- `quantity` (Int)
+- `status` (String) - Individual item status (pending, shipped, delivered, rejected, cancelled)
+- `expectedDate` (DateTime?) - Expected delivery date for shipped items
+- `courierPartner` (String?) - Courier partner name
+- `trackingId` (String?) - Tracking number
+- `createdAt` (DateTime)
+- `updatedAt` (DateTime)
 
 ## Cart
 - `userId` (FK to User)

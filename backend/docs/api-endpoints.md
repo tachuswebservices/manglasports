@@ -37,6 +37,8 @@
 - `GET /api/orders?userId=...` — List orders for user
 - `GET /api/orders/:id` — Get order by ID
 - `POST /api/orders` — Create order
+- `PUT /api/orders/items/:id` — Update order item status (basic update)
+- `PUT /api/orders/items/:id/with-email` — Update order item status with email confirmation for shipped/delivered/rejected statuses
 
 ## Users
 - `GET /api/users` — List all users

@@ -18,6 +18,12 @@ This backend powers the Mangla Sports e-commerce website. It is built with Node.
 - API endpoints for all e-commerce operations
 - Data validation and error handling
 - Database migrations and seeding
+- **Order Management & Email Notifications**:
+  - Real-time order status tracking and updates
+  - Email confirmation system for order status changes
+  - Professional email templates for shipped, delivered, and rejected orders
+  - Shipping charges calculation and management
+  - Order fulfillment workflow with tracking support
 
 ## Frontend Integration
 - The backend serves as the data/API layer for the React frontend (see `/src` in the main project).
