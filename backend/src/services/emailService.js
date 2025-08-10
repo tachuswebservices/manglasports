@@ -499,19 +499,52 @@ export async function sendOrderStatusUpdateEmail(order, user, newStatus) {
       shipped: '#3b82f6',
       delivered: '#10b981',
       completed: '#059669',
-      cancelled: '#ef4444'
+      cancelled: '#ef4444',
+      rejected: '#dc2626'
     };
+
+    // Get status-specific content
+    const getStatusContent = (status) => {
+      switch (status) {
+        case 'shipped':
+          return {
+            title: 'Order Shipped',
+            message: 'Your order has been shipped and is on its way to you!',
+            details: 'You will receive tracking information once available.'
+          };
+        case 'delivered':
+          return {
+            title: 'Order Delivered',
+            message: 'Your order has been successfully delivered!',
+            details: 'Thank you for your purchase. We hope you enjoy your products!'
+          };
+        case 'rejected':
+          return {
+            title: 'Order Rejected',
+            message: 'We regret to inform you that your order has been rejected.',
+            details: 'If you have any questions about this decision, please contact our support team.'
+          };
+        default:
+          return {
+            title: 'Order Status Update',
+            message: `Your order status has been updated to ${status}.`,
+            details: 'Please check your order details for more information.'
+          };
+      }
+    };
+
+    const statusContent = getStatusContent(newStatus);
 
     const mailOptions = {
       from: process.env.EMAIL_USER || 'your-email@yourdomain.com',
       to: user?.email || 'customer@example.com',
-      subject: `Order Status Update - Order #${order.id} - Mangla Sports`,
+      subject: `${statusContent.title} - Order #${order.id} - Mangla Sports`,
       html: `
         <!DOCTYPE html>
         <html>
         <head>
           <meta charset="utf-8">
-          <title>Order Status Update</title>
+          <title>${statusContent.title}</title>
           <style>
             body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
             .container { max-width: 600px; margin: 0 auto; padding: 20px; }
@@ -519,6 +552,7 @@ export async function sendOrderStatusUpdateEmail(order, user, newStatus) {
             .logo { font-size: 24px; font-weight: bold; color: #1e40af; }
             .status-update { background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center; }
             .status-badge { display: inline-block; padding: 8px 16px; border-radius: 20px; font-weight: bold; color: white; }
+            .status-message { margin: 20px 0; padding: 15px; background-color: white; border-radius: 8px; border-left: 4px solid ${statusColors[newStatus] || '#6b7280'}; }
             .footer { margin-top: 40px; text-align: center; color: #64748b; font-size: 14px; }
           </style>
         </head>
@@ -532,11 +566,15 @@ export async function sendOrderStatusUpdateEmail(order, user, newStatus) {
             </div>
 
             <div class="status-update">
-              <h2>Order Status Update</h2>
+              <h2>${statusContent.title}</h2>
               <p>Dear <strong>${user.name}</strong>,</p>
               <p>Your order <strong>#${order.id}</strong> status has been updated to:</p>
               <div style="margin: 20px 0;">
                 <span class="status-badge" style="background-color: ${statusColors[newStatus] || '#6b7280'};">${newStatus.toUpperCase()}</span>
+              </div>
+              <div class="status-message">
+                <p><strong>${statusContent.message}</strong></p>
+                <p>${statusContent.details}</p>
               </div>
               <p>Order Total: <strong>₹${order.totalAmount.toLocaleString('en-IN')}</strong></p>
             </div>

@@ -11,5 +11,6 @@ router.post('/', orderController.createOrder);
 router.put('/:id', orderController.updateOrder);
 router.delete('/:id', orderController.deleteOrder);
 router.put('/items/:id', orderController.updateOrderItem);
+router.put('/items/:id/with-email', orderController.updateOrderItemWithEmail);
 
 export default router; 

@@ -4,6 +4,8 @@ import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Package, User, Calendar, IndianRupee, Edit2, Save, Search, Filter, X, Clock, Truck, CheckCircle, AlertCircle, XCircle, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 import { buildApiUrl, API_CONFIG } from '@/config/api';
+import EmailConfirmationDialog from './EmailConfirmationDialog';
+import { toast } from 'sonner';
 
 interface OrderCardGridProps {
   orders: any[];
@@ -58,6 +60,11 @@ const OrderCardGrid: React.FC<OrderCardGridProps> = ({
   const [editItem, setEditItem] = useState<{ orderId: number; itemId: number } | null>(null);
   const [editFields, setEditFields] = useState<any>({});
   
+  // Email confirmation dialog states
+  const [showEmailDialog, setShowEmailDialog] = useState(false);
+  const [pendingStatusUpdate, setPendingStatusUpdate] = useState<{ orderId: number; itemId: number; fields: any } | null>(null);
+  const [emailLoading, setEmailLoading] = useState(false);
+  
   // Filter and search states
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -94,11 +101,28 @@ const OrderCardGrid: React.FC<OrderCardGridProps> = ({
         return;
       }
 
-      // Call backend to update order item
+      // Check if status is shipped, delivered, or rejected - show email confirmation dialog
+      if (editFields.status === 'shipped' || editFields.status === 'delivered' || editFields.status === 'rejected') {
+        setPendingStatusUpdate({ orderId, itemId, fields: { ...editFields } });
+        setShowEmailDialog(true);
+        return;
+      }
+
+      // For other statuses, proceed with normal update
+      await updateOrderItem(orderId, itemId, editFields);
+    } catch (error: any) {
+      console.error('Error updating order item:', error);
+      alert(`Failed to update order item: ${error.message}`);
+    }
+  };
+
+  // New function to handle order item update
+  const updateOrderItem = async (orderId: number, itemId: number, fields: any) => {
+    try {
       const response = await fetch(buildApiUrl(API_CONFIG.ORDERS.ITEMS(itemId.toString())), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(editFields),
+        body: JSON.stringify(fields),
       });
       
       if (!response.ok) {
@@ -113,8 +137,65 @@ const OrderCardGrid: React.FC<OrderCardGridProps> = ({
       }
     } catch (error) {
       console.error('Error updating order item:', error);
-      alert(`Failed to update order item: ${error.message}`);
+      throw error;
     }
+  };
+
+  // Function to handle email confirmation
+  const handleEmailConfirm = async () => {
+    if (!pendingStatusUpdate) return;
+    
+    setEmailLoading(true);
+    try {
+      const { orderId, itemId, fields } = pendingStatusUpdate;
+      
+      // Call backend with email confirmation
+      const response = await fetch(buildApiUrl(API_CONFIG.ORDERS.ITEMS_WITH_EMAIL(itemId.toString())), {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...fields,
+          sendEmail: true
+        }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Failed to update order item: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      
+      // Show success/error message based on email result
+      if (result.emailResult && result.emailResult.success) {
+        toast.success(`Order status updated to ${fields.status} and email sent successfully!`);
+      } else if (result.emailResult && !result.emailResult.success) {
+        toast.warning(`Order status updated to ${fields.status}, but email failed: ${result.emailResult.message}`);
+      } else {
+        toast.success(`Order status updated to ${fields.status}`);
+      }
+      
+      // Close dialog and reset states
+      setShowEmailDialog(false);
+      setPendingStatusUpdate(null);
+      setEditItem(null);
+      
+      // Refresh the orders data
+      if (onOrderUpdate) {
+        onOrderUpdate();
+      }
+    } catch (error) {
+      console.error('Error updating order item with email:', error);
+      toast.error(`Failed to update order item: ${error.message}`);
+    } finally {
+      setEmailLoading(false);
+    }
+  };
+
+  // Function to handle email dialog close
+  const handleEmailDialogClose = () => {
+    setShowEmailDialog(false);
+    setPendingStatusUpdate(null);
   };
 
   const handleSearchInputChange = (value: string) => {
@@ -619,6 +700,18 @@ const OrderCardGrid: React.FC<OrderCardGridProps> = ({
             </div>
           )}
         </>
+      )}
+
+      {/* Email Confirmation Dialog */}
+      {pendingStatusUpdate && (
+        <EmailConfirmationDialog
+          isOpen={showEmailDialog}
+          onClose={handleEmailDialogClose}
+          onConfirm={handleEmailConfirm}
+          status={pendingStatusUpdate.fields.status as 'shipped' | 'delivered'}
+          orderId={pendingStatusUpdate.orderId}
+          loading={emailLoading}
+        />
       )}
     </div>
   );

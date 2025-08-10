@@ -34,6 +34,7 @@ export const API_CONFIG = {
     BASE: '/orders',
     USER_ORDERS: '/orders/user',
     ITEMS: (itemId: string) => `/orders/items/${itemId}`,
+    ITEMS_WITH_EMAIL: (itemId: string) => `/orders/items/${itemId}/with-email`,
   },
   
   ADDRESSES: {

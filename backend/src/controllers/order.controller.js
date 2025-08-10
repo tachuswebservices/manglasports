@@ -266,6 +266,62 @@ export async function updateOrderItem(req, res) {
   }
 } 
 
+// Update order item with email confirmation for shipped/delivered status
+export async function updateOrderItemWithEmail(req, res) {
+  try {
+    const { id } = req.params;
+    const { status, expectedDate, courierPartner, trackingId, sendEmail } = req.body;
+    
+    // Update the order item
+    const orderItem = await prisma.orderItem.update({
+      where: { id: Number(id) },
+      data: {
+        status,
+        expectedDate: expectedDate ? new Date(expectedDate) : null,
+        courierPartner,
+        trackingId,
+      },
+      include: {
+        order: {
+          include: {
+            user: true,
+            address: true,
+            orderItems: true,
+          }
+        }
+      }
+    });
+    
+    let emailResult = { success: false, message: 'Email not sent' };
+    
+    // Send status update email if requested and status is shipped, delivered, or rejected
+    if (sendEmail && (status === 'shipped' || status === 'delivered' || status === 'rejected')) {
+      try {
+        emailResult = await sendOrderStatusUpdateEmail(orderItem.order, orderItem.order.user, status);
+        if (emailResult.success) {
+          console.log(`Status update email sent successfully for order #${orderItem.order.id}`);
+          emailResult.message = 'Email sent successfully';
+        } else {
+          console.error(`Failed to send status update email for order #${orderItem.order.id}:`, emailResult.error);
+          emailResult.message = `Failed to send email: ${emailResult.error}`;
+        }
+      } catch (emailError) {
+        console.error('Error sending status update email:', emailError);
+        emailResult.message = `Email error: ${emailError.message}`;
+        // Don't fail the order update if email fails
+      }
+    }
+    
+    res.json({
+      orderItem,
+      emailResult
+    });
+  } catch (err) {
+    console.error('Error updating order item:', err);
+    res.status(400).json({ error: 'Failed to update order item' });
+  }
+}
+
 // Get dashboard statistics
 export async function getDashboardStats(req, res) {
   try {
