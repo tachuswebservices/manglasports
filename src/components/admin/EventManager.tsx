@@ -11,6 +11,7 @@ import { useToast } from '../ui/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { Label } from '../ui/label';
 import { Switch } from '../ui/switch';
+import { buildApiUrl, API_CONFIG } from '@/config/api';
 
 interface Event {
   id: number;
@@ -55,7 +56,7 @@ const EventManager = () => {
   const fetchEvents = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:4000/api/events/admin/all', {
+      const response = await fetch(buildApiUrl(API_CONFIG.EVENTS.ADMIN_ALL), {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -102,9 +103,9 @@ const EventManager = () => {
         if (xhr.status === 200) {
           try {
             const response = JSON.parse(xhr.responseText);
-            resolve({ url: response.url, publicId: response.publicId });
+            resolve(response);
           } catch (error) {
-            reject(new Error('Invalid response from server'));
+            reject(new Error('Invalid response format'));
           }
         } else {
           reject(new Error(`Upload failed with status: ${xhr.status}`));
@@ -115,7 +116,7 @@ const EventManager = () => {
         reject(new Error('Upload failed'));
       });
 
-      xhr.open('POST', 'http://localhost:4000/api/upload');
+      xhr.open('POST', buildApiUrl(API_CONFIG.UPLOAD));
       xhr.send(formData);
     });
   };
@@ -127,22 +128,24 @@ const EventManager = () => {
     setIsSubmitting(true); // Start loading
     
     try {
-      let imageObj = null;
+      let imageData = null;
       if (imageFile) {
-        imageObj = await handleImageUpload(imageFile);
+        imageData = await handleImageUpload(imageFile);
       }
 
+      const eventData = {
+        ...formData,
+        image: imageData
+      };
+
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:4000/api/events', {
+      const response = await fetch(buildApiUrl(API_CONFIG.EVENTS.BASE), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({
-          ...formData,
-          image: imageObj
-        })
+        body: JSON.stringify(eventData)
       });
 
       if (!response.ok) {
@@ -178,22 +181,24 @@ const EventManager = () => {
     setIsSubmitting(true); // Start loading
 
     try {
-      let imageObj = selectedEvent.image || null;
+      let imageData = null;
       if (imageFile) {
-        imageObj = await handleImageUpload(imageFile);
+        imageData = await handleImageUpload(imageFile);
       }
 
+      const eventData = {
+        ...formData,
+        image: imageData
+      };
+
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:4000/api/events/${selectedEvent.id}`, {
+      const response = await fetch(buildApiUrl(API_CONFIG.EVENTS.BY_SLUG(selectedEvent.slug)), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({
-          ...formData,
-          image: imageObj
-        })
+        body: JSON.stringify(eventData)
       });
 
       if (!response.ok) {
@@ -228,7 +233,7 @@ const EventManager = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:4000/api/events/${eventId}`, {
+      const response = await fetch(buildApiUrl(API_CONFIG.EVENTS.BY_ID(eventId.toString())), {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

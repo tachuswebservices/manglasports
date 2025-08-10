@@ -3,14 +3,13 @@ import { toast } from 'sonner';
 import { Product } from '@/data/products';
 import { useAuth } from './AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { buildApiUrl, buildApiUrlWithParams, API_CONFIG } from '@/config/api';
 
 type CartItem = Product & {
   quantity: number;
   offerPrice?: number;
   gst?: number;
 };
-
-const API_BASE = 'http://localhost:4000/api/cart';
 
 type CartContextType = {
   cart: CartItem[];
@@ -41,7 +40,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // Load cart from backend when user is authenticated
   useEffect(() => {
     if (isAuthenticated && user?.id) {
-      fetch(`${API_BASE}?userId=${user.id}`)
+      fetch(buildApiUrlWithParams(API_CONFIG.CART.BASE, { userId: user.id.toString() }))
         .then(res => res.json())
         .then(data => setCart(data.map((item: any) => ({ ...item.product, quantity: item.quantity }))))
         .catch(() => setCart([]));
@@ -60,7 +59,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     
     if (quantity < 1) return false;
     try {
-      const res = await fetch(API_BASE, {
+      const res = await fetch(buildApiUrl(API_CONFIG.CART.BASE), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.id, productId: product.id, quantity })
@@ -94,7 +93,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
     
     try {
-      const res = await fetch(`${API_BASE}/${productId}`, {
+      const res = await fetch(buildApiUrl(API_CONFIG.CART.BY_ID(productId)), {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.id })
@@ -125,7 +124,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       return;
     }
     try {
-      const res = await fetch(`${API_BASE}/${productId}`, {
+      const res = await fetch(buildApiUrl(API_CONFIG.CART.BY_ID(productId)), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.id, quantity })
@@ -151,7 +150,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
     
     try {
-      const res = await fetch(API_BASE, {
+      const res = await fetch(buildApiUrl(API_CONFIG.CART.BASE), {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.id })

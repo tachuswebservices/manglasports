@@ -8,6 +8,7 @@ import { useTheme } from '@/components/theme/ThemeProvider';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { useCart } from '@/contexts/CartContext';
 import { toast } from 'sonner';
+import { buildApiUrl, API_CONFIG } from '@/config/api';
 import ProductsSidebar, { ProductFilters } from '../components/products/ProductsSidebar';
 import StockIndicator from '../components/products/StockIndicator';
 import PageLayout from '../components/layout/PageLayout';
@@ -375,7 +376,7 @@ const ProductsContent: React.FC = () => {
   // Fetch products from backend
   useEffect(() => {
     setIsLoading(true);
-    fetch('http://localhost:4000/api/products')
+    fetch(buildApiUrl(API_CONFIG.PRODUCTS.BASE))
       .then(res => res.json())
       .then(data => {
         console.log('Fetched products:', data.products);

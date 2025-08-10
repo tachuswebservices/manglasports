@@ -20,6 +20,7 @@ import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader,
 import { useToast } from '../components/ui/use-toast';
 import { v4 as uuidv4 } from 'uuid';
 import { Dialog as SimpleDialog } from '../components/ui/dialog';
+import { buildApiUrl, buildApiUrlWithParams, API_CONFIG } from '@/config/api';
 import {
   DndContext,
   closestCenter,
@@ -192,7 +193,10 @@ const AdminDashboard = () => {
     if (startDate) params.append('startDate', startDate);
     if (endDate) params.append('endDate', endDate);
     
-    fetch(`http://localhost:4000/api/users/admin/stats?${params}`)
+    fetch(buildApiUrlWithParams(API_CONFIG.USERS.ADMIN_STATS, {
+      startDate: startDate || '',
+      endDate: endDate || ''
+    }))
       .then(res => {
         if (!res.ok) {
           return res.json().then(errorData => {
@@ -250,7 +254,7 @@ const AdminDashboard = () => {
     fetchStats();
     setLoadingProducts(true);
     setProductsError('');
-    fetch('http://localhost:4000/api/products')
+    fetch(buildApiUrl(API_CONFIG.PRODUCTS.BASE))
       .then(res => {
         if (!res.ok) throw new Error('Failed to fetch products');
         return res.json();
@@ -267,10 +271,10 @@ const AdminDashboard = () => {
       .catch(err => setProductsError(err.message))
       .finally(() => setLoadingProducts(false));
     // Fetch categories and brands for modal dropdowns
-    fetch('http://localhost:4000/api/categories')
+    fetch(buildApiUrl(API_CONFIG.CATEGORIES.BASE))
       .then(res => res.json())
       .then(setCategories);
-    fetch('http://localhost:4000/api/brands')
+    fetch(buildApiUrl(API_CONFIG.BRANDS.BASE))
       .then(res => res.json())
       .then(setBrands);
   }, []);
@@ -292,7 +296,13 @@ const AdminDashboard = () => {
       dateFilter: dateFilter
     });
     
-    fetch(`http://localhost:4000/api/orders?${params}`)
+    fetch(buildApiUrlWithParams(API_CONFIG.ORDERS.BASE, {
+      page: page.toString(),
+      limit: limit.toString(),
+      search: search,
+      status: status,
+      dateFilter: dateFilter
+    }))
       .then(res => {
         if (!res.ok) {
           throw new Error(`Failed to fetch orders: ${res.status} ${res.statusText}`);
@@ -419,7 +429,7 @@ const AdminDashboard = () => {
     console.log('ADD PRODUCT - Features being sent:', payload.features);
     console.log('ADD PRODUCT - Full payload:', payload);
     try {
-      const res = await fetch('http://localhost:4000/api/products', {
+      const res = await fetch(buildApiUrl(API_CONFIG.PRODUCTS.BASE), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -443,7 +453,7 @@ const AdminDashboard = () => {
   const handleRemoveProduct = (id) => {
     setRemovingProductId(id);
     setRemoveProductError('');
-    fetch(`http://localhost:4000/api/products/${id}`, { method: 'DELETE' })
+    fetch(buildApiUrl(API_CONFIG.PRODUCTS.BY_ID(id)), { method: 'DELETE' })
       .then(res => {
         if (!res.ok) throw new Error('Failed to remove product');
         setProducts(products.filter(p => p.id !== id));
@@ -558,7 +568,7 @@ const AdminDashboard = () => {
     console.log('EDIT PRODUCT - Features being sent:', payload.features);
     console.log('EDIT PRODUCT - Full payload:', payload);
     try {
-      const res = await fetch(`http://localhost:4000/api/products/${editingProduct.id}`, {
+      const res = await fetch(buildApiUrl(API_CONFIG.PRODUCTS.BY_ID(editingProduct.id)), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -600,7 +610,7 @@ const AdminDashboard = () => {
     setAddingCategory(true);
     setCategoryError('');
     try {
-      const res = await fetch('http://localhost:4000/api/categories', {
+      const res = await fetch(buildApiUrl(API_CONFIG.CATEGORIES.BASE), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: newCategoryName.trim() })
@@ -627,7 +637,7 @@ const AdminDashboard = () => {
     setAddingBrand(true);
     setBrandError('');
     try {
-      const res = await fetch('http://localhost:4000/api/brands', {
+      const res = await fetch(buildApiUrl(API_CONFIG.BRANDS.BASE), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: newBrandName.trim() })
@@ -660,7 +670,7 @@ const AdminDashboard = () => {
     setManageCategoryLoading(true);
     setManageCategoryError('');
     try {
-      const res = await fetch(`http://localhost:4000/api/categories/${editCategoryId}`, {
+      const res = await fetch(buildApiUrl(API_CONFIG.CATEGORIES.BY_ID(editCategoryId.toString())), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: editCategoryName.trim() })
@@ -684,7 +694,7 @@ const AdminDashboard = () => {
     setManageCategoryLoading(true);
     setManageCategoryError('');
     try {
-      const res = await fetch(`http://localhost:4000/api/categories/${id}`, { method: 'DELETE' });
+      const res = await fetch(buildApiUrl(API_CONFIG.CATEGORIES.BY_ID(id.toString())), { method: 'DELETE' });
       if (!res.ok) {
         const data = await res.json();
         throw new Error(data.error || 'Failed to delete category');
@@ -708,7 +718,7 @@ const AdminDashboard = () => {
     setManageBrandLoading(true);
     setManageBrandError('');
     try {
-      const res = await fetch(`http://localhost:4000/api/brands/${editBrandId}`, {
+      const res = await fetch(buildApiUrl(API_CONFIG.BRANDS.BY_ID(editBrandId.toString())), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: editBrandName.trim() })
@@ -732,7 +742,7 @@ const AdminDashboard = () => {
     setManageBrandLoading(true);
     setManageBrandError('');
     try {
-      const res = await fetch(`http://localhost:4000/api/brands/${id}`, { method: 'DELETE' });
+      const res = await fetch(buildApiUrl(API_CONFIG.BRANDS.BY_ID(id.toString())), { method: 'DELETE' });
       if (!res.ok) {
         const data = await res.json();
         throw new Error(data.error || 'Failed to delete brand');
@@ -751,7 +761,7 @@ const AdminDashboard = () => {
     setManageCategoryLoading(true);
     setManageCategoryError('');
     try {
-      const res = await fetch('http://localhost:4000/api/categories', {
+      const res = await fetch(buildApiUrl(API_CONFIG.CATEGORIES.BASE), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: newManageCategoryName.trim() })
@@ -778,7 +788,7 @@ const AdminDashboard = () => {
     setManageBrandLoading(true);
     setManageBrandError('');
     try {
-      const res = await fetch('http://localhost:4000/api/brands', {
+      const res = await fetch(buildApiUrl(API_CONFIG.BRANDS.BASE), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: newManageBrandName.trim() })
@@ -892,7 +902,7 @@ const AdminDashboard = () => {
     if (!img.publicId) return;
     setImageManagerDeleting(img.publicId);
     try {
-      const res = await fetch(`http://localhost:4000/api/products/delete-image/${img.publicId}`, { method: 'DELETE' });
+      const res = await fetch(buildApiUrl(API_CONFIG.PRODUCTS.DELETE_IMAGE(img.publicId)), { method: 'DELETE' });
       if (!res.ok) {
         const data = await res.json();
         throw new Error(data.error || 'Failed to delete image from Cloudinary');
@@ -913,7 +923,7 @@ const AdminDashboard = () => {
     );
     try {
       if (!editingProduct) throw new Error('No product selected');
-      const res = await fetch(`http://localhost:4000/api/products/${editingProduct.id}`, {
+      const res = await fetch(buildApiUrl(API_CONFIG.PRODUCTS.BY_ID(editingProduct.id.toString())), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...editingProduct, images: newImages }),

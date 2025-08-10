@@ -5,6 +5,7 @@ import { Mail, ArrowLeft, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
+import { buildApiUrl, API_CONFIG } from '@/config/api';
 
 const ResendVerification: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -27,7 +28,7 @@ const ResendVerification: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:4000/api/auth/resend-verification', {
+      const response = await fetch(buildApiUrl(API_CONFIG.AUTH.RESEND_VERIFICATION), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

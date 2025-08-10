@@ -18,8 +18,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { ArrowLeft, Image, CheckCircle } from 'lucide-react';
-
-const API_BASE = 'http://localhost:4000/api/addresses';
+import { buildApiUrl, buildApiUrlWithParams, API_CONFIG } from '@/config/api';
 
 declare global {
   interface Window {
@@ -43,20 +42,15 @@ const Checkout: React.FC = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [addressToDelete, setAddressToDelete] = useState<number | null>(null);
 
-  // Fetch addresses for the user
+  // Fetch user addresses
   useEffect(() => {
-    if (!user) return;
-    setLoading(true);
-    fetch(`${API_BASE}?userId=${user.id}`)
-      .then(res => res.json())
-      .then(data => {
-        setAddresses(data);
-        // Auto-select default address if present
-        const def = data.find((a: Address) => a.isDefault);
-        setSelectedAddressId(def ? def.id! : (data[0]?.id || null));
-      })
-      .finally(() => setLoading(false));
-  }, [user]);
+    if (user?.id) {
+      fetch(buildApiUrlWithParams(API_CONFIG.ADDRESSES.BASE, { userId: user.id.toString() }))
+        .then(res => res.json())
+        .then(data => setAddresses(data))
+        .catch(err => console.error('Error fetching addresses:', err));
+    }
+  }, [user?.id]);
 
   const handleAdd = () => {
     setEditAddress(null);
@@ -77,7 +71,7 @@ const Checkout: React.FC = () => {
     if (!addressToDelete) return;
     
     try {
-      await fetch(`${API_BASE}/${addressToDelete}`, { method: 'DELETE' });
+      await fetch(buildApiUrl(API_CONFIG.ADDRESSES.BY_ID(addressToDelete.toString())), { method: 'DELETE' });
       setAddresses(addresses.filter(a => a.id !== addressToDelete));
       if (selectedAddressId === addressToDelete) {
         setSelectedAddressId(addresses[0]?.id || null);
@@ -105,7 +99,7 @@ const Checkout: React.FC = () => {
     let saved: Address;
     if (address.id) {
       // Edit
-      const res = await fetch(`${API_BASE}/${address.id}`, {
+      const res = await fetch(buildApiUrl(API_CONFIG.ADDRESSES.BY_ID(address.id)), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(address),
@@ -114,7 +108,7 @@ const Checkout: React.FC = () => {
       setAddresses(addresses.map(a => (a.id === saved.id ? saved : a)));
     } else {
       // Add
-      const res = await fetch(API_BASE, {
+      const res = await fetch(buildApiUrl(API_CONFIG.ADDRESSES.BASE), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...address, userId: user.id }),
@@ -130,7 +124,7 @@ const Checkout: React.FC = () => {
   const handlePayment = async () => {
     if (!user || !selectedAddressId || cart.length === 0) return;
     // 1. Create Razorpay order on backend
-    const res = await fetch('http://localhost:4000/api/payment/order', {
+    const res = await fetch(buildApiUrl(API_CONFIG.PAYMENT.ORDER), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -162,7 +156,7 @@ const Checkout: React.FC = () => {
       order_id: order.id,
       handler: async function (response: any) {
         // 3. Verify payment on backend
-        const verifyRes = await fetch('http://localhost:4000/api/payment/verify', {
+        const verifyRes = await fetch(buildApiUrl(API_CONFIG.PAYMENT.VERIFY), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(response),
@@ -170,7 +164,7 @@ const Checkout: React.FC = () => {
         const verifyData = await verifyRes.json();
         if (verifyData.success) {
           // 4. Place order in backend
-          const orderRes = await fetch('http://localhost:4000/api/orders', {
+          const orderRes = await fetch(buildApiUrl(API_CONFIG.ORDERS.BASE), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

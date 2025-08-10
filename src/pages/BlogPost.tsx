@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ChevronLeft, Calendar, Clock, User, Eye, ArrowLeft } from 'lucide-react';
+import { Calendar, User, Tag, ArrowLeft, Share2, Bookmark, Eye, Clock, ChevronLeft } from 'lucide-react';
 import Footer from '../components/layout/Footer';
 import { Button } from '../components/ui/button';
+import { cn } from '../lib/utils';
+import { useTheme } from '../components/theme/ThemeProvider';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../components/ui/use-toast';
+import { buildApiUrl, buildApiUrlWithParams, API_CONFIG } from '../config/api';
 
 interface BlogPost {
   id: number;
@@ -37,57 +40,48 @@ const BlogPost = () => {
   const { user, isAuthenticated } = useAuth();
   const { toast } = useToast();
 
-  // Fetch blog post
-  const fetchPost = async () => {
-    if (!slug) return;
-    
-    setLoading(true);
-    setError('');
-    
-    try {
-      const response = await fetch(`http://localhost:4000/api/blog/posts/${slug}`);
-      if (!response.ok) {
-        if (response.status === 404) {
-          setError('Blog post not found');
-        } else {
-          throw new Error('Failed to fetch blog post');
-        }
-        return;
-      }
-      
-      const data = await response.json();
-      setPost(data);
-      
-      // Fetch related posts
-      fetchRelatedPosts(data.category, data.id);
-    } catch (err: any) {
-      setError(err.message);
-      toast({
-        title: 'Error',
-        description: err.message,
-        variant: 'destructive'
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Fetch related posts
-  const fetchRelatedPosts = async (category: string, currentPostId: number) => {
-    try {
-      const response = await fetch(`http://localhost:4000/api/blog/posts?category=${category}&limit=3`);
-      if (response.ok) {
-        const data = await response.json();
-        const filtered = data.posts.filter((p: BlogPost) => p.id !== currentPostId);
-        setRelatedPosts(filtered.slice(0, 3));
-      }
-    } catch (err) {
-      console.error('Error fetching related posts:', err);
-    }
-  };
-
+  // Fetch blog post data
   useEffect(() => {
-    fetchPost();
+    const fetchBlogPost = async () => {
+      if (!slug) return;
+      
+      setLoading(true);
+      setError('');
+      
+      try {
+        const response = await fetch(buildApiUrl(API_CONFIG.BLOG.POST_BY_SLUG(slug)));
+        if (!response.ok) {
+          if (response.status === 404) {
+            setError('Blog post not found');
+          } else {
+            throw new Error('Failed to fetch blog post');
+          }
+          return;
+        }
+        
+        const data = await response.json();
+        setPost(data);
+        
+        // Fetch related posts
+        if (data.category) {
+          const relatedResponse = await fetch(buildApiUrlWithParams(API_CONFIG.BLOG.POSTS, { 
+            category: data.category, 
+            limit: '3' 
+          }));
+          if (relatedResponse.ok) {
+            const relatedData = await relatedResponse.json();
+            setRelatedPosts(relatedData.posts.filter((post: any) => post.slug !== slug));
+          }
+        }
+      } catch (err: any) {
+        setError(err.message);
+        console.error('Error fetching blog post:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBlogPost();
   }, [slug]);
 
   const formatDate = (dateString: string) => {

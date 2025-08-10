@@ -30,7 +30,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import VerifyEmail from './pages/VerifyEmail';
 import ResendVerification from './pages/ResendVerification';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Checkout from './pages/Checkout';
 import Profile from './pages/Profile';
 
@@ -47,15 +47,40 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 // AdminRoute component
 const AdminRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, user, loading } = useAuth();
-  if (loading) return null; // or a spinner
+  const { isAuthenticated, user, loading, verifyUserRole } = useAuth();
+  const [roleVerified, setRoleVerified] = useState(false);
+  const [checkingRole, setCheckingRole] = useState(false);
+
+  useEffect(() => {
+    const checkAdminRole = async () => {
+      if (isAuthenticated && !roleVerified && !checkingRole) {
+        setCheckingRole(true);
+        try {
+          const isValid = await verifyUserRole();
+          if (isValid && user?.role === 'admin') {
+            setRoleVerified(true);
+          } else {
+            window.location.href = '/profile';
+          }
+        } catch (error) {
+          console.error('Role verification failed:', error);
+          window.location.href = '/profile';
+        } finally {
+          setCheckingRole(false);
+        }
+      }
+    };
+
+    checkAdminRole();
+  }, [isAuthenticated, user, roleVerified, checkingRole, verifyUserRole]);
+
+  if (loading || checkingRole) return null; // or a spinner
   if (!isAuthenticated) {
     window.location.href = '/login';
     return null;
   }
-  if (user?.role !== 'admin') {
-    window.location.href = '/profile';
-    return null;
+  if (!roleVerified) {
+    return null; // Still checking role
   }
   return <>{children}</>;
 };

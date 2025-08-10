@@ -7,6 +7,8 @@ import { LogOut, User, MapPin, List, Eye, EyeOff, ArrowLeft } from 'lucide-react
 import { useSearchParams } from 'react-router-dom';
 import AddressModal, { Address } from '@/components/checkout/AddressModal';
 import { Link } from 'react-router-dom';
+import { buildApiUrl, buildApiUrlWithParams, API_CONFIG } from '@/config/api';
+import { toast } from 'sonner';
 
 const sections = [
   { key: 'orders', label: 'Orders', icon: List },
@@ -53,7 +55,7 @@ const Profile: React.FC = () => {
   useEffect(() => {
     if (active === 'orders' && user) {
       setOrdersLoading(true);
-      fetch(`http://localhost:4000/api/orders/user?userId=${user.id}`)
+      fetch(buildApiUrlWithParams(API_CONFIG.ORDERS.USER_ORDERS, { userId: user.id.toString() }))
         .then(res => res.json())
         .then(data => {
           // Handle new API response format with pagination
@@ -78,7 +80,7 @@ const Profile: React.FC = () => {
   useEffect(() => {
     if (active === 'addresses' && user) {
       setAddressLoading(true);
-      fetch(`http://localhost:4000/api/addresses?userId=${user.id}`)
+      fetch(buildApiUrlWithParams(API_CONFIG.ADDRESSES.BASE, { userId: user.id.toString() }))
         .then(res => res.json())
         .then(data => setAddresses(data))
         .finally(() => setAddressLoading(false));
@@ -92,7 +94,7 @@ const Profile: React.FC = () => {
     setEditSuccess('');
     setEditError('');
     try {
-      const res = await fetch(`http://localhost:4000/api/users/${user.id}`, {
+      const res = await fetch(buildApiUrl(API_CONFIG.USERS.BY_ID(user.id.toString())), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: editName }),
@@ -126,7 +128,7 @@ const Profile: React.FC = () => {
       return;
     }
     try {
-      const res = await fetch(`http://localhost:4000/api/users/${user.id}/change-password`, {
+      const res = await fetch(buildApiUrl(API_CONFIG.USERS.CHANGE_PASSWORD(user.id.toString())), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ currentPassword: current, newPassword: next }),
@@ -174,30 +176,55 @@ const Profile: React.FC = () => {
   };
   const handleDeleteAddress = async (id: number) => {
     if (!window.confirm('Delete this address?')) return;
-    await fetch(`http://localhost:4000/api/addresses/${id}`, { method: 'DELETE' });
-    setAddresses(addresses.filter(a => a.id !== id));
+    try {
+      await fetch(buildApiUrl(API_CONFIG.ADDRESSES.BY_ID(id.toString())), { method: 'DELETE' });
+      setAddresses(prev => prev.filter(a => a.id !== id));
+      toast.success('Address deleted successfully');
+    } catch (error) {
+      toast.error('Failed to delete address');
+    }
   };
   const handleSaveAddress = async (address: Address) => {
     if (!user) return;
     let saved: Address;
     if (address.id) {
       // Edit
-      const res = await fetch(`http://localhost:4000/api/addresses/${address.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(address),
-      });
-      saved = await res.json();
-      setAddresses(addresses.map(a => (a.id === saved.id ? saved : a)));
+      try {
+        const res = await fetch(buildApiUrl(API_CONFIG.ADDRESSES.BY_ID(address.id)), {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(address),
+        });
+        if (res.ok) {
+          saved = await res.json();
+          setAddresses(prev => prev.map(a => (a.id === saved.id ? saved : a)));
+          toast.success('Address updated successfully');
+        } else {
+          const data = await res.json();
+          toast.error(data.error || 'Failed to update address');
+        }
+      } catch (error) {
+        toast.error('Failed to update address');
+      }
     } else {
       // Add
-      const res = await fetch('http://localhost:4000/api/addresses', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...address, userId: user.id }),
-      });
-      saved = await res.json();
-      setAddresses([...addresses, saved]);
+      try {
+        const res = await fetch(buildApiUrl(API_CONFIG.ADDRESSES.BASE), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...address, userId: user.id }),
+        });
+        if (res.ok) {
+          saved = await res.json();
+          setAddresses(prev => [...prev, saved]);
+          toast.success('Address added successfully');
+        } else {
+          const data = await res.json();
+          toast.error(data.error || 'Failed to add address');
+        }
+      } catch (error) {
+        toast.error('Failed to add address');
+      }
     }
     setAddressModalOpen(false);
     setEditAddress(null);

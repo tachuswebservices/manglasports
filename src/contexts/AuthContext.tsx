@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { buildApiUrl, API_CONFIG } from '@/config/api';
 
 interface User {
   id: number;
@@ -17,6 +18,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   signup: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
+  verifyUserRole: () => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -27,18 +29,46 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  // Verify user role from server
+  const verifyUserRole = async (): Promise<boolean> => {
+    if (!token) return false;
+    
+    try {
+      const res = await fetch(buildApiUrl(API_CONFIG.AUTH.VERIFY_ROLE), {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        setUser(data.user);
+        return true;
+      } else {
+        // Token is invalid or expired
+        logout();
+        return false;
+      }
+    } catch (error) {
+      console.error('Role verification failed:', error);
+      logout();
+      return false;
+    }
+  };
+
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
-    if (storedToken && storedUser) {
+    if (storedToken) {
       setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+      // Verify token and get user data from server instead of localStorage
+      verifyUserRole().finally(() => setLoading(false));
+    } else {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   const login = async (email: string, password: string) => {
-    const res = await fetch('http://localhost:4000/api/auth/login', {
+    const res = await fetch(buildApiUrl(API_CONFIG.AUTH.LOGIN), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
@@ -49,15 +79,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       (error as any).needsVerification = data.needsVerification;
       throw error;
     }
+    
+    // Only store token, not user data
     localStorage.setItem('token', data.token);
-    localStorage.setItem('user', JSON.stringify(data.user));
     setToken(data.token);
     setUser(data.user);
     navigate('/');
   };
 
   const signup = async (name: string, email: string, password: string) => {
-    const res = await fetch('http://localhost:4000/api/auth/signup', {
+    const res = await fetch(buildApiUrl(API_CONFIG.AUTH.SIGNUP), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, password }),
@@ -70,14 +101,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
     setToken(null);
     setUser(null);
     navigate('/login');
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isAuthenticated: !!token, loading, login, signup, logout }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      token, 
+      isAuthenticated: !!token, 
+      loading, 
+      login, 
+      signup, 
+      logout,
+      verifyUserRole 
+    }}>
       {children}
     </AuthContext.Provider>
   );

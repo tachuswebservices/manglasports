@@ -3,6 +3,7 @@ import { Card } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Package, User, Calendar, IndianRupee, Edit2, Save, Search, Filter, X, Clock, Truck, CheckCircle, AlertCircle, XCircle, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
+import { buildApiUrl, API_CONFIG } from '@/config/api';
 
 interface OrderCardGridProps {
   orders: any[];
@@ -94,7 +95,7 @@ const OrderCardGrid: React.FC<OrderCardGridProps> = ({
       }
 
       // Call backend to update order item
-      const response = await fetch(`http://localhost:4000/api/orders/items/${itemId}`, {
+      const response = await fetch(buildApiUrl(API_CONFIG.ORDERS.ITEMS(itemId.toString())), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editFields),

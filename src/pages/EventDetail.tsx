@@ -5,6 +5,7 @@ import { ChevronLeft, Calendar, Clock, MapPin, ArrowLeft } from 'lucide-react';
 import Footer from '../components/layout/Footer';
 import { Button } from '../components/ui/button';
 import { useToast } from '../components/ui/use-toast';
+import { buildApiUrl, API_CONFIG } from '@/config/api';
 
 interface Event {
   id: number;
@@ -28,39 +29,35 @@ const EventDetail = () => {
   const [error, setError] = useState('');
   const { toast } = useToast();
 
-  // Fetch event
-  const fetchEvent = async () => {
-    if (!slug) return;
-    
-    setLoading(true);
-    setError('');
-    
-    try {
-      const response = await fetch(`http://localhost:4000/api/events/${slug}`);
-      if (!response.ok) {
-        if (response.status === 404) {
-          setError('Event not found');
-        } else {
-          throw new Error('Failed to fetch event');
-        }
-        return;
-      }
-      
-      const data = await response.json();
-      setEvent(data);
-    } catch (err: any) {
-      setError(err.message);
-      toast({
-        title: 'Error',
-        description: err.message,
-        variant: 'destructive'
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Fetch event data
   useEffect(() => {
+    const fetchEvent = async () => {
+      if (!slug) return;
+      
+      setLoading(true);
+      setError('');
+      
+      try {
+        const response = await fetch(buildApiUrl(API_CONFIG.EVENTS.BY_SLUG(slug)));
+        if (!response.ok) {
+          if (response.status === 404) {
+            setError('Event not found');
+          } else {
+            throw new Error('Failed to fetch event');
+          }
+          return;
+        }
+        
+        const data = await response.json();
+        setEvent(data);
+      } catch (err: any) {
+        setError(err.message);
+        console.error('Error fetching event:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchEvent();
   }, [slug]);
 

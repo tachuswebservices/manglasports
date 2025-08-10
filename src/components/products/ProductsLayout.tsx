@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { useTheme } from '../theme/ThemeProvider';
 import Navbar from '../layout/Navbar';
 import Footer from '../layout/Footer';
+import { buildApiUrl, API_CONFIG } from '@/config/api';
 
 interface ProductsLayoutProps {
   children: React.ReactNode;
@@ -29,10 +30,10 @@ const ProductsLayout: React.FC<ProductsLayoutProps> = ({
   const [brands, setBrands] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/categories')
+    fetch(buildApiUrl(API_CONFIG.CATEGORIES.BASE))
       .then(res => res.json())
       .then(setCategories);
-    fetch('http://localhost:4000/api/brands')
+    fetch(buildApiUrl(API_CONFIG.BRANDS.BASE))
       .then(res => res.json())
       .then(setBrands);
   }, []);

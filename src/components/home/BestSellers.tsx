@@ -9,6 +9,7 @@ import { useCart } from '@/contexts/CartContext';
 import { toast } from 'sonner';
 import { cn, formatIndianPrice } from '@/lib/utils';
 import { Product } from '@/data/products';
+import { buildApiUrl, API_CONFIG } from '@/config/api';
 
 type BestSellerProduct = Product & { soldCount: number; images: string[]; offerPrice?: number; numericPrice?: number };
 
@@ -182,7 +183,7 @@ const BestSellers = () => {
   const [products, setProducts] = useState<BestSellerProduct[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/products?isHot=true')
+    fetch(buildApiUrl(API_CONFIG.PRODUCTS.BASE) + '?isHot=true')
       .then(res => res.json())
       .then((data) => setProducts((data.products || []).map((p: Product) => ({ ...p, soldCount: p.soldCount || 0 }))))
       .catch(() => setProducts([]));

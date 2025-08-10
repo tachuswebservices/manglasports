@@ -5,6 +5,7 @@ import { Star } from 'lucide-react';
 import { cn, formatIndianPrice } from '@/lib/utils';
 import { useTheme } from '../theme/ThemeProvider';
 import type { ProductDetails } from './QuickViewModal';
+import { buildApiUrl, API_CONFIG } from '@/config/api';
 
 interface RecentlyViewedProductsProps {
   currentProductId?: string;
@@ -44,7 +45,7 @@ const RecentlyViewedProducts: React.FC<RecentlyViewedProductsProps> = ({
   useEffect(() => {
     Promise.all(
       productIds.map(id =>
-        fetch(`http://localhost:4000/api/products/${id}`).then(res => res.json())
+        fetch(buildApiUrl(API_CONFIG.PRODUCTS.BY_ID(id))).then(res => res.json())
       )
     ).then(setProducts);
   }, [productIds]);

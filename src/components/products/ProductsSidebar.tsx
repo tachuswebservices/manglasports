@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { useTheme } from '../theme/ThemeProvider';
 import { X, ChevronDown, ChevronUp } from 'lucide-react';
+import { buildApiUrl, API_CONFIG } from '@/config/api';
 
 // Define interface for filter state
 export interface ProductFilters {
@@ -45,10 +46,10 @@ const ProductsSidebar: React.FC<ProductsSidebarProps> = ({
   const [brands, setBrands] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/categories')
+    fetch(buildApiUrl(API_CONFIG.CATEGORIES.BASE))
       .then(res => res.json())
       .then(setCategories);
-    fetch('http://localhost:4000/api/brands')
+    fetch(buildApiUrl(API_CONFIG.BRANDS.BASE))
       .then(res => res.json())
       .then(setBrands);
   }, []);

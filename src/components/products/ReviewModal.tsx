@@ -6,6 +6,7 @@ import { Star } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { buildApiUrl, API_CONFIG } from '@/config/api';
 
 interface ReviewModalProps {
   isOpen: boolean;
@@ -78,9 +79,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
     setLoading(true);
 
     try {
-      const url = existingReview 
-        ? `http://localhost:4000/api/reviews/product/${productId}`
-        : `http://localhost:4000/api/reviews/product/${productId}`;
+      const url = buildApiUrl(API_CONFIG.REVIEWS.PRODUCT(productId));
       
       const method = existingReview ? 'PUT' : 'POST';
 
@@ -132,7 +131,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
     setLoading(true);
 
     try {
-      const response = await fetch(`http://localhost:4000/api/reviews/product/${productId}`, {
+      const response = await fetch(buildApiUrl(API_CONFIG.REVIEWS.PRODUCT(productId)), {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

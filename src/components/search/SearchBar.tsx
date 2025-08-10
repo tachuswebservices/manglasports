@@ -4,6 +4,7 @@ import { Search, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { useTheme } from '@/components/theme/ThemeProvider';
+import { buildApiUrl, API_CONFIG } from '@/config/api';
 
 interface SearchBarProps {
   isMobile?: boolean;
@@ -24,7 +25,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isMobile = false, onClose, classN
 
   // Fetch all products from backend on mount
   useEffect(() => {
-    fetch('http://localhost:4000/api/products')
+    fetch(buildApiUrl(API_CONFIG.PRODUCTS.BASE))
       .then(res => res.json())
       .then(data => setAllProducts(data))
       .catch(() => setAllProducts([]));

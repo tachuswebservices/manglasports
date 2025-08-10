@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { ChevronLeft, MapPin, Calendar as CalendarIcon, Clock, Filter, X } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
+import { buildApiUrl, API_CONFIG } from '@/config/api';
 
 interface Event {
   id: number;
@@ -34,7 +35,7 @@ const Events = () => {
       setError('');
       
       try {
-        const response = await fetch('http://localhost:4000/api/events');
+        const response = await fetch(buildApiUrl(API_CONFIG.EVENTS.BASE));
         if (!response.ok) {
           throw new Error('Failed to fetch events');
         }

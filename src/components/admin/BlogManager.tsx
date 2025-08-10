@@ -8,6 +8,7 @@ import { Badge } from '../ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { useToast } from '../ui/use-toast';
 import { Plus, Edit, Trash2, Eye, Calendar, User, Clock, MessageSquare, Upload, X } from 'lucide-react';
+import { buildApiUrl, API_CONFIG } from '@/config/api';
 
 interface BlogPost {
   id: number;
@@ -51,7 +52,7 @@ const BlogManager = () => {
   const fetchPosts = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:4000/api/blog/posts?status=all');
+      const response = await fetch(buildApiUrl(API_CONFIG.BLOG.POSTS) + '?status=all');
       if (!response.ok) throw new Error('Failed to fetch blog posts');
       
       const data = await response.json();
@@ -100,7 +101,7 @@ const BlogManager = () => {
       const formData = new FormData();
       formData.append('image', file);
 
-      const response = await fetch('http://localhost:4000/api/blog/upload', {
+      const response = await fetch(buildApiUrl(API_CONFIG.BLOG.UPLOAD), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -173,7 +174,7 @@ const BlogManager = () => {
 
     setSaving(true);
     try {
-      const response = await fetch('http://localhost:4000/api/blog/posts', {
+      const response = await fetch(buildApiUrl(API_CONFIG.BLOG.POSTS), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -229,7 +230,7 @@ const BlogManager = () => {
 
     setSaving(true);
     try {
-      const response = await fetch(`http://localhost:4000/api/blog/posts/${editingPost.id}`, {
+      const response = await fetch(buildApiUrl(API_CONFIG.BLOG.POST_BY_SLUG(editingPost.slug)), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -292,8 +293,10 @@ const BlogManager = () => {
 
   // Delete blog post
   const handleDeletePost = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this post?')) return;
+
     try {
-      const response = await fetch(`http://localhost:4000/api/blog/posts/${id}`, {
+      const response = await fetch(buildApiUrl(API_CONFIG.BLOG.BY_ID(id.toString())), {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`

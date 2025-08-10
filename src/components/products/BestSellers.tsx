@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { buildApiUrl, API_CONFIG } from '@/config/api';
 
 export default function BestSellers() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/products')
+    fetch(buildApiUrl(API_CONFIG.PRODUCTS.BASE))
       .then(res => res.json())
       .then(data => setProducts(data.filter((p: any) => p.isHot)));
   }, []);

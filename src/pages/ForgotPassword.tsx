@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import { Mail, ArrowLeft, CheckCircle, Shield } from 'lucide-react';
+import { buildApiUrl, API_CONFIG } from '@/config/api';
 
 const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -17,7 +18,7 @@ const ForgotPassword: React.FC = () => {
     setLoading(true);
     
     try {
-      const response = await fetch('http://localhost:4000/api/auth/forgot-password', {
+      const response = await fetch(buildApiUrl(API_CONFIG.AUTH.FORGOT_PASSWORD), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

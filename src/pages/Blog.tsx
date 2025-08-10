@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { ChevronLeft, Calendar, Clock, ArrowRight } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
+import { buildApiUrlWithParams, API_CONFIG } from '@/config/api';
 
 interface BlogPost {
   id: number;
@@ -31,22 +32,29 @@ const Blog = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // Fetch blog posts
   useEffect(() => {
-    const fetchPosts = async () => {
+    const fetchBlogPosts = async () => {
+      setLoading(true);
+      setError('');
+      
       try {
-        const response = await fetch('http://localhost:4000/api/blog/posts?status=published');
-        if (!response.ok) throw new Error('Failed to fetch blog posts');
+        const response = await fetch(buildApiUrlWithParams(API_CONFIG.BLOG.POSTS, { status: 'published' }));
+        if (!response.ok) {
+          throw new Error('Failed to fetch blog posts');
+        }
         
         const data = await response.json();
         setBlogPosts(data.posts);
       } catch (err: any) {
         setError(err.message);
+        console.error('Error fetching blog posts:', err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPosts();
+    fetchBlogPosts();
   }, []);
 
   return (

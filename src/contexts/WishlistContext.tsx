@@ -3,8 +3,7 @@ import { toast } from 'sonner';
 import { Product } from '@/data/products';
 import { useAuth } from './AuthContext';
 import { useNavigate } from 'react-router-dom';
-
-const API_BASE = 'http://localhost:4000/api/wishlist';
+import { buildApiUrl, buildApiUrlWithParams, API_CONFIG } from '@/config/api';
 
 type WishlistContextType = {
   wishlist: Product[];
@@ -32,7 +31,7 @@ export const WishlistProvider: React.FC<{ children: ReactNode }> = ({ children }
   // Load wishlist from backend when user is authenticated
   useEffect(() => {
     if (isAuthenticated && user?.id) {
-      fetch(`${API_BASE}?userId=${user.id}`)
+      fetch(buildApiUrlWithParams(API_CONFIG.WISHLIST.BASE, { userId: user.id.toString() }))
         .then(res => res.json())
         .then(data => setWishlist(data))
         .catch(() => setWishlist([]));
@@ -50,7 +49,7 @@ export const WishlistProvider: React.FC<{ children: ReactNode }> = ({ children }
     }
     
     try {
-      const res = await fetch(API_BASE, {
+      const res = await fetch(buildApiUrl(API_CONFIG.WISHLIST.BASE), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.id, productId: product.id })
@@ -77,7 +76,7 @@ export const WishlistProvider: React.FC<{ children: ReactNode }> = ({ children }
     }
     
     try {
-      const res = await fetch(`${API_BASE}/${productId}`, {
+      const res = await fetch(buildApiUrl(API_CONFIG.WISHLIST.BY_ID(productId)), {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.id })
@@ -107,7 +106,7 @@ export const WishlistProvider: React.FC<{ children: ReactNode }> = ({ children }
     }
     
     try {
-      const res = await fetch(API_BASE, {
+      const res = await fetch(buildApiUrl(API_CONFIG.WISHLIST.BASE), {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.id })

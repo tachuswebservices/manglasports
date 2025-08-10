@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import { Lock, Eye, EyeOff, CheckCircle, XCircle, Shield } from 'lucide-react';
+import { buildApiUrl, API_CONFIG } from '@/config/api';
 
 const ResetPassword: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -28,7 +29,7 @@ const ResetPassword: React.FC = () => {
 
     const verifyToken = async () => {
       try {
-        const response = await fetch(`http://localhost:4000/api/auth/verify-reset-token/${token}`);
+        const response = await fetch(buildApiUrl(`/auth/verify-reset-token/${token}`));
         if (response.ok) {
           setTokenValid(true);
         } else {
@@ -66,7 +67,7 @@ const ResetPassword: React.FC = () => {
     setLoading(true);
     
     try {
-      const response = await fetch('http://localhost:4000/api/auth/reset-password', {
+      const response = await fetch(buildApiUrl(API_CONFIG.AUTH.RESET_PASSWORD), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

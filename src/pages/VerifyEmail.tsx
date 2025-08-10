@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { CheckCircle, XCircle, Mail, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { buildApiUrl, API_CONFIG } from '@/config/api';
 
 const VerifyEmail: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -22,7 +23,7 @@ const VerifyEmail: React.FC = () => {
       }
 
       try {
-        const response = await fetch(`http://localhost:4000/api/auth/verify-email/${token}`, {
+        const response = await fetch(buildApiUrl(`/auth/verify-email/${token}`), {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

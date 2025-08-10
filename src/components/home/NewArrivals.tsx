@@ -8,6 +8,7 @@ import { WishlistButton } from '@/components/common/WishlistButton';
 import { useCart } from '@/contexts/CartContext';
 import { toast } from 'sonner';
 import { Star } from 'lucide-react';
+import { buildApiUrl, API_CONFIG } from '@/config/api';
 
 const container = {
   hidden: { opacity: 0 },
@@ -164,7 +165,7 @@ export default function NewArrivals() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/products')
+    fetch(buildApiUrl(API_CONFIG.PRODUCTS.BASE))
       .then(res => res.json())
       .then(data => setProducts((data.products || []).filter((p: any) => p.isNew)));
   }, []);

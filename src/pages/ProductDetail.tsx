@@ -15,6 +15,7 @@ import ReviewList from '@/components/products/ReviewList';
 import { useAuth } from '@/contexts/AuthContext';
 // import { Product as BaseProduct, products } from '@/data/products';
 import { useCart } from '@/contexts/CartContext';
+import { buildApiUrl, API_CONFIG } from '@/config/api';
 
 // Product type based on backend API
 interface Product {
@@ -58,7 +59,7 @@ interface Review {
 
 const fetchProduct = async (productId: string): Promise<DetailedProduct | null> => {
   try {
-    const res = await fetch(`http://localhost:4000/api/products/${productId}`);
+    const res = await fetch(buildApiUrl(API_CONFIG.PRODUCTS.BY_ID(productId)));
     if (!res.ok) return null;
     const product = await res.json();
     // Enhance with additional details for UI compatibility
@@ -137,7 +138,7 @@ const ProductDetail: React.FC = () => {
     
     setReviewsLoading(true);
     try {
-      const response = await fetch(`http://localhost:4000/api/reviews/product/${productId}`);
+      const response = await fetch(buildApiUrl(API_CONFIG.REVIEWS.PRODUCT(productId)));
       if (response.ok) {
         const reviewsData = await response.json();
         setReviews(reviewsData);
@@ -154,7 +155,7 @@ const ProductDetail: React.FC = () => {
     if (!productId || !user || !token) return;
     
     try {
-      const response = await fetch(`http://localhost:4000/api/reviews/product/${productId}/user`, {
+      const response = await fetch(buildApiUrl(API_CONFIG.REVIEWS.USER_REVIEW(productId)), {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -178,7 +179,7 @@ const ProductDetail: React.FC = () => {
     }
     
     try {
-      const response = await fetch(`http://localhost:4000/api/reviews/product/${productId}/can-review`, {
+      const response = await fetch(buildApiUrl(API_CONFIG.REVIEWS.CAN_REVIEW(productId)), {
         headers: {
           'Authorization': `Bearer ${token}`
         }

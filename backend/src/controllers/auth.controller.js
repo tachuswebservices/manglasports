@@ -325,3 +325,36 @@ export async function resendVerificationEmail(req, res) {
     res.status(500).json({ error: 'Resend verification request failed' });
   }
 } 
+
+export async function verifyRole(req, res) {
+  try {
+    // The user is already authenticated via middleware
+    const user = await prisma.user.findUnique({ 
+      where: { id: req.user.userId },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        isEmailVerified: true
+      }
+    });
+    
+    if (!user) {
+      return res.status(401).json({ error: 'User not found' });
+    }
+    
+    res.json({ 
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        isEmailVerified: user.isEmailVerified
+      }
+    });
+  } catch (err) {
+    console.error('Role verification error:', err);
+    res.status(500).json({ error: 'Role verification failed' });
+  }
+} 
