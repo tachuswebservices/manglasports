@@ -74,6 +74,9 @@ export async function createProduct(req, res) {
       shortDescription,
       features,
       specifications,
+      gst,
+      offerPrice,
+      shippingCharges,
     } = req.body;
     // Normalize images to array of { url, publicId }
     let normalizedImages = [];
@@ -92,8 +95,8 @@ export async function createProduct(req, res) {
         numericPrice,
         originalPrice,
         images: normalizedImages,
-        categoryId,
-        brandId,
+        categoryId: parseInt(categoryId),
+        brandId: parseInt(brandId),
         rating,
         reviewCount,
         soldCount,
@@ -101,6 +104,9 @@ export async function createProduct(req, res) {
         isNew,
         isHot,
         shortDescription,
+        gst,
+        offerPrice,
+        shippingCharges,
         features: features && Array.isArray(features) && features.length > 0 ? { 
           create: features.map((feature) => ({ 
             value: typeof feature === 'string' ? feature : feature.value 
@@ -146,6 +152,7 @@ export async function updateProduct(req, res) {
       specifications,
       gst,
       offerPrice,
+      shippingCharges,
     } = req.body;
     // Normalize images to array of { url, publicId }
     let normalizedImages = [];
@@ -167,8 +174,8 @@ export async function updateProduct(req, res) {
         numericPrice,
         originalPrice,
         images: normalizedImages,
-        categoryId,
-        brandId,
+        categoryId: parseInt(categoryId),
+        brandId: parseInt(brandId),
         rating,
         reviewCount,
         soldCount,
@@ -178,6 +185,7 @@ export async function updateProduct(req, res) {
         shortDescription,
         gst,
         offerPrice,
+        shippingCharges,
         features: features && Array.isArray(features) && features.length > 0 ? { 
           create: features.map((feature) => ({ 
             value: typeof feature === 'string' ? feature : feature.value 

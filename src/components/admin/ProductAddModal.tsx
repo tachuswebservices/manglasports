@@ -196,6 +196,16 @@ export default function ProductAddModal({
             onChange={e => onChange('offerPrice', e.target.value.replace(/[^0-9.]/g, ''))}
             disabled={loading}
           />
+          <label className="font-medium">Shipping Charges</label>
+          <Input
+            placeholder="Shipping Charges"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9.]*"
+            value={typeof product.shippingCharges === 'string' && product.shippingCharges === '' ? '' : String(product.shippingCharges)}
+            onChange={e => onChange('shippingCharges', e.target.value.replace(/[^0-9.]/g, ''))}
+            disabled={loading}
+          />
           <div className="flex flex-col sm:flex-row gap-2">
             <label className="flex items-center gap-2">
               <input

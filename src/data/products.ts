@@ -17,6 +17,9 @@ export interface Product {
   shortDescription?: string;
   features?: string[];
   specifications?: { [key: string]: string };
+  gst?: number;
+  offerPrice?: number;
+  shippingCharges?: number;
 }
 
 // Combined products from New Arrivals and Best Sellers

@@ -56,6 +56,7 @@ model Product {
   gst              Float           @default(18)
   images           Json
   offerPrice       Float           @default(0)
+  shippingCharges  Float           @default(0)
   cart             Cart[]
   features         Feature[]
   orderItems       OrderItem[]

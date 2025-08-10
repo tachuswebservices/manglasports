@@ -69,6 +69,7 @@ const AdminDashboard = () => {
     shortDescription: '',
     gst: '',
     offerPrice: '',
+    shippingCharges: '',
     features: [],
     specifications: [],
   };
@@ -419,6 +420,7 @@ const AdminDashboard = () => {
       soldCount: typeof newProduct.soldCount === 'string' && newProduct.soldCount === '' ? undefined : Number(newProduct.soldCount),
       gst: typeof newProduct.gst === 'string' && newProduct.gst === '' ? 18 : Number(newProduct.gst),
       offerPrice: typeof newProduct.offerPrice === 'string' && newProduct.offerPrice === '' ? 0 : Number(newProduct.offerPrice),
+      shippingCharges: typeof newProduct.shippingCharges === 'string' && newProduct.shippingCharges === '' ? 0 : Number(newProduct.shippingCharges),
       shortDescription: newProduct.shortDescription || undefined,
       inStock: !!newProduct.inStock,
       isNew: !!newProduct.isNew,
@@ -558,6 +560,7 @@ const AdminDashboard = () => {
       soldCount: typeof editProductState.soldCount === 'string' && editProductState.soldCount === '' ? undefined : Number(editProductState.soldCount),
       gst: typeof editProductState.gst === 'string' && editProductState.gst === '' ? 18 : Number(editProductState.gst),
       offerPrice: typeof editProductState.offerPrice === 'string' && editProductState.offerPrice === '' ? 0 : Number(editProductState.offerPrice),
+      shippingCharges: typeof editProductState.shippingCharges === 'string' && editProductState.shippingCharges === '' ? 0 : Number(editProductState.shippingCharges),
       shortDescription: editProductState.shortDescription || undefined,
       inStock: !!editProductState.inStock,
       isNew: !!editProductState.isNew,

@@ -9,6 +9,7 @@ type CartItem = Product & {
   quantity: number;
   offerPrice?: number;
   gst?: number;
+  shippingCharges?: number;
 };
 
 type CartContextType = {
@@ -17,7 +18,7 @@ type CartContextType = {
   removeFromCart: (productId: string) => Promise<boolean>;
   updateQuantity: (productId: string, quantity: number) => Promise<void>;
   isInCart: (productId: string) => boolean;
-  clearCart: () => Promise<void>;
+  clearCart: (suppressToast?: boolean) => Promise<void>;
   getCartTotal: () => number;
   getCartItemCount: () => number;
 };
@@ -143,7 +144,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return cart.some(item => item.id === productId);
   };
 
-  const clearCart = async () => {
+  const clearCart = async (suppressToast: boolean = false) => {
     if (!isAuthenticated || !user?.id) {
       setCart([]);
       return;
@@ -157,7 +158,9 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       });
       if (res.ok) {
         setCart([]);
-        toast.success('Cart cleared');
+        if (!suppressToast) {
+          toast.success('Cart cleared');
+        }
       } else {
         toast.error('Failed to clear cart');
       }

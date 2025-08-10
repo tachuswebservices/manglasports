@@ -17,7 +17,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { ArrowLeft, Image, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Image, CheckCircle, Loader2 } from 'lucide-react';
 import { buildApiUrl, buildApiUrlWithParams, API_CONFIG } from '@/config/api';
 
 declare global {
@@ -39,6 +39,7 @@ const Checkout: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [editAddress, setEditAddress] = useState<Address | null>(null);
   const [loading, setLoading] = useState(false);
+  const [paymentLoading, setPaymentLoading] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [addressToDelete, setAddressToDelete] = useState<number | null>(null);
 
@@ -99,7 +100,7 @@ const Checkout: React.FC = () => {
     let saved: Address;
     if (address.id) {
       // Edit
-      const res = await fetch(buildApiUrl(API_CONFIG.ADDRESSES.BY_ID(address.id)), {
+      const res = await fetch(buildApiUrl(API_CONFIG.ADDRESSES.BY_ID(address.id.toString())), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(address),
@@ -123,101 +124,140 @@ const Checkout: React.FC = () => {
 
   const handlePayment = async () => {
     if (!user || !selectedAddressId || cart.length === 0) return;
-    // 1. Create Razorpay order on backend
-    const res = await fetch(buildApiUrl(API_CONFIG.PAYMENT.ORDER), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        amount: getCartTotal(),
-        currency: 'INR',
-        receipt: `order_rcpt_${Date.now()}`,
-        notes: {
-          userId: user.id,
-          addressId: selectedAddressId,
-        },
-      }),
-    });
-    const order = await res.json();
-    if (!order.id) {
-      toast({
-        title: "Payment Error",
-        description: "Failed to create payment order. Please try again.",
-        variant: "destructive"
+    
+    setPaymentLoading(true);
+    
+    try {
+      // Calculate grand total including GST and shipping charges for payment
+      let subtotal = 0, totalGst = 0, totalShippingCharges = 0;
+      cart.forEach(item => {
+        const hasOffer = typeof item.offerPrice === 'number' && item.offerPrice > 0;
+        const mainPrice = hasOffer ? item.offerPrice : (typeof item.numericPrice === 'number' && !isNaN(item.numericPrice) ? item.numericPrice : (typeof item.price === 'string' ? parseFloat(item.price.replace(/[^\d.]/g, '')) : (typeof item.price === 'number' ? item.price : 0)));
+        const gst = typeof item.gst === 'number' ? item.gst : 18;
+        const shippingCharges = typeof item.shippingCharges === 'number' ? item.shippingCharges : 0;
+        subtotal += mainPrice * item.quantity;
+        totalGst += (mainPrice * item.quantity * gst) / 100;
+        totalShippingCharges += shippingCharges * item.quantity;
       });
-      return;
-    }
-    // 2. Open Razorpay modal
-    const options = {
-      key: import.meta.env.VITE_RAZORPAY_KEY_ID || window.RAZORPAY_KEY_ID || '',
-      amount: order.amount,
-      currency: order.currency,
-      name: 'Mangla Sports',
-      description: 'Order Payment',
-      order_id: order.id,
-      handler: async function (response: any) {
-        // 3. Verify payment on backend
-        const verifyRes = await fetch(buildApiUrl(API_CONFIG.PAYMENT.VERIFY), {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(response),
+      const grandTotal = subtotal + totalGst + totalShippingCharges;
+      
+      // 1. Create Razorpay order on backend
+      const res = await fetch(buildApiUrl(API_CONFIG.PAYMENT.ORDER), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: grandTotal,
+          currency: 'INR',
+          receipt: `order_rcpt_${Date.now()}`,
+          notes: {
+            userId: user.id,
+            addressId: selectedAddressId,
+          },
+        }),
+      });
+      const order = await res.json();
+      if (!order.id) {
+        toast({
+          title: "Payment Error",
+          description: "Failed to create payment order. Please try again.",
+          variant: "destructive"
         });
-        const verifyData = await verifyRes.json();
-        if (verifyData.success) {
-          // 4. Place order in backend
-          const orderRes = await fetch(buildApiUrl(API_CONFIG.ORDERS.BASE), {
+        return;
+      }
+      // 2. Open Razorpay modal
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID || window.RAZORPAY_KEY_ID || '',
+        amount: order.amount,
+        currency: order.currency,
+        name: 'Mangla Sports',
+        description: 'Order Payment',
+        order_id: order.id,
+        handler: async function (response: any) {
+          // 3. Verify payment on backend
+          const verifyRes = await fetch(buildApiUrl(API_CONFIG.PAYMENT.VERIFY), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              userId: user.id,
-              addressId: selectedAddressId,
-              products: cart.map(item => ({
-                productId: item.id,
-                quantity: item.quantity,
-                price: item.offerPrice || item.numericPrice || 0,
-                name: item.name,
-              })),
-              totalAmount: getCartTotal(),
-              paymentId: response.razorpay_payment_id,
-              status: 'completed',
-            }),
+            body: JSON.stringify(response),
           });
-          if (orderRes.ok) {
-            await clearCart();
-            toast({
-              title: "Order Placed Successfully! 🎉",
-              description: "Your order has been confirmed and an email has been sent to you with the invoice.",
-              variant: "default",
-              duration: 5000
+          const verifyData = await verifyRes.json();
+          if (verifyData.success) {
+            // 4. Place order in backend
+            // Calculate grand total including GST and shipping charges
+            let subtotal = 0, totalGst = 0, totalShippingCharges = 0;
+            cart.forEach(item => {
+              const hasOffer = typeof item.offerPrice === 'number' && item.offerPrice > 0;
+              const mainPrice = hasOffer ? item.offerPrice : (typeof item.numericPrice === 'number' && !isNaN(item.numericPrice) ? item.numericPrice : (typeof item.price === 'string' ? parseFloat(item.price.replace(/[^\d.]/g, '')) : (typeof item.price === 'number' ? item.price : 0)));
+              const gst = typeof item.gst === 'number' ? item.gst : 18;
+              const shippingCharges = typeof item.shippingCharges === 'number' ? item.shippingCharges : 0;
+              subtotal += mainPrice * item.quantity;
+              totalGst += (mainPrice * item.quantity * gst) / 100;
+              totalShippingCharges += shippingCharges * item.quantity;
             });
-            navigate('/profile?tab=orders');
+            const grandTotal = subtotal + totalGst + totalShippingCharges;
+            
+            const orderRes = await fetch(buildApiUrl(API_CONFIG.ORDERS.BASE), {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                userId: user.id,
+                addressId: selectedAddressId,
+                products: cart.map(item => ({
+                  productId: item.id,
+                  quantity: item.quantity,
+                  price: item.offerPrice || item.numericPrice || 0,
+                  name: item.name,
+                })),
+                totalAmount: grandTotal,
+                paymentId: response.razorpay_payment_id,
+                status: 'completed',
+              }),
+            });
+            if (orderRes.ok) {
+              await clearCart(true); // Suppress the "Cart cleared" toast
+              toast({
+                title: "Order Placed Successfully! 🎉",
+                description: "Your order has been confirmed and an email has been sent to you with the invoice.",
+                variant: "default",
+                duration: 5000
+              });
+              navigate('/profile?tab=orders');
+            } else {
+              toast({
+                title: "Order Error",
+                description: "Payment succeeded but failed to store order. Please contact support.",
+                variant: "destructive"
+              });
+            }
           } else {
             toast({
-              title: "Order Error",
-              description: "Payment succeeded but failed to store order. Please contact support.",
+              title: "Payment Verification Failed",
+              description: "Payment verification failed. Please contact support if you were charged.",
               variant: "destructive"
             });
           }
-        } else {
-          toast({
-            title: "Payment Verification Failed",
-            description: "Payment verification failed. Please contact support if you were charged.",
-            variant: "destructive"
-          });
-        }
-      },
-      prefill: {
-        name: user.name,
-        email: user.email,
-      },
-      notes: {
-        addressId: selectedAddressId,
-      },
-      theme: {
-        color: '#FFD700',
-      },
-    };
-    const rzp = new window.Razorpay(options);
-    rzp.open();
+        },
+        prefill: {
+          name: user.name,
+          email: user.email,
+        },
+        notes: {
+          addressId: selectedAddressId,
+        },
+        theme: {
+          color: '#FFD700',
+        },
+      };
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (error) {
+      toast({
+        title: "Payment Error",
+        description: "An error occurred while processing payment. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setPaymentLoading(false);
+    }
   };
 
   return (
@@ -274,6 +314,9 @@ const Checkout: React.FC = () => {
                       <div className="font-medium text-base sm:text-lg truncate">{item.name || 'Product'}</div>
                       <div className="text-sm text-gray-500">Qty: {item.quantity}</div>
                       <div className="text-xs text-gray-500">GST: {gst}%</div>
+                      {typeof item.shippingCharges === 'number' && item.shippingCharges > 0 && (
+                        <div className="text-xs text-gray-500">Shipping: ₹{item.shippingCharges}</div>
+                      )}
                     </div>
                     
                     {/* Price */}
@@ -293,18 +336,21 @@ const Checkout: React.FC = () => {
             {/* Subtotal, GST, Grand Total */}
             <div className="flex flex-col gap-1 mt-6">
               {(() => {
-                let subtotal = 0, totalGst = 0;
+                let subtotal = 0, totalGst = 0, totalShippingCharges = 0;
                 cart.forEach(item => {
                   const hasOffer = typeof item.offerPrice === 'number' && item.offerPrice > 0;
                   const mainPrice = hasOffer ? item.offerPrice : (typeof item.numericPrice === 'number' && !isNaN(item.numericPrice) ? item.numericPrice : (typeof item.price === 'string' ? parseFloat(item.price.replace(/[^\d.]/g, '')) : (typeof item.price === 'number' ? item.price : 0)));
                   const gst = typeof item.gst === 'number' ? item.gst : 18;
+                  const shippingCharges = typeof item.shippingCharges === 'number' ? item.shippingCharges : 0;
                   subtotal += mainPrice * item.quantity;
                   totalGst += (mainPrice * item.quantity * gst) / 100;
+                  totalShippingCharges += shippingCharges * item.quantity;
                 });
-                const grandTotal = subtotal + totalGst;
+                const grandTotal = subtotal + totalGst + totalShippingCharges;
                 return <>
                   <div className="flex justify-between items-center"><span className="font-bold text-lg">Subtotal:</span><span className="font-bold">₹{subtotal.toLocaleString()}</span></div>
                   <div className="flex justify-between items-center"><span className="font-bold text-lg">Total GST:</span><span className="font-bold">₹{totalGst.toLocaleString()}</span></div>
+                  <div className="flex justify-between items-center"><span className="font-bold text-lg">Shipping Charges:</span><span className="font-bold">₹{totalShippingCharges.toLocaleString()}</span></div>
                   <div className="flex justify-between items-center mt-2"><span className="font-bold text-xl">Grand Total:</span><span className="font-bold text-2xl text-mangla-gold">₹{grandTotal.toLocaleString()}</span></div>
                 </>;
               })()}
@@ -352,10 +398,17 @@ const Checkout: React.FC = () => {
         </div>
         <Button
           className="w-full py-3 text-lg rounded-full bg-mangla-gold hover:bg-mangla-gold/90 text-mangla-dark-gray font-bold mt-4"
-          disabled={cart.length === 0 || !selectedAddressId}
+          disabled={cart.length === 0 || !selectedAddressId || paymentLoading}
           onClick={handlePayment}
         >
-          Pay Now
+          {paymentLoading ? (
+            <>
+              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+              Processing Payment...
+            </>
+          ) : (
+            'Pay Now'
+          )}
         </Button>
       </div>
       <AddressModal open={modalOpen} onClose={() => { setModalOpen(false); setEditAddress(null); }} onSave={handleSave} initialAddress={editAddress} />

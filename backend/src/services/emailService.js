@@ -12,14 +12,39 @@ const transporter = nodemailer.createTransport({
 });
 
 // Generate invoice HTML template
-function generateInvoiceHTML(order, user, address) {
+async function generateInvoiceHTML(order, user, address) {
   const orderDate = new Date(order.createdAt).toLocaleDateString('en-IN');
   const orderTime = new Date(order.createdAt).toLocaleTimeString('en-IN');
   
-  // Calculate subtotal, tax, and total
+  // Calculate subtotal, tax, shipping charges, and total
   const subtotal = order.orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const tax = subtotal * 0.18; // 18% GST
-  const total = subtotal + tax;
+  
+  // Calculate shipping charges from product data
+  let totalShippingCharges = 0;
+  try {
+    // Fetch product details to get shipping charges
+    const { PrismaClient } = await import('@prisma/client');
+    const prisma = new PrismaClient();
+    
+    for (const item of order.orderItems) {
+      const product = await prisma.product.findUnique({
+        where: { id: item.productId },
+        select: { shippingCharges: true }
+      });
+      if (product && product.shippingCharges) {
+        totalShippingCharges += product.shippingCharges * item.quantity;
+      }
+    }
+    
+    await prisma.$disconnect();
+  } catch (error) {
+    console.error('Error fetching shipping charges:', error);
+    // Fallback to 0 if there's an error
+    totalShippingCharges = 0;
+  }
+  
+  const total = subtotal + tax + totalShippingCharges;
   
   // Safely handle address fields with fallbacks
   const addressLine1 = address?.line1 || 'Address not available';
@@ -140,8 +165,8 @@ function generateInvoiceHTML(order, user, address) {
               <span>₹${tax.toLocaleString('en-IN')}</span>
             </div>
             <div class="total-row">
-              <span>Shipping:</span>
-              <span>₹0.00 (Free)</span>
+              <span>Shipping Charges:</span>
+              <span>₹${totalShippingCharges.toLocaleString('en-IN')}</span>
             </div>
             <div class="total-row final">
               <span>Total Amount:</span>
@@ -405,15 +430,16 @@ export async function sendInvoiceEmail(order, user, address) {
       phone: address?.phone
     });
 
+    const htmlContent = await generateInvoiceHTML(order, user, address);
     const mailOptions = {
       from: process.env.EMAIL_USER || 'your-email@yourdomain.com',
       to: user?.email || 'customer@example.com',
       subject: `Order Confirmation - Invoice #${order.id} - Mangla Sports`,
-      html: generateInvoiceHTML(order, user, address),
+      html: htmlContent,
       attachments: [
         {
           filename: `invoice-${order.id}.html`,
-          content: generateInvoiceHTML(order, user, address)
+          content: htmlContent
         }
       ]
     };
