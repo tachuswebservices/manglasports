@@ -306,10 +306,16 @@ const Navbar = () => {
                     )}
                   </button>
                   {profileOpen && (
-                    <div className={cn(
-                      'absolute right-0 mt-2 w-56 rounded-xl shadow-lg z-50 border',
-                      isDark ? 'bg-mangla-dark-gray border-gray-700 text-white' : 'bg-white border-gray-200 text-slate-900'
-                    )}>
+                    <>
+                      {/* Mobile backdrop overlay */}
+                      <div 
+                        className="fixed inset-0 bg-black/20 z-[55] md:hidden"
+                        onClick={() => setProfileOpen(false)}
+                      />
+                      <div className={cn(
+                        'fixed md:absolute right-0 md:right-0 top-20 md:top-auto md:mt-2 w-56 rounded-xl shadow-lg z-[60] border transform -translate-x-4 md:translate-x-0 max-h-[calc(100vh-5rem)] overflow-y-auto sm:right-0 sm:transform-none',
+                        isDark ? 'bg-mangla-dark-gray border-gray-700 text-white' : 'bg-white border-gray-200 text-slate-900'
+                      )}>
                       {user ? (
                         <>
                           <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
@@ -373,6 +379,7 @@ const Navbar = () => {
                         </>
                       )}
                     </div>
+                    </>
                   )}
                 </div>
                 

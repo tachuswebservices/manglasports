@@ -235,7 +235,7 @@ async function generateInvoiceHTML(order, user, address) {
 
 // Generate email verification HTML template
 function generateEmailVerificationHTML(userName, verificationToken) {
-  const verificationUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/verify-email?token=${verificationToken}`;
+  const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
   
   return `
     <!DOCTYPE html>
@@ -280,7 +280,7 @@ function generateEmailVerificationHTML(userName, verificationToken) {
           <p>To complete your registration and start shopping for premium shooting sports equipment, please verify your email address by clicking the button below:</p>
           
           <div style="text-align: center; margin: 30px 0;">
-            <a href="${verificationUrl}" class="verify-button">Verify My Email Address</a>
+            <a style="color: white;" href="${verificationUrl}" class="verify-button">Verify My Email Address</a>
           </div>
           
           <div class="warning">

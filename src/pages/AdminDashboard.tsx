@@ -988,7 +988,7 @@ const AdminDashboard = () => {
   return (
     <div className="bg-mangla min-h-screen flex flex-col">
       <AdminNavbar />
-      <main className="flex-1 bg-gradient-to-br from-slate-50 to-slate-200 dark:from-slate-900 dark:to-slate-800 min-h-[calc(100vh-64px)] py-10 px-2 sm:px-0">
+      <main className="flex-1 bg-gradient-to-br from-slate-50 to-slate-200 dark:from-slate-900 dark:to-slate-800 min-h-[calc(100vh-64px)] py-10 px-2 sm:px-2">
         <div className="max-w-5xl mx-auto">
           <h1 className="text-3xl md:text-4xl font-extrabold mb-8 tracking-tight text-mangla-gold drop-shadow-sm">Admin Dashboard</h1>
           {/* Tab Navigation */}
