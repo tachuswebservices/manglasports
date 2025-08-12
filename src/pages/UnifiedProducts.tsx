@@ -41,7 +41,7 @@ interface Collection {
   title: string;
   slug: string;
   description: string;
-  emoji: string;
+  
 }
 
 // Define all required collections even if some don't have products yet
@@ -50,55 +50,55 @@ const allCollections: Collection[] = [
     title: "Air Rifles", 
     slug: "air-rifles",
     description: "Premium quality air rifles for professional shooters and enthusiasts.",
-    emoji: "🎯"
+    
   },
   { 
     title: "Air Pistols", 
     slug: "air-pistols",
     description: "Competition-grade air pistols for precision target shooting.",
-    emoji: "🔫"
+    
   },
   { 
     title: "CO2 Pistols", 
     slug: "co2-pistols",
     description: "Reliable CO2-powered pistols for training and recreational shooting.",
-    emoji: "🔫"
+    
   },
   { 
     title: "Pellets", 
     slug: "pellets",
     description: "High-quality pellets for optimal accuracy and performance.",
-    emoji: "⚪"
+    
   },
   { 
     title: "Air Rifle Accessories", 
     slug: "air-rifle-accessories",
     description: "Specialized accessories to enhance your air rifle experience.",
-    emoji: "🎯"
+    
   },
   { 
     title: "Air Pistol Accessories", 
     slug: "air-pistol-accessories",
     description: "Professional accessories for air pistol shooting.",
-    emoji: "🔫"
+    
   },
   { 
     title: "Electronic Target Systems", 
     slug: "electronic-target-systems",
     description: "Advanced electronic target systems for precision scoring.",
-    emoji: "🎯"
+    
   },
   { 
     title: "Scatt", 
     slug: "scatt",
     description: "Professional Scatt training systems for competitive shooters.",
-    emoji: "🎯"
+    
   },
   { 
     title: "Consumables", 
     slug: "consumables",
     description: "Essential consumables for your shooting equipment.",
-    emoji: "📦"
+    
   }
 ];
 

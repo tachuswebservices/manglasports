@@ -56,7 +56,14 @@ const AdminRoute = ({ children }: { children: React.ReactNode }) => {
       if (isAuthenticated && !roleVerified && !checkingRole) {
         setCheckingRole(true);
         try {
-          const isValid = await verifyUserRole();
+          // Get the current token from localStorage since we need it for verification
+          const currentToken = localStorage.getItem('token');
+          if (!currentToken) {
+            window.location.href = '/login';
+            return;
+          }
+          
+          const isValid = await verifyUserRole(currentToken);
           if (isValid && user?.role === 'admin') {
             setRoleVerified(true);
           } else {

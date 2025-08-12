@@ -1017,12 +1017,12 @@ const AdminDashboard = () => {
             >
               Blog
             </button>
-            <button
+            {/* <button
               className={`px-6 py-2 rounded-t-lg font-semibold shadow-sm border-b-2 transition-all duration-150 ${activeTab === 'events' ? 'bg-white dark:bg-slate-900 border-mangla-gold text-mangla-gold' : 'bg-slate-100 dark:bg-slate-800 border-transparent text-slate-500 hover:text-mangla-gold hover:border-mangla-gold'}`}
               onClick={() => setActiveTab('events')}
             >
               Events
-            </button>
+            </button> */}
           </div>
 
           {/* Dashboard Tab - Statistics */}
@@ -1053,14 +1053,14 @@ const AdminDashboard = () => {
                   <TooltipProvider>
                     <Tooltip><TooltipTrigger asChild>
                       <Button size="icon" variant={productView === 'table' ? 'default' : 'outline'} className="rounded-full" onClick={() => setProductView('table')} aria-label="Table View">
-                        <LayoutGrid className="w-5 h-5" />
+                        <List className="w-5 h-5" />
                       </Button>
                     </TooltipTrigger><TooltipContent>Table View</TooltipContent></Tooltip>
                   </TooltipProvider>
                   <TooltipProvider>
                     <Tooltip><TooltipTrigger asChild>
                       <Button size="icon" variant={productView === 'card' ? 'default' : 'outline'} className="rounded-full" onClick={() => setProductView('card')} aria-label="Card View">
-                        <List className="w-5 h-5" />
+                        <LayoutGrid className="w-5 h-5" />
                       </Button>
                     </TooltipTrigger><TooltipContent>Card View</TooltipContent></Tooltip>
                   </TooltipProvider>

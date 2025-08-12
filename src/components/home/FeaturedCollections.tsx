@@ -199,7 +199,7 @@ const FeaturedCollections: React.FC = () => {
               "section-title text-4xl md:text-5xl font-bold",
               isDark ? "text-white" : "text-slate-900"
             )}>
-              Featured Collections
+              Product Categories
             </h2>
             <motion.div 
               className={cn(

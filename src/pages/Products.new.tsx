@@ -144,7 +144,7 @@ interface Collection {
   title: string;
   slug: string;
   description: string;
-  emoji: string; // Made emoji required since all our collections have it
+   
 }
 
 // Define all collections - ensure consistency between links and what's used in the URLs
@@ -153,67 +153,67 @@ const allCollections: Collection[] = [
     title: "Air Rifles", 
     slug: "air-rifles", 
     description: "High-precision air rifles for target shooting and competition",
-    emoji: "🎯"
+    
   },
   { 
     title: "Air Pistols", 
     slug: "air-pistols", 
     description: "Competition-grade air pistols for precision shooting",
-    emoji: "🔫"
+    
   },
   { 
     title: "CO2 Pistols", 
     slug: "co2-pistols", 
     description: "Powerful CO2 powered pistols for training and competition",
-    emoji: "💨"
+    
   },
   { 
     title: "Air Pellets", 
     slug: "air-pellets", 
     description: "High-quality pellets for all types of air guns",
-    emoji: "⚡"
+    
   },
   { 
     title: "Spares", 
     slug: "spares", 
     description: "Replacement parts and accessories for your equipment",
-    emoji: "🔧"
+    
   },
   { 
     title: "Air Rifle Accessories", 
     slug: "air-rifle-accessories", 
     description: "Enhance your air rifle with our premium accessories",
-    emoji: "🎯"
+    
   },
   { 
     title: "Air Pistol Accessories", 
     slug: "air-pistol-accessories", 
     description: "Upgrade your air pistol with our selection of accessories",
-    emoji: "🔫"
+    
   },
   { 
     title: "Manual Target Systems", 
     slug: "manual-target-systems", 
     description: "Traditional target systems for training and competition",
-    emoji: "🎯"
+    
   },
   { 
     title: "Electronic Target Systems", 
     slug: "electronic-target-systems", 
     description: "Advanced electronic scoring systems for precision shooting",
-    emoji: "📊"
+    
   },
   { 
     title: "Scatt Training Systems", 
     slug: "scatt-training-systems", 
     description: "Professional training systems to improve your shooting technique",
-    emoji: "🎯"
+    
   },
   { 
     title: "Consumables", 
     slug: "consumables", 
     description: "Essential consumables for your shooting needs",
-    emoji: "🧰"
+    
   }
 ];
 
@@ -650,7 +650,7 @@ const ProductsContent: React.FC = () => {
                 >
                   <div className="h-48 bg-gray-100 dark:bg-gray-800 flex items-center justify-center p-6">
                     <div className="text-4xl text-gray-400">
-                      {collection.emoji || '🎯'} {/* Fallback emoji */}
+
                     </div>
                   </div>
                   <div className="p-6">
