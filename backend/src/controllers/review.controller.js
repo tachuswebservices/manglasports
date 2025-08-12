@@ -305,3 +305,113 @@ async function updateProductRating(productId) {
     console.error('Error updating product rating:', error);
   }
 } 
+
+// ==========================
+// Admin-specific controllers
+// ==========================
+
+// Get all reviews (admin) with pagination and search
+export async function getAllReviewsAdmin(req, res) {
+  try {
+    const { page = 1, limit = 10, search = '' } = req.query;
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    const offset = (pageNum - 1) * limitNum;
+
+    // Build where clause for search across comment, user name, and product name
+    const whereClause = search
+      ? {
+          OR: [
+            { comment: { contains: String(search), mode: 'insensitive' } },
+            { user: { name: { contains: String(search), mode: 'insensitive' } } },
+            { product: { name: { contains: String(search), mode: 'insensitive' } } },
+          ],
+        }
+      : {};
+
+    const [reviews, total] = await Promise.all([
+      prisma.review.findMany({
+        where: whereClause,
+        include: {
+          user: { select: { id: true, name: true, email: true } },
+          product: { select: { id: true, name: true, images: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+        skip: offset,
+        take: limitNum,
+      }),
+      prisma.review.count({ where: whereClause }),
+    ]);
+
+    res.json({
+      reviews,
+      pagination: {
+        currentPage: pageNum,
+        totalPages: Math.ceil(total / limitNum),
+        totalReviews: total,
+        limit: limitNum,
+        hasNextPage: pageNum < Math.ceil(total / limitNum),
+        hasPrevPage: pageNum > 1,
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching all reviews (admin):', error);
+    res.status(500).json({ error: 'Failed to fetch reviews' });
+  }
+}
+
+// Update any review by id (admin)
+export async function adminUpdateReview(req, res) {
+  try {
+    const { id } = req.params;
+    const { rating, comment } = req.body;
+
+    if (!rating || !comment) {
+      return res.status(400).json({ error: 'Rating and comment are required' });
+    }
+    if (rating < 1 || rating > 5) {
+      return res.status(400).json({ error: 'Rating must be between 1 and 5' });
+    }
+    if (comment.trim().length < 10) {
+      return res.status(400).json({ error: 'Comment must be at least 10 characters long' });
+    }
+
+    const updated = await prisma.review.update({
+      where: { id: Number(id) },
+      data: { rating, comment: comment.trim() },
+      include: {
+        user: { select: { id: true, name: true, email: true } },
+      },
+    });
+
+    await updateProductRating(updated.productId);
+
+    res.json(updated);
+  } catch (error) {
+    console.error('Error updating review (admin):', error);
+    if (error.code === 'P2025') {
+      return res.status(404).json({ error: 'Review not found' });
+    }
+    res.status(500).json({ error: 'Failed to update review' });
+  }
+}
+
+// Delete any review by id (admin)
+export async function adminDeleteReview(req, res) {
+  try {
+    const { id } = req.params;
+
+    const existing = await prisma.review.findUnique({ where: { id: Number(id) } });
+    if (!existing) {
+      return res.status(404).json({ error: 'Review not found' });
+    }
+
+    await prisma.review.delete({ where: { id: Number(id) } });
+    await updateProductRating(existing.productId);
+
+    res.json({ message: 'Review deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting review (admin):', error);
+    res.status(500).json({ error: 'Failed to delete review' });
+  }
+}

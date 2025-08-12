@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils';
 import { useTheme } from '../theme/ThemeProvider';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import WhatsappFloatingButton from '../common/WhatsappFloatingButton';
 
 interface PageLayoutProps {
   children: React.ReactNode;
@@ -22,6 +23,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
         {children}
       </main>
       <Footer />
+      <WhatsappFloatingButton />
     </div>
   );
 };

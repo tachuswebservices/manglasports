@@ -46,6 +46,8 @@ export const API_CONFIG = {
     PRODUCT: (productId: string) => `/reviews/product/${productId}`,
     USER_REVIEW: (productId: string) => `/reviews/product/${productId}/user`,
     CAN_REVIEW: (productId: string) => `/reviews/product/${productId}/can-review`,
+    ADMIN_ALL: '/reviews/admin/all',
+    ADMIN_BY_ID: (id: number | string) => `/reviews/admin/${id}`,
   },
   
   BLOG: {

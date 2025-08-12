@@ -33,6 +33,7 @@ import ResendVerification from './pages/ResendVerification';
 import React, { useState, useEffect } from 'react';
 import Checkout from './pages/Checkout';
 import Profile from './pages/Profile';
+import WhatsappFloatingButton from './components/common/WhatsappFloatingButton';
 
 // ProtectedRoute component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -105,6 +106,7 @@ const App = () => (
                 <Toaster />
                 <Sonner />
                 <ScrollToTop />
+                <WhatsappFloatingButton />
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/products/product/:productId" element={<ProductDetail />} />

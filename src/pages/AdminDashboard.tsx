@@ -47,6 +47,7 @@ import CategoryManager from '../components/admin/CategoryManager';
 import BrandManager from '../components/admin/BrandManager';
 import OrderCardGrid from '../components/admin/OrderCardGrid';
 import BlogManager from '../components/admin/BlogManager';
+import ReviewManager from '../components/admin/ReviewManager';
 import EventManager from '../components/admin/EventManager';
 
 // Cloudinary config (move to top-level scope)
@@ -1000,6 +1001,12 @@ const AdminDashboard = () => {
               Dashboard
             </button>
             <button
+              className={`px-6 py-2 rounded-t-lg font-semibold shadow-sm border-b-2 transition-all duration-150 ${activeTab === 'reviews' ? 'bg-white dark:bg-slate-900 border-mangla-gold text-mangla-gold' : 'bg-slate-100 dark:bg-slate-800 border-transparent text-slate-500 hover:text-mangla-gold hover:border-mangla-gold'}`}
+              onClick={() => setActiveTab('reviews')}
+            >
+              Reviews
+            </button>
+            <button
               className={`px-6 py-2 rounded-t-lg font-semibold shadow-sm border-b-2 transition-all duration-150 ${activeTab === 'products' ? 'bg-white dark:bg-slate-900 border-mangla-gold text-mangla-gold' : 'bg-slate-100 dark:bg-slate-800 border-transparent text-slate-500 hover:text-mangla-gold hover:border-mangla-gold'}`}
               onClick={() => setActiveTab('products')}
             >
@@ -1259,6 +1266,12 @@ const AdminDashboard = () => {
                   )}
                 </div>
               </section>
+            </div>
+          )}
+          {activeTab === 'reviews' && (
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold">Reviews</h2>
+              <ReviewManager />
             </div>
           )}
 

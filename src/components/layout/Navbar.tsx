@@ -490,7 +490,7 @@ const Navbar = () => {
                 {/* Products section */}
                 <div className="mb-6">
                   <div className={`${isDark ? 'text-gray-300' : 'text-gray-500'} text-xs font-semibold uppercase tracking-wider px-4 py-2`}>
-                    Products
+                    Categories
                   </div>
                   <div className="mt-1">
                     {menuItems.map((item, index) => (
