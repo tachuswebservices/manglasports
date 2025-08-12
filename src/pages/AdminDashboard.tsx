@@ -90,6 +90,8 @@ const AdminDashboard = () => {
   const [addProductError, setAddProductError] = useState('');
   const [removingProductId, setRemovingProductId] = useState(null);
   const [removeProductError, setRemoveProductError] = useState('');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [showAddModal, setShowAddModal] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -432,14 +434,30 @@ const AdminDashboard = () => {
     console.log('ADD PRODUCT - Features being sent:', payload.features);
     console.log('ADD PRODUCT - Full payload:', payload);
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Authentication required. Please log in again.');
+      }
+
       const res = await fetch(buildApiUrl(API_CONFIG.PRODUCTS.BASE), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(payload),
       });
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || 'Failed to add product');
+        if (res.status === 401) {
+          throw new Error('Authentication expired. Please log in again.');
+        } else if (res.status === 403) {
+          throw new Error('Access denied. You do not have permission to add products.');
+        } else if (res.status === 400) {
+          throw new Error(data.error || 'Invalid product data. Please check all required fields.');
+        } else {
+          throw new Error(data.error || `Failed to add product (${res.status})`);
+        }
       }
       const product = await res.json();
       setProducts([...products, product]);
@@ -453,16 +471,68 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleRemoveProduct = (id) => {
+  const handleRemoveProduct = async (id) => {
     setRemovingProductId(id);
     setRemoveProductError('');
-    fetch(buildApiUrl(API_CONFIG.PRODUCTS.BY_ID(id)), { method: 'DELETE' })
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to remove product');
-        setProducts(products.filter(p => p.id !== id));
-      })
-      .catch(err => setRemoveProductError(err.message))
-      .finally(() => setRemovingProductId(null));
+    
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Authentication required. Please log in again.');
+      }
+
+      const res = await fetch(buildApiUrl(API_CONFIG.PRODUCTS.BY_ID(id)), { 
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        if (res.status === 401) {
+          throw new Error('Authentication expired. Please log in again.');
+        } else if (res.status === 403) {
+          throw new Error('Access denied. You do not have permission to delete products.');
+        } else if (res.status === 404) {
+          throw new Error('Product not found. It may have been already deleted.');
+        } else if (res.status === 400) {
+          throw new Error(errorData.error || 'Cannot delete this product. It may have associated orders or dependencies.');
+        } else {
+          throw new Error(errorData.error || `Failed to delete product (${res.status})`);
+        }
+      }
+
+      // Remove product from local state
+      setProducts(products.filter(p => p.id !== id));
+      
+      // Show success toast
+      toast({ 
+        title: 'Product deleted', 
+        description: 'Product has been successfully deleted.',
+        variant: 'default'
+      });
+      
+    } catch (err) {
+      console.error('Error deleting product:', err);
+      setRemoveProductError(err.message || 'Failed to remove product');
+      
+      // Show error toast
+      toast({ 
+        title: 'Delete failed', 
+        description: err.message || 'Failed to delete product',
+        variant: 'destructive'
+      });
+    } finally {
+      setRemovingProductId(null);
+      setProductToDelete(null);
+    }
+  };
+
+  const showDeleteConfirmDialog = (product) => {
+    setProductToDelete(product);
+    setShowDeleteConfirm(true);
   };
 
   // Open edit modal and prefill state
@@ -572,14 +642,32 @@ const AdminDashboard = () => {
     console.log('EDIT PRODUCT - Features being sent:', payload.features);
     console.log('EDIT PRODUCT - Full payload:', payload);
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Authentication required. Please log in again.');
+      }
+
       const res = await fetch(buildApiUrl(API_CONFIG.PRODUCTS.BY_ID(editingProduct.id)), {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(payload),
       });
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || 'Failed to update product');
+        if (res.status === 401) {
+          throw new Error('Authentication expired. Please log in again.');
+        } else if (res.status === 403) {
+          throw new Error('Access denied. You do not have permission to update products.');
+        } else if (res.status === 404) {
+          throw new Error('Product not found. It may have been deleted.');
+        } else if (res.status === 400) {
+          throw new Error(data.error || 'Invalid product data. Please check all required fields.');
+        } else {
+          throw new Error(data.error || `Failed to update product (${res.status})`);
+        }
       }
       const product = await res.json();
       setProducts(products.map(p => (p.id === product.id ? product : p)));
@@ -927,14 +1015,32 @@ const AdminDashboard = () => {
     );
     try {
       if (!editingProduct) throw new Error('No product selected');
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Authentication required. Please log in again.');
+      }
+
       const res = await fetch(buildApiUrl(API_CONFIG.PRODUCTS.BY_ID(editingProduct.id.toString())), {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({ ...editingProduct, images: newImages }),
       });
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || 'Failed to update product images');
+        if (res.status === 401) {
+          throw new Error('Authentication expired. Please log in again.');
+        } else if (res.status === 403) {
+          throw new Error('Access denied. You do not have permission to update products.');
+        } else if (res.status === 404) {
+          throw new Error('Product not found. It may have been deleted.');
+        } else if (res.status === 400) {
+          throw new Error(data.error || 'Invalid product data.');
+        } else {
+          throw new Error(data.error || `Failed to update product images (${res.status})`);
+        }
       }
       // Update product in UI
       setProducts(products => products.map(p => p.id === editingProduct.id ? { ...p, images: newImages } : p));
@@ -1072,7 +1178,7 @@ const AdminDashboard = () => {
                     </TooltipTrigger><TooltipContent>Card View</TooltipContent></Tooltip>
                   </TooltipProvider>
                 </div>
-                <div className="flex gap-2 items-center">
+                <div className="flex flex-wrap gap-2 items-center">
                   <div className="relative">
                     <input
                       type="text"
@@ -1170,7 +1276,7 @@ const AdminDashboard = () => {
                         limit={limit}
                         totalPages={Math.ceil(filteredProducts.length / limit)}
                         onEdit={openEditModal}
-                        onDelete={handleRemoveProduct}
+                        onDelete={showDeleteConfirmDialog}
                         onManageImages={(product) => {
                           setEditingProduct(product);
                           setEditProductState({ ...initialProductState, ...product, categoryId: String(product.categoryId), brandId: String(product.brandId) });
@@ -1192,7 +1298,7 @@ const AdminDashboard = () => {
                         products={filteredProducts}
                         categories={categories}
                         onEdit={openEditModal}
-                        onDelete={handleRemoveProduct}
+                        onDelete={showDeleteConfirmDialog}
                         onManageImages={(product) => {
                           setEditingProduct(product);
                           setEditProductState({ ...initialProductState, ...product, categoryId: String(product.categoryId), brandId: String(product.brandId) });
@@ -1208,7 +1314,27 @@ const AdminDashboard = () => {
                         removingProductId={removingProductId}
                       />
                     )}
-                  {removeProductError && <div className="text-red-500 mt-2 px-4 pb-4">{removeProductError}</div>}
+                  {removeProductError && (
+                    <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mt-4">
+                      <div className="flex items-start gap-3">
+                        <ShieldAlert className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
+                        <div className="flex-1">
+                          <h4 className="font-medium text-red-800 dark:text-red-200 mb-1">Delete Failed</h4>
+                          <p className="text-red-700 dark:text-red-300 text-sm">{removeProductError}</p>
+                          <div className="mt-3">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              onClick={() => setRemoveProductError('')}
+                              className="text-red-600 border-red-300 hover:bg-red-50"
+                            >
+                              Dismiss
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 {/* Pagination controls */}
                 {totalPages > 1 && (
@@ -1374,6 +1500,49 @@ const AdminDashboard = () => {
         setImageManagerProgress={setImageManagerProgress}
         setImageManagerError={setImageManagerError}
       />
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <AlertDialogContent className="max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-red-600">
+              <ShieldAlert className="w-5 h-5" />
+              Delete Product
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-slate-600 dark:text-slate-400">
+              Are you sure you want to delete <strong>"{productToDelete?.name}"</strong>? This action cannot be undone and will permanently remove the product and all its associated data.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex flex-col sm:flex-row gap-2">
+            <AlertDialogCancel 
+              onClick={() => {
+                setShowDeleteConfirm(false);
+                setProductToDelete(null);
+              }}
+              className="w-full sm:w-auto"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                if (productToDelete) {
+                  handleRemoveProduct(productToDelete.id);
+                }
+              }}
+              className="w-full sm:w-auto bg-red-600 hover:bg-red-700 focus:ring-red-600"
+              disabled={removingProductId === productToDelete?.id}
+            >
+              {removingProductId === productToDelete?.id ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  Deleting...
+                </div>
+              ) : (
+                'Delete Product'
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

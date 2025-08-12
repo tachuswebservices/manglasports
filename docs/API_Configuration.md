@@ -103,6 +103,12 @@ API_CONFIG.REVIEWS.USER_REVIEW(productId) // /reviews/product/{productId}/user
 API_CONFIG.REVIEWS.CAN_REVIEW(productId)  // /reviews/product/{productId}/can-review
 ```
 
+### Admin Reviews
+```typescript
+API_CONFIG.REVIEWS.ADMIN_ALL             // /reviews/admin/all
+API_CONFIG.REVIEWS.ADMIN_BY_ID(id)      // /reviews/admin/{id}
+```
+
 ### Blog
 ```typescript
 API_CONFIG.BLOG.POSTS                    // /blog/posts

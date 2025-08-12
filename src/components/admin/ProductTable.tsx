@@ -10,7 +10,7 @@ interface ProductTableProps {
   limit: number;
   totalPages: number;
   onEdit: (product: any) => void;
-  onDelete: (productId: string) => void;
+  onDelete: (product: any) => void;
   onManageImages: (product: any) => void;
   onPageChange: (newPage: number) => void;
   removingProductId: string | null;
@@ -62,7 +62,7 @@ export default function ProductTable({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button size="icon" variant="destructive" onClick={() => onDelete(product.id)} aria-label="Delete">
+                      <Button size="icon" variant="destructive" onClick={() => onDelete(product)} aria-label="Delete">
                         <Trash className="w-4 h-4" />
                       </Button>
                     </TooltipTrigger>

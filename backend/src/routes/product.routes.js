@@ -3,6 +3,7 @@ import * as productController from '../controllers/product.controller.js';
 import multer from 'multer';
 import path from 'path';
 import { deleteCloudinaryImage } from '../controllers/product.controller.js';
+import { authenticateToken } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -30,9 +31,9 @@ const upload = multer({
 
 router.get('/', productController.getAllProducts);
 router.get('/:id', productController.getProductById);
-router.post('/', productController.createProduct);
-router.put('/:id', productController.updateProduct);
-router.delete('/:id', productController.deleteProduct);
+router.post('/', authenticateToken, productController.createProduct);
+router.put('/:id', authenticateToken, productController.updateProduct);
+router.delete('/:id', authenticateToken, productController.deleteProduct);
 
 // Multiple image upload endpoint
 router.post('/upload-image', upload.array('images', 5), (req, res) => {

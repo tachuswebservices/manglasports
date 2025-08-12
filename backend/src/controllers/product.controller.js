@@ -59,13 +59,10 @@ export async function createProduct(req, res) {
     const {
       id,
       name,
-      price,
       numericPrice,
-      originalPrice,
       images,
       categoryId,
       brandId,
-      rating,
       reviewCount,
       soldCount,
       inStock,
@@ -91,13 +88,10 @@ export async function createProduct(req, res) {
       data: {
         id,
         name,
-        price,
         numericPrice,
-        originalPrice,
         images: normalizedImages,
         categoryId: parseInt(categoryId),
         brandId: parseInt(brandId),
-        rating,
         reviewCount,
         soldCount,
         inStock,
@@ -135,13 +129,10 @@ export async function updateProduct(req, res) {
     
     const {
       name,
-      price,
       numericPrice,
-      originalPrice,
       images,
       categoryId,
       brandId,
-      rating,
       reviewCount,
       soldCount,
       inStock,
@@ -170,13 +161,10 @@ export async function updateProduct(req, res) {
       where: { id: req.params.id },
       data: {
         name,
-        price,
         numericPrice,
-        originalPrice,
         images: normalizedImages,
         categoryId: parseInt(categoryId),
         brandId: parseInt(brandId),
-        rating,
         reviewCount,
         soldCount,
         inStock,
@@ -210,10 +198,79 @@ export async function updateProduct(req, res) {
 
 export async function deleteProduct(req, res) {
   try {
-    await prisma.product.delete({ where: { id: req.params.id } });
-    res.status(204).end();
+    const { id } = req.params;
+    
+    console.log(`Attempting to delete product with ID: ${id}`);
+    console.log('User making request:', req.user);
+    
+    // Validate ID parameter - Product IDs are strings, not integers
+    if (!id || typeof id !== 'string' || id.trim() === '') {
+      console.log(`Invalid product ID provided: ${id}`);
+      return res.status(400).json({ error: 'Invalid product ID' });
+    }
+
+    // Check if product exists before deleting
+    const existingProduct = await prisma.product.findUnique({
+      where: { id: id.trim() },
+      include: {
+        features: true,
+        specifications: true,
+        reviews: true,
+        orderItems: true,
+        cart: true,
+        wishlist: true
+      }
+    });
+
+    if (!existingProduct) {
+      console.log(`Product with ID ${id} not found`);
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    console.log(`Product found: ${existingProduct.name}`);
+    console.log(`Related data counts:`, {
+      features: existingProduct.features?.length || 0,
+      specifications: existingProduct.specifications?.length || 0,
+      reviews: existingProduct.reviews?.length || 0,
+      orderItems: existingProduct.orderItems?.length || 0,
+      cart: existingProduct.cart?.length || 0,
+      wishlist: existingProduct.wishlist?.length || 0
+    });
+
+    // Check if product has active orders
+    if (existingProduct.orderItems && existingProduct.orderItems.length > 0) {
+      console.log(`Cannot delete product ${id} - has ${existingProduct.orderItems.length} order items`);
+      return res.status(400).json({ 
+        error: 'Cannot delete product - it has associated orders. Please contact support if you need to remove this product.' 
+      });
+    }
+
+    // Delete related data first (features, specifications, reviews, cart items, wishlist items)
+    console.log('Deleting related data...');
+    await prisma.feature.deleteMany({ where: { productId: id.trim() } });
+    await prisma.specification.deleteMany({ where: { productId: id.trim() } });
+    await prisma.review.deleteMany({ where: { productId: id.trim() } });
+    await prisma.cart.deleteMany({ where: { productId: id.trim() } });
+    await prisma.wishlist.deleteMany({ where: { productId: id.trim() } });
+
+    // Delete the product
+    console.log('Deleting product...');
+    await prisma.product.delete({ where: { id: id.trim() } });
+    
+    console.log(`Product ${id} deleted successfully`);
+    res.status(200).json({ message: 'Product deleted successfully' });
   } catch (err) {
-    res.status(400).json({ error: 'Failed to delete product' });
+    console.error('Error deleting product:', err);
+    
+    if (err.code === 'P2025') {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    
+    if (err.code === 'P2003') {
+      return res.status(400).json({ error: 'Cannot delete product - it has related dependencies' });
+    }
+    
+    res.status(500).json({ error: 'Failed to delete product', details: err.message });
   }
 }
 

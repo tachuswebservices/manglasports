@@ -42,11 +42,9 @@ model Brand {
 model Product {
   id               String          @id
   name             String
-  price            String
   numericPrice     Float
   categoryId       Int
   brandId          Int
-  rating           Float
   reviewCount      Int?
   soldCount        Int?
   inStock          Boolean

@@ -6,7 +6,7 @@ interface ProductCardGridProps {
   products: any[];
   categories: any[];
   onEdit: (product: any) => void;
-  onDelete: (productId: string) => void;
+  onDelete: (product: any) => void;
   onManageImages?: (product: any) => void;
   removingProductId: string | null;
 }
@@ -148,7 +148,7 @@ export default function ProductCardGrid({
                       size="icon"
                       variant="destructive"
                       className="flex-1 h-8"
-                      onClick={() => onDelete(product.id)}
+                      onClick={() => onDelete(product)}
                       disabled={removingProductId === product.id}
                     >
                       {removingProductId === product.id ? (

@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from '../ui/dialog';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
-import { X, Upload, Plus, Check, ShieldAlert, Trash } from 'lucide-react';
+import { X, Upload, Plus, Check, ShieldAlert, Trash, Trash2 } from 'lucide-react';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '../ui/tooltip';
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction, AlertDialogCancel } from '../ui/alert-dialog';
 import {
@@ -278,7 +278,7 @@ export default function ProductImageManager({
                     onClick={() => setDeleteMode(v => !v)}
                     aria-label={deleteMode ? 'Exit Delete Mode' : 'Delete Mode'}
                   >
-                    <ShieldAlert className="w-5 h-5" />
+                    <Trash2 className="w-5 h-5" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>{deleteMode ? 'Exit Delete Mode' : 'Delete Mode'}</TooltipContent>
@@ -292,38 +292,22 @@ export default function ProductImageManager({
             )}
           </div>
 
-          <DialogFooter>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    variant="secondary" 
-                    size="icon" 
-                    onClick={onCancel} 
-                    disabled={imageManagerSaving} 
-                    aria-label="Cancel"
-                  >
-                    <X className="w-5 h-5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Cancel</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    onClick={onSave} 
-                    size="icon" 
-                    disabled={imageManagerSaving} 
-                    aria-label="Save"
-                  >
-                    <Check className="w-5 h-5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Save</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+          <DialogFooter className="flex flex-col sm:flex-row justify-end gap-2 pt-4">
+            <Button 
+              variant="secondary" 
+              onClick={onCancel} 
+              disabled={imageManagerSaving}
+              className="w-full sm:w-auto"
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={onSave} 
+              disabled={imageManagerSaving}
+              className="w-full sm:w-auto bg-mangla-gold hover:bg-mangla-gold/90"
+            >
+              {imageManagerSaving ? 'Saving...' : 'Save Changes'}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

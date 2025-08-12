@@ -1262,6 +1262,99 @@ interface EmailConfirmationDialogProps {
 }
 ```
 
+### Admin Review Management
+
+The admin interface provides comprehensive review management capabilities for moderating and managing product reviews:
+
+#### Review Management Features
+- **List All Reviews**: View all product reviews with pagination and search functionality
+- **Search & Filter**: Search reviews by comment content, user name, or product name
+- **Edit Reviews**: Modify rating and comment content for any review
+- **Delete Reviews**: Remove inappropriate or spam reviews
+- **Bulk Operations**: Select multiple reviews for batch actions
+
+#### Review Moderation Tools
+- **Content Filtering**: Search through review content for moderation
+- **User Context**: View user information and product details for each review
+- **Rating Management**: Adjust review ratings if needed
+- **Comment Editing**: Edit review text while preserving user attribution
+
+#### Technical Implementation
+```typescript
+// Admin review management interface
+interface AdminReview {
+  id: number;
+  rating: number;
+  comment: string;
+  createdAt: string;
+  updatedAt: string;
+  user: {
+    id: number;
+    name: string | null;
+    email: string;
+  };
+  product: {
+    id: string;
+    name: string;
+    images: any;
+  };
+}
+
+// Review management API endpoints
+interface ReviewManagementAPI {
+  // List all reviews with pagination and search
+  GET: '/api/reviews/admin/all?page=1&limit=10&search=query';
+  
+  // Update review by ID
+  PUT: '/api/reviews/admin/:id';
+  
+  // Delete review by ID
+  DELETE: '/api/reviews/admin/:id';
+}
+
+// Review search and filter options
+interface ReviewSearchOptions {
+  page?: number;
+  limit?: number;
+  search?: string; // Searches comment, user name, and product name
+}
+```
+
+#### Review Management Component
+```typescript
+// ReviewManager component for admin dashboard
+const ReviewManager: React.FC = () => {
+  const [reviews, setReviews] = useState<AdminReview[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [search, setSearch] = useState('');
+  
+  // Fetch reviews with search and pagination
+  const fetchReviews = async (opts?: ReviewSearchOptions) => {
+    // Implementation for fetching reviews from admin API
+  };
+  
+  // Edit review functionality
+  const openEdit = (review: AdminReview) => {
+    // Open edit modal for review
+  };
+  
+  // Delete review functionality
+  const deleteReview = async (id: number) => {
+    // Delete review with confirmation
+  };
+  
+  return (
+    <div className="space-y-4">
+      {/* Search and filter controls */}
+      {/* Review table with pagination */}
+      {/* Edit modal for review updates */}
+    </div>
+  );
+};
+```
+
 ### Analytics Dashboard
 
 ```typescript
@@ -3095,95 +3188,65 @@ echo "Starting rollback from $CURRENT_VERSION to $ROLLBACK_VERSION"
 
 # 1. Create database backup before rollback
 pg_dump $DATABASE_URL > "backup_before_rollback_$(date +%Y%m%d_%H%M%S).sql"
-
-# 2. Switch traffic to maintenance mode
-kubectl set image deployment/frontend frontend=manglasports:maintenance
-
-# 3. Scale down current version
-kubectl scale deployment/frontend --replicas=0
-
-# 4. Deploy previous version
-kubectl set image deployment/frontend frontend=manglasports:$ROLLBACK_VERSION
-
-# 5. Wait for deployment
-kubectl rollout status deployment/frontend
-
-# 6. Run health checks
-./scripts/health_check.sh
-
-# 7. If healthy, scale up
-if [ $? -eq 0 ]; then
-  kubectl scale deployment/frontend --replicas=3
-  echo "Rollback successful"
-else
-  echo "Rollback failed, check logs"
-  exit 1
-fi
 ```
 
-### Cost Optimization
+## User Experience Features
 
+### WhatsApp Floating Button
+
+The application includes a global floating WhatsApp chat button that provides instant customer support access:
+
+#### Features
+- **Global Presence**: Appears on all pages for consistent customer support access
+- **Responsive Design**: Adapts to different screen sizes and themes
+- **Accessibility**: Includes proper ARIA labels and keyboard navigation support
+- **Customizable**: Configurable phone number and default message via environment variables
+
+#### Configuration
+```bash
+# Environment variables for WhatsApp integration
+VITE_WHATSAPP_NUMBER=919876543210          # Phone number without + (international format)
+VITE_WHATSAPP_MESSAGE=Hello! I have a question.  # Default message in chat
+```
+
+#### Technical Implementation
 ```typescript
-// Serverless function for image optimization
-export async function optimizeImage(event: any) {
-  const { bucket, key } = event.Records[0].s3;
-  
-  // Download original image
-  const originalImage = await s3.getObject({ Bucket: bucket, Key: key }).promise();
-  
-  // Generate optimized versions
-  const sizes = [
-    { width: 200, height: 200, suffix: '_thumb' },
-    { width: 800, height: 800, suffix: '_medium' },
-    { width: 1920, height: 1080, suffix: '_large' }
-  ];
-  
-  for (const size of sizes) {
-    const optimized = await sharp(originalImage.Body)
-      .resize(size.width, size.height, { fit: 'inside' })
-      .webp({ quality: 85 })
-      .toBuffer();
-      
-    await s3.putObject({
-      Bucket: bucket,
-      Key: key.replace(/\.[^.]+$/, `${size.suffix}.webp`),
-      Body: optimized,
-      ContentType: 'image/webp',
-      CacheControl: 'max-age=31536000'
-    }).promise();
-  }
-  
-  // Delete original if configured
-  if (process.env.DELETE_ORIGINALS === 'true') {
-    await s3.deleteObject({ Bucket: bucket, Key: key }).promise();
-  }
-}
+// WhatsappFloatingButton component
+const WhatsappFloatingButton: React.FC = () => {
+  const phone = import.meta.env.VITE_WHATSAPP_NUMBER;
+  const defaultMessage = import.meta.env.VITE_WHATSAPP_MESSAGE || 'Hello! I have a question.';
 
-// Database query caching
-export function enableQueryResultCache() {
-  // PostgreSQL query result cache
-  const cacheConfig = {
-    statement_timeout: '30s',
-    idle_in_transaction_session_timeout: '30s',
-    default_statistics_target: 100,
-    random_page_cost: 1.1,
-    effective_cache_size: '4GB',
-    work_mem: '16MB',
-    maintenance_work_mem: '256MB'
-  };
-  
-  return cacheConfig;
-}
+  const href = useMemo(() => {
+    if (!phone) return null;
+    const digitsOnly = phone.replace(/[^\d]/g, '');
+    const encoded = encodeURIComponent(defaultMessage);
+    return `https://wa.me/${digitsOnly}?text=${encoded}`;
+  }, [phone, defaultMessage]);
+
+  return (
+    <div className="fixed bottom-6 right-6 z-50">
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Chat on WhatsApp"
+        className="inline-flex items-center justify-center w-14 h-14 rounded-full shadow-lg bg-[#25D366] text-white hover:scale-105 transition-transform"
+      >
+        <WhatsappIcon className="w-7 h-7" />
+      </a>
+    </div>
+  );
+};
 ```
 
-## Conclusion
+#### Integration
+The WhatsApp button is integrated globally through:
+- **App.tsx**: Renders on all routes for consistent presence
+- **PageLayout.tsx**: Alternative integration point for pages using layout wrapper
+- **Responsive Design**: Adapts positioning and sizing for mobile/desktop
 
-This comprehensive developer guide covers all aspects of building, deploying, and maintaining the Mangla Sports e-commerce platform. Regular updates to this documentation ensure that new team members can quickly understand the system architecture and contribute effectively to the project.
-
-For the latest updates and additional resources, refer to:
-- [Supabase Documentation](https://supabase.com/docs)
-- [React Documentation](https://react.dev)
-- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-
-Remember to always test thoroughly in development before deploying to production, and maintain regular backups of all critical data.
+#### Customization Options
+- **Position**: Modify `bottom-6 right-6` classes for different positioning
+- **Size**: Adjust `w-14 h-14` for button dimensions
+- **Colors**: Customize WhatsApp brand colors and hover effects
+- **Animation**: Add pulse effects, bounce animations, or show/hide on scroll

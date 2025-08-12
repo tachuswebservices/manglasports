@@ -55,6 +55,19 @@ The Mangla Sports & Associates website is a professional e-commerce platform for
   - Events Calendar with category filtering
   - Optimized mobile navigation with improved touch targets
   - Consistent spacing and alignment across all screen sizes
+- **Admin Dashboard**:
+  - Comprehensive product management (add, edit, delete, image management)
+  - Order management with real-time status updates and email confirmations
+  - Category and brand management
+  - Blog post management
+  - Event management
+  - **Review Management**: Complete review moderation system with search, edit, and delete capabilities
+  - Analytics dashboard with date range filtering
+  - User role verification and admin-only access
+- **Customer Support**:
+  - **WhatsApp Floating Button**: Global floating chat button for instant customer support
+  - Configurable phone number and default message via environment variables
+  - Responsive design with proper accessibility features
 - **UI Components**:
   - Reusable button components with variants
   - Interactive product cards with hover effects

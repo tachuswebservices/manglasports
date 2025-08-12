@@ -16,7 +16,7 @@ const AdminNavbar = () => {
     <nav className="bg-gray-900 text-white px-6 py-3 flex items-center justify-between shadow">
       <div className="flex items-center gap-2">
         <img src="/lovable-uploads/msa-logo.png" alt="Logo" className="h-8 w-auto" />
-        <span className="font-bold text-lg tracking-wide">Admin Panel</span>
+        {/* <span className="font-bold text-lg tracking-wide">Admin Panel</span> */}
       </div>
       <div className="flex gap-4">
         <button
