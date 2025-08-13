@@ -63,8 +63,7 @@ export async function getAllOrders(req, res) {
               select: {
                 id: true,
                 name: true,
-                images: true,
-                price: true
+                images: true
               }
             }
           }
